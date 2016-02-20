@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		AC2164081C777E2800F5F042 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AC2164071C777E2800F5F042 /* main.cpp */; };
+		AC2164101C777E3800F5F042 /* cJSON.c in Sources */ = {isa = PBXBuildFile; fileRef = AC21640E1C777E3800F5F042 /* cJSON.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,6 +26,8 @@
 /* Begin PBXFileReference section */
 		AC2164041C777E2800F5F042 /* modulo */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = modulo; sourceTree = BUILT_PRODUCTS_DIR; };
 		AC2164071C777E2800F5F042 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		AC21640E1C777E3800F5F042 /* cJSON.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cJSON.c; sourceTree = "<group>"; };
+		AC21640F1C777E3800F5F042 /* cJSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cJSON.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,6 +60,8 @@
 		AC2164061C777E2800F5F042 /* modulo */ = {
 			isa = PBXGroup;
 			children = (
+				AC21640E1C777E3800F5F042 /* cJSON.c */,
+				AC21640F1C777E3800F5F042 /* cJSON.h */,
 				AC2164071C777E2800F5F042 /* main.cpp */,
 			);
 			path = modulo;
@@ -119,6 +124,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AC2164081C777E2800F5F042 /* main.cpp in Sources */,
+				AC2164101C777E3800F5F042 /* cJSON.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
