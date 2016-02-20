@@ -324,16 +324,14 @@ bool calculate(Room& room,vector<Block>& blockList)
         if(k == n - 1)
         {
             bool toContinue = false;
-            int w = block.y == 0 ? block.x : room.m;
-            for(int i = 0;i < w;++i)
+            
+            
+            for(int j = 0;j <= block.y;++j)
             {
-                
                 if(toContinue == true)
-                {
                     break;
-                }
-                
-                for(int j = 0;j < block.y;++j)
+                int w = (j == block.y ? block.x : room.m);
+                for(int i = 0;i < w;++i)
                 {
                     if((room.room[j][i] % room.mod) != 0)
                     {
@@ -348,19 +346,19 @@ bool calculate(Room& room,vector<Block>& blockList)
                 continue;
             }
         }
-        else
-        {
-            pair<int,int> area;
-            bool ret = hasUntouchableArea(room,block, area);
-            if(ret)
-            {
-                if(!canZeroWithChildBlock(room,blockList, k + 1, area))
-                {
-                    k--;
-                    continue;
-                }
-            }
-        }
+//        else
+//        {
+//            pair<int,int> area;
+//            bool ret = hasUntouchableArea(room,block, area);
+//            if(ret)
+//            {
+//                if(!canZeroWithChildBlock(room,blockList, k + 1, area))
+//                {
+//                    k--;
+//                    continue;
+//                }
+//            }
+//        }
         //*********************************************
         int newX,newY;
         if(hasNextPos(room,block,newX,newY))
@@ -377,6 +375,19 @@ bool calculate(Room& room,vector<Block>& blockList)
                 room.add(bk);
                 
             }
+//            if(k != n - 1)
+//            {
+//                pair<int,int> area;
+//                bool ret = hasUntouchableArea(room,block, area);
+//                if(ret)
+//                {
+//                    if(!canZeroWithChildBlock(room,blockList, k + 1, area))
+//                    {
+//                        k--;
+//                        continue;
+//                    }
+//                }
+//            }
             
             k = n - 1;
         }
@@ -396,7 +407,7 @@ int main (int argc, const char * argv[]) {
     string output;
     Room room;
     vector<Block> blockList;
-    str = string("{\"level\":26,\"modu\":\"4\",\"map\":[\"032200\",\"100310\",\"232330\",\"210230\",\"232333\",\"213230\"],\"pieces\":[\"XX,.X\",\".XX,XX.\",\"..X.,..X.,.XXX,XXXX,X...\",\"XXX.,..XX,..X.\",\"..X..,..X..,.XX..,XXXXX,..XX.\",\"...X,.XXX,XX..\",\"XX..,.XXX,.XX.,.X..\",\"XXX,XXX,.XX,XX.,.X.\",\".XX,..X,XXX,XX.,.X.\",\"..XX.,.XXXX,.XX..,XX...\",\".X...,XXXXX,...XX,...XX\",\".XX,XX.,XX.,.X.,.X.\"]}");
+    str = string("{\"level\":25,\"modu\":\"3\",\"map\":[\"1222\",\"0200\",\"1012\",\"2222\",\"2121\"],\"pieces\":[\".X.,.XX,XXX\",\"X.,XX,X.,X.\",\"XXX,..X\",\".X,XX,X.,XX\",\"XXXX\",\"X.,X.,XX,X.,X.\",\"X..,XXX\",\".X,XX\",\".X,XX,X.\",\"X.,X.,X.,XX,.X\",\"X..,X..,XXX\",\".X,XX,.X\"]}");
     
     processInput(str,level,modu,room,blockList);
     
