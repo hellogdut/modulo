@@ -21,13 +21,15 @@ struct Block
     int h;
     int x;
     int y;
+    int id;
     Block():x(0),y(0){};
     vector<vector<int>> block;
-    void init(vector<vector<int>> data)
+    void init(vector<vector<int>> data,int _id)
     {
-        block.swap(data);
+        block = data;
         w = block[0].size();
         h = block.size();
+        id = _id;
     }
     void moveBy(int _x,int _y)
     {
@@ -69,6 +71,14 @@ struct Room
     {
         return block.y + block.h + 1 <= n;
     }
+    bool canRightWithLimitArea(const Block& block,pair<int,int> area)
+    {
+        return block.y + block.h + 1 <= n && block.x <= area.first && block.y <= area.second;
+    }
+    bool canDownWithLimitArea(const Block& block,pair<int,int> area)
+    {
+        return block.y + block.h + 1 <= n && block.x <= area.first && block.y <= area.second;
+    }
     void add(const Block& block)
     {
         for(int i = 0; i < block.w; ++i)
@@ -107,6 +117,25 @@ struct Room
         tryTimes++;
         return ret;
     };
+    bool isZeroWithLimitArea(pair<int,int> area)
+    {
+        bool ret = true;
+        
+        for(int j = 0;j <= area.second;++j)
+        {
+            int len = (j == area.second ? area.first : m);
+            for(int i = 0;i < len;++i)
+            {
+                if((room[j][i] % mod) != 0)
+                {
+                    ret = false;
+                    break;
+                }
+            }
+        }
+        tryTimes++;
+        return ret;
+    }
     
     int m;
     int n;
@@ -132,6 +161,27 @@ bool hasNextPos(Room& room,Block& block,int& posX,int& posY)
     return false;
     
 }
+
+bool hasNextPosWithArea(Room& room,Block& block,int& posX,int& posY,pair<int,int> area)
+{
+    if(room.canRightWithLimitArea(block, area))
+    {
+        posX = block.x + 1;
+        posY = block.y;
+        return true;
+    }
+    
+    if(room.canRightWithLimitArea(block, area))
+    {
+        posX = 0;
+        posY = block.y + 1;
+        return true;
+    }
+    return false;
+    
+}
+
+
 void processInput(string str,int& level,int& modu,Room& room,vector<Block>& blockList)
 {
     
@@ -188,11 +238,59 @@ void processInput(string str,int& level,int& modu,Room& room,vector<Block>& bloc
             data.push_back(row);
         }
         Block block;
-        block.init(data);
+        block.init(data,i);
         blockList.push_back(block);
     }
 }
+bool hasUntouchableArea(const Room& room,const Block& block,pair<int,int>& area)
+{
+    if(block.x == 0 && block.y == 0)
+        return false;
+    int w = block.x;
+    int h = block.y;
+    return true;
+}
+bool canZeroWithChildBlock(Room& room,vector<Block>& blockList,int beginIndex,pair<int,int> area)
+{
 
+    int n = blockList.size();
+    int k = n - 1;
+
+    Room newRoom;
+    newRoom.init(room.room, room.mod);
+    
+    while(k >= beginIndex)
+    {
+        if(newRoom.isZeroWithLimitArea(area))
+            return true;
+        
+        Block& block = blockList[k];
+        
+        int newX,newY;
+        if(hasNextPosWithArea(newRoom,block,newX,newY,area))
+        {
+            newRoom.remove(block);
+            block.moveTo(newX,newY);
+            newRoom.add(block);
+            
+            for(int j = k + 1; j < n;++j)
+            {
+                Block& bk = blockList[j];
+                newRoom.remove(bk);
+                bk.moveTo(0,0);
+                newRoom.add(bk);
+            }
+            k = n - 1;
+        }
+        else
+        {
+            k--;
+        }
+
+    }
+    
+    return false;
+}
 bool calculate(Room& room,vector<Block>& blockList)
 {
     string str;
@@ -211,6 +309,59 @@ bool calculate(Room& room,vector<Block>& blockList)
             return true;
         
         Block& block = blockList[k];
+        
+        for(int j = k + 1; j < n;++j)
+        {
+            Block& bk = blockList[j];
+            room.remove(bk);
+            bk.moveTo(0,0);
+            room.add(bk);
+            
+        }
+        
+        /*************************************************/
+        //如果是最后一个
+        if(k == n - 1)
+        {
+            bool toContinue = false;
+            int w = block.y == 0 ? block.x : room.m;
+            for(int i = 0;i < w;++i)
+            {
+                
+                if(toContinue == true)
+                {
+                    break;
+                }
+                
+                for(int j = 0;j < block.y;++j)
+                {
+                    if((room.room[j][i] % room.mod) != 0)
+                    {
+                        toContinue = true;
+                        break;
+                    }
+                }
+            }
+            if(toContinue)
+            {
+                k--;
+                continue;
+            }
+        }
+        else
+        {
+            pair<int,int> area;
+            bool ret = hasUntouchableArea(room,block, area);
+            if(ret)
+            {
+                if(!canZeroWithChildBlock(room,blockList, k + 1, area))
+                {
+                    k--;
+                    continue;
+                }
+            }
+        }
+        //*********************************************
         int newX,newY;
         if(hasNextPos(room,block,newX,newY))
         {
@@ -253,8 +404,18 @@ int main (int argc, const char * argv[]) {
     tryTimes = 0;
     
     
+    /// 对 Block 进行排序，面积大的在前面
+    
+    std::sort(blockList.begin(),blockList.end(),[](const Block& a,const Block& b){
+        return a.w * a.h > b.w * b.h;
+    });
+    
     if(calculate(room,blockList))
     {
+        /// 根据 id，排序回来
+        std::sort(blockList.begin(),blockList.end(),[](const Block& a,const Block& b){
+            return a.id < b.id;
+        });
         for(int i = 0;i < blockList.size();++i)
         {
             output += blockList[i].y + '0';
