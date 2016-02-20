@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "modulo/main.cpp"
-            timestampString = "477676590.464248"
+            timestampString = "477680315.070065"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "130"
-            endingLineNumber = "130">
+            startingLineNumber = "145"
+            endingLineNumber = "145">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -24,25 +24,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "modulo/main.cpp"
-            timestampString = "477676590.464248"
+            timestampString = "477680315.070065"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "139"
-            endingLineNumber = "139">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "modulo/main.cpp"
-            timestampString = "477676590.464248"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "481"
-            endingLineNumber = "481"
+            startingLineNumber = "502"
+            endingLineNumber = "502"
             landmarkName = "main (int argc, const char * argv[])"
             landmarkType = "7">
          </BreakpointContent>
@@ -54,11 +40,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "modulo/main.cpp"
-            timestampString = "477676590.464248"
+            timestampString = "477680315.070065"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "483"
-            endingLineNumber = "483"
+            startingLineNumber = "504"
+            endingLineNumber = "504"
             landmarkName = "main (int argc, const char * argv[])"
             landmarkType = "7">
          </BreakpointContent>
@@ -70,11 +56,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "modulo/main.cpp"
-            timestampString = "477676590.464248"
+            timestampString = "477680315.070065"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "310"
-            endingLineNumber = "310"
+            startingLineNumber = "323"
+            endingLineNumber = "323"
             landmarkName = "canZeroWithChildBlock(Room room,vector&lt;Block&gt; blockList,int beginIndex,pair&lt;int,int&gt; area)"
             landmarkType = "7">
          </BreakpointContent>
@@ -86,11 +72,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "modulo/main.cpp"
-            timestampString = "477676590.464248"
+            timestampString = "477680315.070065"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "313"
-            endingLineNumber = "313"
+            startingLineNumber = "326"
+            endingLineNumber = "326"
             landmarkName = "canZeroWithChildBlock(Room room,vector&lt;Block&gt; blockList,int beginIndex,pair&lt;int,int&gt; area)"
             landmarkType = "7">
          </BreakpointContent>
@@ -102,11 +88,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "modulo/main.cpp"
-            timestampString = "477676590.464248"
+            timestampString = "477680315.070065"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "366"
-            endingLineNumber = "366"
+            startingLineNumber = "387"
+            endingLineNumber = "387"
             landmarkName = "calculate(Room&amp; room,vector&lt;Block&gt;&amp; blockList)"
             landmarkType = "7">
          </BreakpointContent>
@@ -118,11 +104,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "modulo/main.cpp"
-            timestampString = "477676590.464248"
+            timestampString = "477680315.070065"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "362"
-            endingLineNumber = "362"
+            startingLineNumber = "383"
+            endingLineNumber = "383"
             landmarkName = "calculate(Room&amp; room,vector&lt;Block&gt;&amp; blockList)"
             landmarkType = "7">
          </BreakpointContent>
@@ -134,11 +120,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "modulo/main.cpp"
-            timestampString = "477676590.464248"
+            timestampString = "477680315.070065"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "321"
-            endingLineNumber = "321"
+            startingLineNumber = "334"
+            endingLineNumber = "334"
             landmarkName = "canZeroWithChildBlock(Room room,vector&lt;Block&gt; blockList,int beginIndex,pair&lt;int,int&gt; area)"
             landmarkType = "7">
          </BreakpointContent>
@@ -150,11 +136,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "modulo/main.cpp"
-            timestampString = "477676590.464248"
+            timestampString = "477680315.070065"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "318"
-            endingLineNumber = "318"
+            startingLineNumber = "331"
+            endingLineNumber = "331"
             landmarkName = "canZeroWithChildBlock(Room room,vector&lt;Block&gt; blockList,int beginIndex,pair&lt;int,int&gt; area)"
             landmarkType = "7">
          </BreakpointContent>
@@ -166,11 +152,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "modulo/main.cpp"
-            timestampString = "477676590.464248"
+            timestampString = "477680315.070065"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "144"
-            endingLineNumber = "144">
+            startingLineNumber = "157"
+            endingLineNumber = "157">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -180,11 +166,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "modulo/main.cpp"
-            timestampString = "477676590.464248"
+            timestampString = "477680315.070065"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "319"
-            endingLineNumber = "319"
+            startingLineNumber = "332"
+            endingLineNumber = "332"
             landmarkName = "canZeroWithChildBlock(Room room,vector&lt;Block&gt; blockList,int beginIndex,pair&lt;int,int&gt; area)"
             landmarkType = "7">
          </BreakpointContent>
@@ -196,11 +182,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "modulo/main.cpp"
-            timestampString = "477676590.464248"
+            timestampString = "477680315.070065"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "350"
-            endingLineNumber = "350"
+            startingLineNumber = "363"
+            endingLineNumber = "363"
             landmarkName = "canZeroWithChildBlock(Room room,vector&lt;Block&gt; blockList,int beginIndex,pair&lt;int,int&gt; area)"
             landmarkType = "7">
          </BreakpointContent>
@@ -212,11 +198,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "modulo/main.cpp"
-            timestampString = "477676590.464248"
+            timestampString = "477680315.070065"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "540"
-            endingLineNumber = "540">
+            startingLineNumber = "562"
+            endingLineNumber = "562">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -226,11 +212,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "modulo/main.cpp"
-            timestampString = "477676590.464248"
+            timestampString = "477680315.070065"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "493"
-            endingLineNumber = "493"
+            startingLineNumber = "515"
+            endingLineNumber = "515"
             landmarkName = "main (int argc, const char * argv[])"
             landmarkType = "7">
          </BreakpointContent>
@@ -243,11 +229,11 @@
             condition = "k == 1"
             continueAfterRunningActions = "No"
             filePath = "modulo/main.cpp"
-            timestampString = "477676590.464248"
+            timestampString = "477680315.070065"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "425"
-            endingLineNumber = "425"
+            startingLineNumber = "446"
+            endingLineNumber = "446"
             landmarkName = "calculate(Room&amp; room,vector&lt;Block&gt;&amp; blockList)"
             landmarkType = "7">
          </BreakpointContent>
@@ -260,11 +246,11 @@
             condition = "k == 6 &amp;&amp; newX == 0 &amp;&amp; newY == 1"
             continueAfterRunningActions = "No"
             filePath = "modulo/main.cpp"
-            timestampString = "477676590.464248"
+            timestampString = "477680315.070065"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "427"
-            endingLineNumber = "427"
+            startingLineNumber = "448"
+            endingLineNumber = "448"
             landmarkName = "calculate(Room&amp; room,vector&lt;Block&gt;&amp; blockList)"
             landmarkType = "7">
          </BreakpointContent>
@@ -276,11 +262,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "modulo/main.cpp"
-            timestampString = "477676590.464248"
+            timestampString = "477680315.070065"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "464"
-            endingLineNumber = "464"
+            startingLineNumber = "485"
+            endingLineNumber = "485"
             landmarkName = "calculate(Room&amp; room,vector&lt;Block&gt;&amp; blockList)"
             landmarkType = "7">
          </BreakpointContent>
@@ -292,11 +278,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "modulo/main.cpp"
-            timestampString = "477676590.464248"
+            timestampString = "477680315.070065"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "468"
-            endingLineNumber = "468"
+            startingLineNumber = "489"
+            endingLineNumber = "489"
             landmarkName = "calculate(Room&amp; room,vector&lt;Block&gt;&amp; blockList)"
             landmarkType = "7">
          </BreakpointContent>
@@ -309,11 +295,11 @@
             condition = "k==4"
             continueAfterRunningActions = "No"
             filePath = "modulo/main.cpp"
-            timestampString = "477676590.464248"
+            timestampString = "477680315.070065"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "385"
-            endingLineNumber = "385"
+            startingLineNumber = "406"
+            endingLineNumber = "406"
             landmarkName = "calculate(Room&amp; room,vector&lt;Block&gt;&amp; blockList)"
             landmarkType = "7">
          </BreakpointContent>
@@ -325,11 +311,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "modulo/main.cpp"
-            timestampString = "477676590.464248"
+            timestampString = "477680315.070065"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "381"
-            endingLineNumber = "381"
+            startingLineNumber = "402"
+            endingLineNumber = "402"
             landmarkName = "calculate(Room&amp; room,vector&lt;Block&gt;&amp; blockList)"
             landmarkType = "7">
          </BreakpointContent>
@@ -341,11 +327,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "modulo/main.cpp"
-            timestampString = "477676590.464248"
+            timestampString = "477680315.070065"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "441"
-            endingLineNumber = "441"
+            startingLineNumber = "462"
+            endingLineNumber = "462"
             landmarkName = "calculate(Room&amp; room,vector&lt;Block&gt;&amp; blockList)"
             landmarkType = "7">
          </BreakpointContent>
@@ -357,11 +343,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "modulo/main.cpp"
-            timestampString = "477676590.464248"
+            timestampString = "477680315.070065"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "342"
-            endingLineNumber = "342"
+            startingLineNumber = "355"
+            endingLineNumber = "355"
             landmarkName = "canZeroWithChildBlock(Room room,vector&lt;Block&gt; blockList,int beginIndex,pair&lt;int,int&gt; area)"
             landmarkType = "7">
          </BreakpointContent>
@@ -373,11 +359,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "modulo/main.cpp"
-            timestampString = "477676590.464248"
+            timestampString = "477680315.070065"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "344"
-            endingLineNumber = "344"
+            startingLineNumber = "357"
+            endingLineNumber = "357"
             landmarkName = "canZeroWithChildBlock(Room room,vector&lt;Block&gt; blockList,int beginIndex,pair&lt;int,int&gt; area)"
             landmarkType = "7">
          </BreakpointContent>
@@ -390,11 +376,11 @@
             condition = "k == 1 &amp;&amp; newX == 2 &amp;&amp; newY == 1"
             continueAfterRunningActions = "No"
             filePath = "modulo/main.cpp"
-            timestampString = "477676590.464248"
+            timestampString = "477680315.070065"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "439"
-            endingLineNumber = "439"
+            startingLineNumber = "460"
+            endingLineNumber = "460"
             landmarkName = "calculate(Room&amp; room,vector&lt;Block&gt;&amp; blockList)"
             landmarkType = "7">
          </BreakpointContent>
@@ -407,11 +393,11 @@
             condition = "k==5"
             continueAfterRunningActions = "No"
             filePath = "modulo/main.cpp"
-            timestampString = "477676590.464248"
+            timestampString = "477680315.070065"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "363"
-            endingLineNumber = "363"
+            startingLineNumber = "384"
+            endingLineNumber = "384"
             landmarkName = "calculate(Room&amp; room,vector&lt;Block&gt;&amp; blockList)"
             landmarkType = "7">
          </BreakpointContent>
@@ -424,11 +410,11 @@
             condition = "k == 6"
             continueAfterRunningActions = "No"
             filePath = "modulo/main.cpp"
-            timestampString = "477676590.464248"
+            timestampString = "477680315.070065"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "357"
-            endingLineNumber = "357"
+            startingLineNumber = "378"
+            endingLineNumber = "378"
             landmarkName = "calculate(Room&amp; room,vector&lt;Block&gt;&amp; blockList)"
             landmarkType = "7">
          </BreakpointContent>
@@ -440,11 +426,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "modulo/main.cpp"
-            timestampString = "477676590.464248"
+            timestampString = "477680315.070065"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "324"
-            endingLineNumber = "324"
+            startingLineNumber = "337"
+            endingLineNumber = "337"
             landmarkName = "canZeroWithChildBlock(Room room,vector&lt;Block&gt; blockList,int beginIndex,pair&lt;int,int&gt; area)"
             landmarkType = "7">
          </BreakpointContent>
@@ -456,11 +442,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "modulo/main.cpp"
-            timestampString = "477676590.464248"
+            timestampString = "477680315.070065"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "325"
-            endingLineNumber = "325"
+            startingLineNumber = "338"
+            endingLineNumber = "338"
             landmarkName = "canZeroWithChildBlock(Room room,vector&lt;Block&gt; blockList,int beginIndex,pair&lt;int,int&gt; area)"
             landmarkType = "7">
          </BreakpointContent>
@@ -473,11 +459,11 @@
             condition = "k==4"
             continueAfterRunningActions = "No"
             filePath = "modulo/main.cpp"
-            timestampString = "477676590.464248"
+            timestampString = "477680315.070065"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "379"
-            endingLineNumber = "379"
+            startingLineNumber = "400"
+            endingLineNumber = "400"
             landmarkName = "calculate(Room&amp; room,vector&lt;Block&gt;&amp; blockList)"
             landmarkType = "7">
          </BreakpointContent>
@@ -489,13 +475,27 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "modulo/main.cpp"
-            timestampString = "477676590.464248"
+            timestampString = "477680315.070065"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "438"
-            endingLineNumber = "438"
+            startingLineNumber = "459"
+            endingLineNumber = "459"
             landmarkName = "calculate(Room&amp; room,vector&lt;Block&gt;&amp; blockList)"
             landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "modulo/main.cpp"
+            timestampString = "477680149.915179"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "144"
+            endingLineNumber = "144">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

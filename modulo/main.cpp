@@ -15,6 +15,9 @@ using namespace std;
 
 static long tryTimes = 0;
 static long lastTime = 0;
+static long possibility = 100;
+static long percent = 0;
+#define PrintProgess
 struct Block
 {
     int w;
@@ -125,9 +128,11 @@ struct Room
     bool isZero()
     {
         bool ret = true;
-        for(int i = 0;i < m;++i)
+        for(int j = 0;j < n;++j)
         {
-            for(int j = 0;j < n;++j)
+            if(ret == false)
+                break;
+            for(int i = 0;i < m;++i)
             {
                 if((room[j][i] % mod) != 0)
                 {
@@ -137,6 +142,14 @@ struct Room
             }
         }
         tryTimes++;
+#ifdef PrintProgess
+        int currPercent = (double)tryTimes  / possibility;
+        if(currPercent > percent)
+        {
+            cout << currPercent << "%," << tryTimes << " / " << possibility << endl;
+            percent = currPercent;
+        }
+#endif
         return ret;
     };
     bool isZeroWithLimitArea(pair<int,int> area)
@@ -168,7 +181,7 @@ struct Room
                 }
             }
         }
-        tryTimes++;
+        //tryTimes++;
         return ret;
     }
     void print()
@@ -349,6 +362,14 @@ bool canZeroWithChildBlock(Room room,vector<Block> blockList,int beginIndex,pair
     
     return false;
 }
+void calPossibility(Room& room,vector<Block>& blockList,long& possibility)
+{
+    for(int i = 0;i < blockList.size();++i)
+    {
+        const Block& block = blockList[i];
+        possibility *= (room.m - block.w) *(room.n - block.h);
+    }
+}
 bool calculate(Room& room,vector<Block>& blockList)
 {
     string str;
@@ -407,19 +428,19 @@ bool calculate(Room& room,vector<Block>& blockList)
                 continue;
             }
         }
-//        else
-//        {
-//            pair<int,int> area;
-//            bool ret = hasUntouchableArea(room,block, area);
-//            if(ret)
-//            {
-//                if(!canZeroWithChildBlock(room,blockList, k + 1, area))
-//                {
-//                    k--;
-//                    continue;
-//                }
-//            }
-//        }
+        else
+        {
+            pair<int,int> area;
+            bool ret = hasUntouchableArea(room,block, area);
+            if(ret)
+            {
+                if(!canZeroWithChildBlock(room,blockList, k + 1, area))
+                {
+                    k--;
+                    continue;
+                }
+            }
+        }
         //*********************************************
         int newX,newY;
         if(hasNextPos(room,block,newX,newY))
@@ -490,6 +511,7 @@ int main (int argc, const char * argv[]) {
         return a.w * a.h > b.w * b.h;
     });
     
+    calPossibility(room,blockList,possibility);
     if(calculate(room,blockList))
     {
         /// 根据 id，排序回来
