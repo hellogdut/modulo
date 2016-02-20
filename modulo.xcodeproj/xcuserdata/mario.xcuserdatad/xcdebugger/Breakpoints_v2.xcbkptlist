@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "modulo/main.cpp"
-            timestampString = "477652374.997368"
+            timestampString = "477662188.97147"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "108"
-            endingLineNumber = "108">
+            startingLineNumber = "125"
+            endingLineNumber = "125">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -24,11 +24,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "modulo/main.cpp"
-            timestampString = "477652374.997368"
+            timestampString = "477662188.97147"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "117"
-            endingLineNumber = "117">
+            startingLineNumber = "134"
+            endingLineNumber = "134">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -38,11 +38,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "modulo/main.cpp"
-            timestampString = "477660725.24416"
+            timestampString = "477667413.913047"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "414"
-            endingLineNumber = "414"
+            startingLineNumber = "476"
+            endingLineNumber = "476"
             landmarkName = "main (int argc, const char * argv[])"
             landmarkType = "7">
          </BreakpointContent>
@@ -54,11 +54,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "modulo/main.cpp"
-            timestampString = "477660725.24416"
+            timestampString = "477667413.913047"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "416"
-            endingLineNumber = "416"
+            startingLineNumber = "478"
+            endingLineNumber = "478"
             landmarkName = "main (int argc, const char * argv[])"
             landmarkType = "7">
          </BreakpointContent>
@@ -70,12 +70,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "modulo/main.cpp"
-            timestampString = "477660725.24416"
+            timestampString = "477667413.913047"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "258"
-            endingLineNumber = "258"
-            landmarkName = "canZeroWithChildBlock(Room&amp; room,vector&lt;Block&gt; blockList,int beginIndex,pair&lt;int,int&gt; area)"
+            startingLineNumber = "305"
+            endingLineNumber = "305"
+            landmarkName = "canZeroWithChildBlock(Room room,vector&lt;Block&gt; blockList,int beginIndex,pair&lt;int,int&gt; area)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -86,12 +86,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "modulo/main.cpp"
-            timestampString = "477660725.24416"
+            timestampString = "477667413.913047"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "261"
-            endingLineNumber = "261"
-            landmarkName = "canZeroWithChildBlock(Room&amp; room,vector&lt;Block&gt; blockList,int beginIndex,pair&lt;int,int&gt; area)"
+            startingLineNumber = "308"
+            endingLineNumber = "308"
+            landmarkName = "canZeroWithChildBlock(Room room,vector&lt;Block&gt; blockList,int beginIndex,pair&lt;int,int&gt; area)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -102,11 +102,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "modulo/main.cpp"
-            timestampString = "477660725.24416"
+            timestampString = "477667413.913047"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "310"
-            endingLineNumber = "310"
+            startingLineNumber = "361"
+            endingLineNumber = "361"
             landmarkName = "calculate(Room&amp; room,vector&lt;Block&gt;&amp; blockList)"
             landmarkType = "7">
          </BreakpointContent>
@@ -118,11 +118,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "modulo/main.cpp"
-            timestampString = "477660725.24416"
+            timestampString = "477667413.913047"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "306"
-            endingLineNumber = "306"
+            startingLineNumber = "357"
+            endingLineNumber = "357"
             landmarkName = "calculate(Room&amp; room,vector&lt;Block&gt;&amp; blockList)"
             landmarkType = "7">
          </BreakpointContent>
@@ -134,12 +134,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "modulo/main.cpp"
-            timestampString = "477660725.24416"
+            timestampString = "477667413.913047"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "368"
-            endingLineNumber = "368"
-            landmarkName = "calculate(Room&amp; room,vector&lt;Block&gt;&amp; blockList)"
+            startingLineNumber = "316"
+            endingLineNumber = "316"
+            landmarkName = "canZeroWithChildBlock(Room room,vector&lt;Block&gt; blockList,int beginIndex,pair&lt;int,int&gt; area)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -150,12 +150,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "modulo/main.cpp"
-            timestampString = "477660725.24416"
+            timestampString = "477667413.913047"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "269"
-            endingLineNumber = "269"
-            landmarkName = "canZeroWithChildBlock(Room&amp; room,vector&lt;Block&gt; blockList,int beginIndex,pair&lt;int,int&gt; area)"
+            startingLineNumber = "313"
+            endingLineNumber = "313"
+            landmarkName = "canZeroWithChildBlock(Room room,vector&lt;Block&gt; blockList,int beginIndex,pair&lt;int,int&gt; area)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -166,12 +166,26 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "modulo/main.cpp"
-            timestampString = "477660725.24416"
+            timestampString = "477667413.913047"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "266"
-            endingLineNumber = "266"
-            landmarkName = "canZeroWithChildBlock(Room&amp; room,vector&lt;Block&gt; blockList,int beginIndex,pair&lt;int,int&gt; area)"
+            startingLineNumber = "139"
+            endingLineNumber = "139">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "modulo/main.cpp"
+            timestampString = "477667413.913047"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "314"
+            endingLineNumber = "314"
+            landmarkName = "canZeroWithChildBlock(Room room,vector&lt;Block&gt; blockList,int beginIndex,pair&lt;int,int&gt; area)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -182,12 +196,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "modulo/main.cpp"
-            timestampString = "477660725.24416"
+            timestampString = "477667413.913047"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "383"
-            endingLineNumber = "383"
-            landmarkName = "calculate(Room&amp; room,vector&lt;Block&gt;&amp; blockList)"
+            startingLineNumber = "345"
+            endingLineNumber = "345"
+            landmarkName = "canZeroWithChildBlock(Room room,vector&lt;Block&gt; blockList,int beginIndex,pair&lt;int,int&gt; area)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -198,13 +212,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "modulo/main.cpp"
-            timestampString = "477660725.24416"
+            timestampString = "477667413.913047"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "386"
-            endingLineNumber = "386"
-            landmarkName = "calculate(Room&amp; room,vector&lt;Block&gt;&amp; blockList)"
-            landmarkType = "7">
+            startingLineNumber = "535"
+            endingLineNumber = "535">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -214,103 +226,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "modulo/main.cpp"
-            timestampString = "477660815.526826"
+            timestampString = "477667413.913047"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "124"
-            endingLineNumber = "124">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "modulo/main.cpp"
-            timestampString = "477660847.278531"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "267"
-            endingLineNumber = "267"
-            landmarkName = "canZeroWithChildBlock(Room&amp; room,vector&lt;Block&gt; blockList,int beginIndex,pair&lt;int,int&gt; area)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "modulo/main.cpp"
-            timestampString = "477660848.758056"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "294"
-            endingLineNumber = "294"
-            landmarkName = "canZeroWithChildBlock(Room&amp; room,vector&lt;Block&gt; blockList,int beginIndex,pair&lt;int,int&gt; area)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "modulo/main.cpp"
-            timestampString = "477660858.616061"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "385"
-            endingLineNumber = "385"
-            landmarkName = "calculate(Room&amp; room,vector&lt;Block&gt;&amp; blockList)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "modulo/main.cpp"
-            timestampString = "477660859.924339"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "384"
-            endingLineNumber = "384"
-            landmarkName = "calculate(Room&amp; room,vector&lt;Block&gt;&amp; blockList)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "modulo/main.cpp"
-            timestampString = "477661043.231563"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "449"
-            endingLineNumber = "449">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "modulo/main.cpp"
-            timestampString = "477661044.865687"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "426"
-            endingLineNumber = "426"
+            startingLineNumber = "488"
+            endingLineNumber = "488"
             landmarkName = "main (int argc, const char * argv[])"
             landmarkType = "7">
          </BreakpointContent>
@@ -320,9 +240,76 @@
          <BreakpointContent
             shouldBeEnabled = "No"
             ignoreCount = "0"
+            condition = "k == 1"
             continueAfterRunningActions = "No"
             filePath = "modulo/main.cpp"
-            timestampString = "477661595.460921"
+            timestampString = "477667413.913047"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "420"
+            endingLineNumber = "420"
+            landmarkName = "calculate(Room&amp; room,vector&lt;Block&gt;&amp; blockList)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            condition = "k == 6 &amp;&amp; newX == 0 &amp;&amp; newY == 1"
+            continueAfterRunningActions = "No"
+            filePath = "modulo/main.cpp"
+            timestampString = "477667413.913047"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "422"
+            endingLineNumber = "422"
+            landmarkName = "calculate(Room&amp; room,vector&lt;Block&gt;&amp; blockList)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "modulo/main.cpp"
+            timestampString = "477667413.913047"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "459"
+            endingLineNumber = "459"
+            landmarkName = "calculate(Room&amp; room,vector&lt;Block&gt;&amp; blockList)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "modulo/main.cpp"
+            timestampString = "477667413.913047"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "463"
+            endingLineNumber = "463"
+            landmarkName = "calculate(Room&amp; room,vector&lt;Block&gt;&amp; blockList)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            condition = "k == 1"
+            continueAfterRunningActions = "No"
+            filePath = "modulo/main.cpp"
+            timestampString = "477667413.913047"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "380"
@@ -338,12 +325,140 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "modulo/main.cpp"
-            timestampString = "477661665.619461"
+            timestampString = "477667413.913047"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "381"
-            endingLineNumber = "381"
+            startingLineNumber = "376"
+            endingLineNumber = "376"
             landmarkName = "calculate(Room&amp; room,vector&lt;Block&gt;&amp; blockList)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "modulo/main.cpp"
+            timestampString = "477667413.913047"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "436"
+            endingLineNumber = "436"
+            landmarkName = "calculate(Room&amp; room,vector&lt;Block&gt;&amp; blockList)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "modulo/main.cpp"
+            timestampString = "477667413.913047"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "337"
+            endingLineNumber = "337"
+            landmarkName = "canZeroWithChildBlock(Room room,vector&lt;Block&gt; blockList,int beginIndex,pair&lt;int,int&gt; area)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "modulo/main.cpp"
+            timestampString = "477667413.913047"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "339"
+            endingLineNumber = "339"
+            landmarkName = "canZeroWithChildBlock(Room room,vector&lt;Block&gt; blockList,int beginIndex,pair&lt;int,int&gt; area)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "modulo/main.cpp"
+            timestampString = "477667413.913047"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "434"
+            endingLineNumber = "434"
+            landmarkName = "calculate(Room&amp; room,vector&lt;Block&gt;&amp; blockList)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "modulo/main.cpp"
+            timestampString = "477667776.64294"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "358"
+            endingLineNumber = "358"
+            landmarkName = "calculate(Room&amp; room,vector&lt;Block&gt;&amp; blockList)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "modulo/main.cpp"
+            timestampString = "477667873.731673"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "352"
+            endingLineNumber = "352"
+            landmarkName = "calculate(Room&amp; room,vector&lt;Block&gt;&amp; blockList)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "modulo/main.cpp"
+            timestampString = "477668777.143706"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "319"
+            endingLineNumber = "319"
+            landmarkName = "canZeroWithChildBlock(Room room,vector&lt;Block&gt; blockList,int beginIndex,pair&lt;int,int&gt; area)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "modulo/main.cpp"
+            timestampString = "477669076.945748"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "320"
+            endingLineNumber = "320"
+            landmarkName = "canZeroWithChildBlock(Room room,vector&lt;Block&gt; blockList,int beginIndex,pair&lt;int,int&gt; area)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

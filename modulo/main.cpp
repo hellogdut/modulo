@@ -41,6 +41,23 @@ struct Block
         x = _x;
         y = _y;
     }
+    void print()
+    {
+        cout << "block id = " << id << endl;
+        for(int i = 0;i < block.size();++i)
+        {
+            cout << "[";
+            for(int j = 0;j < block[0].size();++j)
+            {
+                cout << block[i][j];
+                if(j != block.size() - 1)
+                {
+                    cout << ",";
+                }
+            }
+            cout << "]" <<endl;
+        }
+    }
 };
 
 struct Room
@@ -73,7 +90,7 @@ struct Room
     }
     bool canRightWithLimitArea(const Block& block,pair<int,int> area)
     {
-        return block.y + block.h + 1 <= n && block.x <= area.first && block.y <= area.second;
+        return block.x + block.w + 1 <= m && block.x <= area.first && block.y <= area.second;
     }
     bool canDownWithLimitArea(const Block& block,pair<int,int> area)
     {
@@ -120,21 +137,51 @@ struct Room
     bool isZeroWithLimitArea(pair<int,int> area)
     {
         bool ret = true;
-        
-        for(int j = 0;j <= area.second;++j)
+        if(area.second == 0)
         {
-            int len = (j == area.second ? area.first : m);
-            for(int i = 0;i < len;++i)
+            for(int i = 0;i < area.first;++i)
             {
-                if((room[j][i] % mod) != 0)
+                if((room[0][i] % mod) != 0)
                 {
-                    ret = false;
+                    ret =false;
                     break;
+                }
+            }
+        }
+        else
+        {
+            for(int i = 0;i <= area.second;++i)
+            {
+                int len = (i == area.second ? area.first : m);
+                for(int j = 0;j < len;++j)
+                {
+                    if((room[i][j] % mod) != 0)
+                    {
+                        ret =false;
+                        break;
+                    }
                 }
             }
         }
         tryTimes++;
         return ret;
+    }
+    void print()
+    {
+        cout << "room" << endl;
+        for(int i = 0;i < room.size();++i)
+        {
+            cout << "[";
+            for(int j = 0;j < room[0].size();++j)
+            {
+                cout << room[i][j];
+                if(j != room.size())
+                {
+                    cout << ",";
+                }
+            }
+            cout << "]" <<endl;
+        }
     }
     
     int m;
@@ -171,7 +218,7 @@ bool hasNextPosWithArea(Room& room,Block& block,int& posX,int& posY,pair<int,int
         return true;
     }
     
-    if(room.canRightWithLimitArea(block, area))
+    if(room.canDownWithLimitArea(block, area))
     {
         posX = 0;
         posY = block.y + 1;
@@ -252,7 +299,7 @@ bool hasUntouchableArea(const Room& room,const Block& block,pair<int,int>& area)
     area.second = h;
     return true;
 }
-bool canZeroWithChildBlock(Room& room,vector<Block> blockList,int beginIndex,pair<int,int> area)
+bool canZeroWithChildBlock(Room room,vector<Block> blockList,int beginIndex,pair<int,int> area)
 {
 
     int n = blockList.size();
@@ -287,6 +334,10 @@ bool canZeroWithChildBlock(Room& room,vector<Block> blockList,int beginIndex,pai
         else
         {
             k--;
+            if(k < 0)//debug
+            {
+                int ddd = 1;
+            }
         }
 
     }
@@ -311,7 +362,7 @@ bool calculate(Room& room,vector<Block>& blockList)
             return true;
         
         Block& block = blockList[k];
-        
+        //block.print();
         for(int j = k + 1; j < n;++j)
         {
             Block& bk = blockList[j];
@@ -320,7 +371,10 @@ bool calculate(Room& room,vector<Block>& blockList)
             room.add(bk);
             
         }
-        
+        if(k == 1)
+        {
+            int j = 0;
+        }
         /*************************************************/
         //如果是最后一个
         if(k == n - 1)
@@ -377,6 +431,10 @@ bool calculate(Room& room,vector<Block>& blockList)
                 room.add(bk);
                 
             }
+            if(k == 1 && block.y == 1)  //debug
+            {
+                int ddd = 0;
+            }
             if(k != n - 1)
             {
                 pair<int,int> area;
@@ -396,6 +454,10 @@ bool calculate(Room& room,vector<Block>& blockList)
         else
         {
             k--;
+            if(k < 0)
+            {
+                int j = 0;
+            }
         }
     }
     return false;
@@ -409,7 +471,7 @@ int main (int argc, const char * argv[]) {
     string output;
     Room room;
     vector<Block> blockList;
-    str = string("{\"level\":21,\"modu\":\"3\",\"map\":[\"120212\",\"212222\",\"100220\",\"000112\",\"001210\"],\"pieces\":[\"XXX.,..X.,..XX\",\"XX,X.\",\"...X,X.XX,XXXX\",\"X.,XX,X.\",\".X..,XXXX,..XX,...X,...X\",\".X,XX\",\"...XX,...X.,XXXX.,.X...,.X...\",\"X...,X...,XXX.,..XX,..XX\",\"..X.,.XXX,.XX.,XX..,X...\",\"..X.,..X.,..XX,XXX.,XX..\",\"XX,.X,.X\"]}");
+    str = string("{\"level\":12,\"modu\":\"2\",\"map\":[\"1101\",\"1011\",\"0101\",\"1111\"],\"pieces\":[\"..X,XXX\",\"X.,XX\",\"..X,.XX,XX.,.X.\",\"X...,X...,XXXX\",\"XX.,.X.,.XX,..X\",\"X,X\",\".X,XX\",\"..X,XXX\"]}");
     
     processInput(str,level,modu,room,blockList);
     
@@ -419,9 +481,9 @@ int main (int argc, const char * argv[]) {
     
     /// 对 Block 进行排序，面积大的在前面
     
-    std::sort(blockList.begin(),blockList.end(),[](const Block& a,const Block& b){
-        return a.w * a.h > b.w * b.h;
-    });
+//    std::sort(blockList.begin(),blockList.end(),[](const Block& a,const Block& b){
+//        return a.w * a.h > b.w * b.h;
+//    });
     
     if(calculate(room,blockList))
     {
@@ -441,7 +503,31 @@ int main (int argc, const char * argv[]) {
     }
     else
     {
-         cout << "no answer" << endl;
+        room.print();
+        
+        
+        for(int i = 0;i < blockList.size();++i)
+        {
+            blockList[i].print();
+            cout << endl;
+        }
+        
+        
+        /// 根据 id，排序回来
+        std::sort(blockList.begin(),blockList.end(),[](const Block& a,const Block& b){
+            return a.id < b.id;
+        });
+        for(int i = 0;i < blockList.size();++i)
+        {
+            output += blockList[i].y + '0';
+            output += blockList[i].x + '0';
+        }
+        
+        
+        cout << "no answer" << endl;
+        cout << "Result:    " << output << endl;
+        cout << "tryTimes:  " << tryTimes << endl;
+        cout << "Time(s):   " << (clock() - lastTime)/CLOCKS_PER_SEC << endl;
     }
     
     return 0;
