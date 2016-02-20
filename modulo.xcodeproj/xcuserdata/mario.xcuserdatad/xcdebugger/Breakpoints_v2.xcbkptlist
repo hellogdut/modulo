@@ -290,6 +290,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "363"
             endingLineNumber = "363"
+<<<<<<< HEAD
             landmarkName = "calPossibility(Room&amp; room,vector&lt;Block&gt;&amp; blockList,long&amp; possibility)"
 =======
             timestampString = "477667413.913047"
@@ -299,6 +300,9 @@
             endingLineNumber = "345"
             landmarkName = "canZeroWithChildBlock(Room room,vector&lt;Block&gt; blockList,int beginIndex,pair&lt;int,int&gt; area)"
 >>>>>>> parent of faebcc9... fix bug
+=======
+            landmarkName = "canZeroWithChildBlock(Room room,vector&lt;Block&gt; blockList,int beginIndex,pair&lt;int,int&gt; area)"
+>>>>>>> parent of 3133b6b... 1
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -435,6 +439,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "489"
             endingLineNumber = "489"
+<<<<<<< HEAD
             landmarkName = "main (int argc, const char * argv[])"
 =======
             timestampString = "477667413.913047"
@@ -444,6 +449,9 @@
             endingLineNumber = "463"
             landmarkName = "calculate(Room&amp; room,vector&lt;Block&gt;&amp; blockList)"
 >>>>>>> parent of faebcc9... fix bug
+=======
+            landmarkName = "calculate(Room&amp; room,vector&lt;Block&gt;&amp; blockList)"
+>>>>>>> parent of 3133b6b... 1
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
