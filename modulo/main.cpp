@@ -248,9 +248,11 @@ bool hasUntouchableArea(const Room& room,const Block& block,pair<int,int>& area)
         return false;
     int w = block.x;
     int h = block.y;
+    area.first = w;
+    area.second = h;
     return true;
 }
-bool canZeroWithChildBlock(Room& room,vector<Block>& blockList,int beginIndex,pair<int,int> area)
+bool canZeroWithChildBlock(Room& room,vector<Block> blockList,int beginIndex,pair<int,int> area)
 {
 
     int n = blockList.size();
@@ -375,19 +377,19 @@ bool calculate(Room& room,vector<Block>& blockList)
                 room.add(bk);
                 
             }
-//            if(k != n - 1)
-//            {
-//                pair<int,int> area;
-//                bool ret = hasUntouchableArea(room,block, area);
-//                if(ret)
-//                {
-//                    if(!canZeroWithChildBlock(room,blockList, k + 1, area))
-//                    {
-//                        k--;
-//                        continue;
-//                    }
-//                }
-//            }
+            if(k != n - 1)
+            {
+                pair<int,int> area;
+                bool ret = hasUntouchableArea(room,block, area);
+                if(ret)
+                {
+                    if(!canZeroWithChildBlock(room,blockList, k + 1, area))
+                    {
+                        k--;
+                        continue;
+                    }
+                }
+            }
             
             k = n - 1;
         }
@@ -407,7 +409,7 @@ int main (int argc, const char * argv[]) {
     string output;
     Room room;
     vector<Block> blockList;
-    str = string("{\"level\":25,\"modu\":\"3\",\"map\":[\"1222\",\"0200\",\"1012\",\"2222\",\"2121\"],\"pieces\":[\".X.,.XX,XXX\",\"X.,XX,X.,X.\",\"XXX,..X\",\".X,XX,X.,XX\",\"XXXX\",\"X.,X.,XX,X.,X.\",\"X..,XXX\",\".X,XX\",\".X,XX,X.\",\"X.,X.,X.,XX,.X\",\"X..,X..,XXX\",\".X,XX,.X\"]}");
+    str = string("{\"level\":21,\"modu\":\"3\",\"map\":[\"120212\",\"212222\",\"100220\",\"000112\",\"001210\"],\"pieces\":[\"XXX.,..X.,..XX\",\"XX,X.\",\"...X,X.XX,XXXX\",\"X.,XX,X.\",\".X..,XXXX,..XX,...X,...X\",\".X,XX\",\"...XX,...X.,XXXX.,.X...,.X...\",\"X...,X...,XXX.,..XX,..XX\",\"..X.,.XXX,.XX.,XX..,X...\",\"..X.,..X.,..XX,XXX.,XX..\",\"XX,.X,.X\"]}");
     
     processInput(str,level,modu,room,blockList);
     
