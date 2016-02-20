@@ -15,9 +15,9 @@ using namespace std;
 
 static long tryTimes = 0;
 static long lastTime = 0;
-static long possibility = 100;
+static long possibility = 1;
 static long percent = 0;
-#define PrintProgess
+//#define PrintProgess
 struct Block
 {
     int w;
@@ -143,7 +143,7 @@ struct Room
         }
         tryTimes++;
 #ifdef PrintProgess
-        int currPercent = (double)tryTimes  / possibility;
+        double currPercent = (double)tryTimes  / possibility;
         if(currPercent > percent)
         {
             cout << currPercent << "%," << tryTimes << " / " << possibility << endl;
@@ -367,7 +367,7 @@ void calPossibility(Room& room,vector<Block>& blockList,long& possibility)
     for(int i = 0;i < blockList.size();++i)
     {
         const Block& block = blockList[i];
-        possibility *= (room.m - block.w) *(room.n - block.h);
+        possibility *= max((room.m - block.w) *(room.n - block.h),1);
     }
 }
 bool calculate(Room& room,vector<Block>& blockList)
