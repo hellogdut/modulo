@@ -93,16 +93,11 @@ struct Room
     }
     bool canRightWithLimitArea(const Block& block,pair<int,int> area)
     {
-        bool ret = block.x + block.w + 1 <= m;
-        ret &= (block.y < area.second ? block.x <= m : block.x <= area.first);
-        return ret;
+        return block.x + block.w + 1 <= m && block.x <= area.first && block.y <= area.second;
     }
     bool canDownWithLimitArea(const Block& block,pair<int,int> area)
     {
-        bool ret = block.y + block.h + 1 <= n;
-        ret &= (block.y < area.second ? block.x <= m : block.x <= area.first);
-        
-        return ret;
+        return block.y + block.h + 1 <= n && block.x <= area.first && block.y <= area.second;
     }
     void add(const Block& block)
     {
@@ -381,7 +376,7 @@ bool calculate(Room& room,vector<Block>& blockList)
     }
     int k = blockList.size() - 1;	// 最左边的可以更改的索引
     int n = blockList.size();
-    while(k >= 0)   
+    while(k >= 0)
     {
         
         if(room.isZero())
@@ -497,7 +492,7 @@ int main (int argc, const char * argv[]) {
     string output;
     Room room;
     vector<Block> blockList;
-    str = string("{\"level\":26,\"modu\":\"4\",\"map\":[\"032200\",\"100310\",\"232330\",\"210230\",\"232333\",\"213230\"],\"pieces\":[\"XX,.X\",\".XX,XX.\",\"..X.,..X.,.XXX,XXXX,X...\",\"XXX.,..XX,..X.\",\"..X..,..X..,.XX..,XXXXX,..XX.\",\"...X,.XXX,XX..\",\"XX..,.XXX,.XX.,.X..\",\"XXX,XXX,.XX,XX.,.X.\",\".XX,..X,XXX,XX.,.X.\",\"..XX.,.XXXX,.XX..,XX...\",\".X...,XXXXX,...XX,...XX\",\".XX,XX.,XX.,.X.,.X.\"]}");
+    str = string("{\"level\":12,\"modu\":\"2\",\"map\":[\"1101\",\"1011\",\"0101\",\"1111\"],\"pieces\":[\"..X,XXX\",\"X.,XX\",\"..X,.XX,XX.,.X.\",\"X...,X...,XXXX\",\"XX.,.X.,.XX,..X\",\"X,X\",\".X,XX\",\"..X,XXX\"]}");
     
     processInput(str,level,modu,room,blockList);
     
@@ -507,9 +502,9 @@ int main (int argc, const char * argv[]) {
     
     /// 对 Block 进行排序，面积大的在前面
     
-    std::sort(blockList.begin(),blockList.end(),[](const Block& a,const Block& b){
-        return a.w * a.h > b.w * b.h;
-    });
+//    std::sort(blockList.begin(),blockList.end(),[](const Block& a,const Block& b){
+//        return a.w * a.h > b.w * b.h;
+//    });
     
     calPossibility(room,blockList,possibility);
     if(calculate(room,blockList))
