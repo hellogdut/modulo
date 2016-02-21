@@ -9,6 +9,8 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <map>
+
 
 using namespace std;
 #include "cJSON.h"
@@ -82,6 +84,10 @@ struct Room
         {
             return false;
         }
+    }
+    bool isZeroAt(int x,int y)
+    {
+        return (room[y][x] % mod) == 0;
     }
     bool canRight(const Block& block)
     {
@@ -247,6 +253,195 @@ bool hasNextPosWithArea(Room& room,Block& block,int& posX,int& posY,pair<int,int
 }
 
 
+vector<int> getBlockAtPos(const vector<Block>& blockList,int x,int y)
+{
+    vector<int> vec;
+    for(int i = 0;i < blockList.size();++i)
+    {
+        if(blockList[i].x == x && blockList[i].y == y)
+            vec.push_back(i);
+    }
+    return vec;
+}
+vector<int> getMoveAbleBlock(Room& room,vector<Block>& blockList,const vector<int>& vec,int x,int y)
+{
+    vector<int> vec1;
+    
+    for(int i = 0;i < vec.size();++i)
+    {
+        int blockIndex = vec[i];
+        Block& block = blockList[blockIndex];
+        int posX,posY;
+        if(hasNextPos(room, block, posX, posY))
+        {
+            vec1.push_back(blockIndex);
+        }
+    }
+    return vec1;
+}
+vector<int> getNonZeroBlock(vector<Block>& blockList,const vector<int>& vec,int x,int y)
+{
+    vector<int> vec1;
+    
+    for(int i = 0;i < vec.size();++i)
+    {
+        int blockIndex = vec[i];
+        Block& block = blockList[blockIndex];
+        
+        if(blockList[blockIndex].block[0][0] != 0)
+            vec1.push_back(blockIndex);
+    }
+    return vec1;
+}
+vector<vector<int>> getCombis(vector<int> vec,int m)
+{
+    vector<vector<int>> result;
+    
+    return result;
+}
+vector<int> getMoveNums(const Room& room,int x,int y,int n)
+{
+    // 计算(x,y) 位置可以 移除多少个方块达到圆满。排除0（即不移除的情况)
+    vector<int> vec;
+    
+    int val = room.room[y][x];
+    int mod = room.mod;
+    
+    int nextVal = val;
+    while(nextVal > 0)
+    {
+        if(nextVal% mod)
+        {
+            nextVal -= mod;
+        }
+        else
+        {
+            int times = nextVal / mod;
+            nextVal = times * mod;
+        }
+        int offset = val - nextVal;
+        if(offset > 0)
+        {
+            if(n >= offset)
+            {
+                vec.push_back(offset);
+            }
+            else
+            {
+                break;
+            }
+        }
+    }
+    
+    return vec;
+}
+bool move(Room room,vector<Block>& blockList,int x,int y)
+{
+    
+    if(room.isZeroAt(x,y) && room.isZero())
+    {
+        return true;
+    }
+    // 是最后一个位置
+    if(x == room.m - 1 && y == room.n - 1)
+    {
+        return false;
+    }
+    // 找出在该位置上得所有方块
+    vector<int> vec1 = getBlockAtPos(blockList,x,y);
+    if(vec1.size() == 0)
+        return false;
+    
+    // 找出这些方块中，在 (x,y) 上值不为0的方块
+    vec1 = getNonZeroBlock(blockList,vec1,x,y);
+    if(vec1.size() == 0)
+        return false;
+    
+    // 找出能移动的方块，既能改变(x,y)值的方块
+    vec1 = getMoveAbleBlock(room,blockList,vec1,x,y);
+    if(vec1.size() == 0)
+        return false;
+    
+    int n = vec1.size();
+    
+    // 对该位置，根据该位置的值和能移动的方块数，计算所有可以移动哪些个数
+    vector<int> moveNums = getMoveNums(room,x,y,n);
+    
+    if(moveNums.size() == 0)
+        return false;
+    
+    
+    for(int i = 0;i < moveNums.size();++i)
+    {
+        int m = moveNums[i];
+        // 从 vec1 的 n 个中挑 m 个出来。
+        vector<vector<int>> combs = getCombis(vec1,m);
+        
+        // 对于每种组合里面的方块，移动到下个位置。
+        for(int j = 0;j < combs.size();++j)
+        {
+            // 记下这个组合旧的位置
+            map<int,pair<int,int>> oldPos;
+            
+            for(int k = 0;k < combs[j].size();++k)
+            {
+                // 每个block 移动到新的位置
+                Block& block = blockList[combs[j][k]];
+                oldPos[combs[j][k]] = make_pair(block.x,block.y);
+            }
+            
+            // 方块移到下个位置
+            for(int k = 0;k < combs[j].size();++k)
+            {
+                Block& block = blockList[combs[j][k]];
+                int posX,posY;
+                if(!hasNextPos(room,block,posX,posY))
+                {
+                    cout << "error" << endl;
+                }
+                
+                room.remove(block);
+                block.moveTo(posX,posY);
+                room.add(block);
+                
+            }
+            // 得到下个位置的 坐标(x1,y1)
+            int x1,y1;
+            if(x < room.m - 1)
+            {
+                x1 = x + 1;
+                y1 = y;
+            }
+            else
+            {
+                x1 = 0;
+                y1 = y + 1;
+            }
+            
+            if(!move(room,blockList,x1,y1))
+            {
+                // 如果没找到，恢复方块的位置
+                for(auto it = oldPos.begin(); it != oldPos.end();++it)
+                {
+                    Block& block = blockList[(*it).first];
+                    pair<int,int> pos = (*it).second;
+                    room.remove(block);
+                    block.moveTo(pos.first,pos.second);
+                    room.add(block);
+                }
+            }
+            else
+            {
+                return true;
+            }
+        }
+    }
+    return false;
+    
+}
+
+
+
 void processInput(string str,int& level,int& modu,Room& room,vector<Block>& blockList)
 {
     
@@ -319,10 +514,10 @@ bool hasUntouchableArea(const Room& room,const Block& block,pair<int,int>& area)
 }
 bool canZeroWithChildBlock(Room room,vector<Block> blockList,int beginIndex,pair<int,int> area)
 {
-
+    
     int n = blockList.size();
     int k = n - 1;
-
+    
     Room newRoom;
     newRoom.init(room.room, room.mod);
     
@@ -385,7 +580,7 @@ bool canZeroWithChildBlock(Room room,vector<Block> blockList,int beginIndex,pair
                 int ddd = 1;
             }
         }
-
+        
     }
     
     return false;
@@ -412,7 +607,7 @@ bool calculate(Room& room,vector<Block>& blockList)
     }
     int k = blockList.size() - 1;	// 最左边的可以更改的索引
     int n = blockList.size();
-    while(k >= 0)   
+    while(k >= 0)
     {
         if(room.isZero())
             return true;
@@ -478,19 +673,19 @@ bool calculate(Room& room,vector<Block>& blockList)
             {
                 int ddd = 0;
             }
-//            if(k != n - 1)
-//            {
-//                pair<int,int> area;
-//                bool ret = hasUntouchableArea(room,block, area);
-//                if(ret)
-//                {
-//                    if(!canZeroWithChildBlock(room,blockList, k + 1, area))
-//                    {
-//                        k--;
-//                        continue;
-//                    }
-//                }
-//            }
+            //            if(k != n - 1)
+            //            {
+            //                pair<int,int> area;
+            //                bool ret = hasUntouchableArea(room,block, area);
+            //                if(ret)
+            //                {
+            //                    if(!canZeroWithChildBlock(room,blockList, k + 1, area))
+            //                    {
+            //                        k--;
+            //                        continue;
+            //                    }
+            //                }
+            //            }
             
             k = n - 1;
         }
@@ -514,8 +709,8 @@ int main (int argc, const char * argv[]) {
     string output;
     Room room;
     vector<Block> blockList;
-    str = string("{\"level\":26,\"modu\":\"4\",\"map\":[\"032200\",\"100310\",\"232330\",\"210230\",\"232333\",\"213230\"],\"pieces\":[\"XX,.X\",\".XX,XX.\",\"..X.,..X.,.XXX,XXXX,X...\",\"XXX.,..XX,..X.\",\"..X..,..X..,.XX..,XXXXX,..XX.\",\"...X,.XXX,XX..\",\"XX..,.XXX,.XX.,.X..\",\"XXX,XXX,.XX,XX.,.X.\",\".XX,..X,XXX,XX.,.X.\",\"..XX.,.XXXX,.XX..,XX...\",\".X...,XXXXX,...XX,...XX\",\".XX,XX.,XX.,.X.,.X.\"]}");
-//    str = string("{\"level\":25,\"modu\":\"3\",\"map\":[\"1222\",\"0200\",\"1012\",\"2222\",\"2121\"],\"pieces\":[\".X.,.XX,XXX\",\"X.,XX,X.,X.\",\"XXX,..X\",\".X,XX,X.,XX\",\"XXXX\",\"X.,X.,XX,X.,X.\",\"X..,XXX\",\".X,XX\",\".X,XX,X.\",\"X.,X.,X.,XX,.X\",\"X..,X..,XXX\",\".X,XX,.X\"]}");
+    str = string("{\"level\":1,\"modu\":\"2\",\"map\":[\"101\",\"000\",\"000\"],\"pieces\":[\"X\",\"X\"]}");
+    //    str = string("{\"level\":25,\"modu\":\"3\",\"map\":[\"1222\",\"0200\",\"1012\",\"2222\",\"2121\"],\"pieces\":[\".X.,.XX,XXX\",\"X.,XX,X.,X.\",\"XXX,..X\",\".X,XX,X.,XX\",\"XXXX\",\"X.,X.,XX,X.,X.\",\"X..,XXX\",\".X,XX\",\".X,XX,X.\",\"X.,X.,X.,XX,.X\",\"X..,X..,XXX\",\".X,XX,.X\"]}");
     processInput(str,level,modu,room,blockList);
     
     lastTime = clock();
