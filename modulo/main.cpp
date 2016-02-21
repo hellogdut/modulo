@@ -17,7 +17,7 @@ static long tryTimes = 0;
 static long lastTime = 0;
 static long possibility = 1;
 static long percent = 0;
-//#define PrintProgess
+#define PrintProgess
 struct Block
 {
     int w;
@@ -143,10 +143,10 @@ struct Room
         }
         tryTimes++;
 #ifdef PrintProgess
-        double currPercent = (double)tryTimes  / possibility;
-        if(currPercent > percent)
+        double currPercent = (double)tryTimes * 100 / possibility;
+        if(currPercent >= percent +  1.0)
         {
-            cout << currPercent << "%," << tryTimes << " / " << possibility << endl;
+            cout << (int)currPercent << "%," << tryTimes << " / " << possibility << endl;
             percent = currPercent;
         }
 #endif
@@ -168,7 +168,7 @@ struct Room
         }
         else
         {
-            for(int i = 0;i <= area.second;++i)
+            for(int i = 0;i <= area.second && ret;++i)
             {
                 int len = (i == area.second ? area.first : m);
                 for(int j = 0;j < len;++j)
@@ -333,6 +333,34 @@ bool canZeroWithChildBlock(Room room,vector<Block> blockList,int beginIndex,pair
         
         Block& block = blockList[k];
         
+        //如果是最后一个
+        if(k == n - 1)
+        {
+            bool toContinue = false;
+            
+            
+            for(int j = 0;j <= block.y;++j)
+            {
+                if(toContinue == true)
+                    break;
+                int w = (j == block.y ? block.x : room.m);
+                for(int i = 0;i < w;++i)
+                {
+                    if((newRoom.room[j][i] % newRoom.mod) != 0)
+                    {
+                        toContinue = true;
+                        break;
+                    }
+                }
+            }
+            if(toContinue)
+            {
+                k--;
+                continue;
+            }
+        }
+        
+        
         int newX,newY;
         if(hasNextPosWithArea(newRoom,block,newX,newY,area))
         {
@@ -367,7 +395,7 @@ void calPossibility(Room& room,vector<Block>& blockList,long& possibility)
     for(int i = 0;i < blockList.size();++i)
     {
         const Block& block = blockList[i];
-        possibility *= max((room.m - block.w) *(room.n - block.h),1);
+        possibility *= max((room.m - block.w),1) * max((room.n - block.h),1);
     }
 }
 bool calculate(Room& room,vector<Block>& blockList)
@@ -428,19 +456,6 @@ bool calculate(Room& room,vector<Block>& blockList)
                 continue;
             }
         }
-        else
-        {
-            pair<int,int> area;
-            bool ret = hasUntouchableArea(room,block, area);
-            if(ret)
-            {
-                if(!canZeroWithChildBlock(room,blockList, k + 1, area))
-                {
-                    k--;
-                    continue;
-                }
-            }
-        }
         //*********************************************
         int newX,newY;
         if(hasNextPos(room,block,newX,newY))
@@ -497,8 +512,8 @@ int main (int argc, const char * argv[]) {
     string output;
     Room room;
     vector<Block> blockList;
-    str = string("{\"level\":26,\"modu\":\"4\",\"map\":[\"032200\",\"100310\",\"232330\",\"210230\",\"232333\",\"213230\"],\"pieces\":[\"XX,.X\",\".XX,XX.\",\"..X.,..X.,.XXX,XXXX,X...\",\"XXX.,..XX,..X.\",\"..X..,..X..,.XX..,XXXXX,..XX.\",\"...X,.XXX,XX..\",\"XX..,.XXX,.XX.,.X..\",\"XXX,XXX,.XX,XX.,.X.\",\".XX,..X,XXX,XX.,.X.\",\"..XX.,.XXXX,.XX..,XX...\",\".X...,XXXXX,...XX,...XX\",\".XX,XX.,XX.,.X.,.X.\"]}");
-    
+    str = string("{\"level\":28,\"modu\":\"2\",\"map\":[\"001110\",\"001101\",\"010100\",\"011000\",\"111000\"],\"pieces\":[\"XXX,.X.,XX.,.X.\",\"XX..,XX..,.XXX\",\"XXXX,.X..\",\"X..,X.X,XXX,X..\",\".X,XX,.X,.X\",\"X....,XXXXX,.X...\",\"X.,XX,X.\",\"XXXX\",\".X.,XX.,.XX\",\"XX.,XXX\",\".XXX,XX..\",\"X,X,X,X\",\"..X..,XXXXX\"]}");
+//    str = string("{\"level\":25,\"modu\":\"3\",\"map\":[\"1222\",\"0200\",\"1012\",\"2222\",\"2121\"],\"pieces\":[\".X.,.XX,XXX\",\"X.,XX,X.,X.\",\"XXX,..X\",\".X,XX,X.,XX\",\"XXXX\",\"X.,X.,XX,X.,X.\",\"X..,XXX\",\".X,XX\",\".X,XX,X.\",\"X.,X.,X.,XX,.X\",\"X..,X..,XXX\",\".X,XX,.X\"]}");
     processInput(str,level,modu,room,blockList);
     
     lastTime = clock();
@@ -509,9 +524,11 @@ int main (int argc, const char * argv[]) {
     
     std::sort(blockList.begin(),blockList.end(),[](const Block& a,const Block& b){
         return a.w * a.h > b.w * b.h;
+        //return a.w > b.w;
     });
     
     calPossibility(room,blockList,possibility);
+    cout << "Total: " << possibility << endl;
     if(calculate(room,blockList))
     {
         /// 根据 id，排序回来
