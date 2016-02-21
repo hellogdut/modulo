@@ -395,7 +395,10 @@ void calPossibility(Room& room,vector<Block>& blockList,long& possibility)
     for(int i = 0;i < blockList.size();++i)
     {
         const Block& block = blockList[i];
-        possibility *= max((room.m - block.w),1) * max((room.n - block.h),1);
+        long rightStep = room.m - block.w + 1;
+        long downStep = room.n - block.h + 1;
+        
+        possibility *= rightStep * downStep;
     }
 }
 bool calculate(Room& room,vector<Block>& blockList)
@@ -411,7 +414,6 @@ bool calculate(Room& room,vector<Block>& blockList)
     int n = blockList.size();
     while(k >= 0)   
     {
-        
         if(room.isZero())
             return true;
         
@@ -476,19 +478,19 @@ bool calculate(Room& room,vector<Block>& blockList)
             {
                 int ddd = 0;
             }
-            if(k != n - 1)
-            {
-                pair<int,int> area;
-                bool ret = hasUntouchableArea(room,block, area);
-                if(ret)
-                {
-                    if(!canZeroWithChildBlock(room,blockList, k + 1, area))
-                    {
-                        k--;
-                        continue;
-                    }
-                }
-            }
+//            if(k != n - 1)
+//            {
+//                pair<int,int> area;
+//                bool ret = hasUntouchableArea(room,block, area);
+//                if(ret)
+//                {
+//                    if(!canZeroWithChildBlock(room,blockList, k + 1, area))
+//                    {
+//                        k--;
+//                        continue;
+//                    }
+//                }
+//            }
             
             k = n - 1;
         }
@@ -512,7 +514,7 @@ int main (int argc, const char * argv[]) {
     string output;
     Room room;
     vector<Block> blockList;
-    str = string("{\"level\":28,\"modu\":\"2\",\"map\":[\"001110\",\"001101\",\"010100\",\"011000\",\"111000\"],\"pieces\":[\"XXX,.X.,XX.,.X.\",\"XX..,XX..,.XXX\",\"XXXX,.X..\",\"X..,X.X,XXX,X..\",\".X,XX,.X,.X\",\"X....,XXXXX,.X...\",\"X.,XX,X.\",\"XXXX\",\".X.,XX.,.XX\",\"XX.,XXX\",\".XXX,XX..\",\"X,X,X,X\",\"..X..,XXXXX\"]}");
+    str = string("{\"level\":26,\"modu\":\"4\",\"map\":[\"032200\",\"100310\",\"232330\",\"210230\",\"232333\",\"213230\"],\"pieces\":[\"XX,.X\",\".XX,XX.\",\"..X.,..X.,.XXX,XXXX,X...\",\"XXX.,..XX,..X.\",\"..X..,..X..,.XX..,XXXXX,..XX.\",\"...X,.XXX,XX..\",\"XX..,.XXX,.XX.,.X..\",\"XXX,XXX,.XX,XX.,.X.\",\".XX,..X,XXX,XX.,.X.\",\"..XX.,.XXXX,.XX..,XX...\",\".X...,XXXXX,...XX,...XX\",\".XX,XX.,XX.,.X.,.X.\"]}");
 //    str = string("{\"level\":25,\"modu\":\"3\",\"map\":[\"1222\",\"0200\",\"1012\",\"2222\",\"2121\"],\"pieces\":[\".X.,.XX,XXX\",\"X.,XX,X.,X.\",\"XXX,..X\",\".X,XX,X.,XX\",\"XXXX\",\"X.,X.,XX,X.,X.\",\"X..,XXX\",\".X,XX\",\".X,XX,X.\",\"X.,X.,X.,XX,.X\",\"X..,X..,XXX\",\".X,XX,.X\"]}");
     processInput(str,level,modu,room,blockList);
     
