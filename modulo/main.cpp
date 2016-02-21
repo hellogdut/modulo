@@ -10,7 +10,7 @@
 #include <string>
 #include <vector>
 #include <map>
-
+#include "strings.h"
 
 using namespace std;
 #include "cJSON.h"
@@ -295,7 +295,36 @@ vector<int> getNonZeroBlock(vector<Block>& blockList,const vector<int>& vec,int 
 }
 vector<vector<int>> getCombis(vector<int> vec,int m)
 {
+    // 参考 http://mingxinglai.com/cn/2012/09/generate-permutation-use-stl/
+    // 这里用的是 next_permutaion,前面补 0
+    
+    // n 个中取 m 个组合
     vector<vector<int>> result;
+    int n = vec.size();
+    
+    vector<int> selectors;
+    for(int i = 0;i < n - m;++i)
+    {
+        selectors.push_back(0);
+    }
+    for(int i = 0;i < m;++i)
+    {
+        selectors.push_back(1);
+    }
+    
+    do
+    {
+        vector<int> oneComb;
+        for (size_t i = 0; i < selectors.size(); ++i)
+        {
+            if (selectors[i])
+            {
+                oneComb.push_back(vec[i]);
+            }
+        }
+        result.push_back(oneComb);
+    } while (next_permutation(selectors.begin(), selectors.end()));
+    
     
     return result;
 }
@@ -310,7 +339,7 @@ vector<int> getMoveNums(const Room& room,int x,int y,int n)
     int nextVal = val;
     while(nextVal > 0)
     {
-        if(nextVal% mod)
+        if((nextVal% mod) == 0)
         {
             nextVal -= mod;
         }
@@ -337,7 +366,13 @@ vector<int> getMoveNums(const Room& room,int x,int y,int n)
 }
 bool move(Room room,vector<Block>& blockList,int x,int y)
 {
-    
+    if(x == 0 && y == 0)
+    {
+        for(int i = 0;i < blockList.size();++i)
+        {
+            room.add(blockList[i]);
+        }
+    }
     if(room.isZeroAt(x,y) && room.isZero())
     {
         return true;
@@ -709,7 +744,7 @@ int main (int argc, const char * argv[]) {
     string output;
     Room room;
     vector<Block> blockList;
-    str = string("{\"level\":1,\"modu\":\"2\",\"map\":[\"101\",\"000\",\"000\"],\"pieces\":[\"X\",\"X\"]}");
+    str = string("{\"level\":8,\"modu\":\"2\",\"map\":[\"110\",\"100\",\"111\"],\"pieces\":[\".X,XX,X.\",\"XXX,..X,..X\",\"X.,XX,.X\",\"X\",\".X,XX\",\"X,X,X\"]}");
     //    str = string("{\"level\":25,\"modu\":\"3\",\"map\":[\"1222\",\"0200\",\"1012\",\"2222\",\"2121\"],\"pieces\":[\".X.,.XX,XXX\",\"X.,XX,X.,X.\",\"XXX,..X\",\".X,XX,X.,XX\",\"XXXX\",\"X.,X.,XX,X.,X.\",\"X..,XXX\",\".X,XX\",\".X,XX,X.\",\"X.,X.,X.,XX,.X\",\"X..,X..,XXX\",\".X,XX,.X\"]}");
     processInput(str,level,modu,room,blockList);
     
@@ -719,14 +754,19 @@ int main (int argc, const char * argv[]) {
     
     /// 对 Block 进行排序，面积大的在前面
     
-    std::sort(blockList.begin(),blockList.end(),[](const Block& a,const Block& b){
-        return a.w * a.h > b.w * b.h;
-        //return a.w > b.w;
-    });
+//    std::sort(blockList.begin(),blockList.end(),[](const Block& a,const Block& b){
+//        return a.w * a.h > b.w * b.h;
+//        //return a.w > b.w;
+//    });
     
     calPossibility(room,blockList,possibility);
     cout << "Total: " << possibility << endl;
-    if(calculate(room,blockList))
+    
+    // 方法1
+    //bool suss = calculate(room,blockList);
+    // 方法2
+    bool suss = move(room,blockList,0,0);
+    if(suss)
     {
         /// 根据 id，排序回来
         std::sort(blockList.begin(),blockList.end(),[](const Block& a,const Block& b){
