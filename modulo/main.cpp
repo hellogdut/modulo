@@ -27,7 +27,8 @@ struct Block
     int x;
     int y;
     int id;
-    Block():x(0),y(0){};
+    bool _lock;
+    Block():x(0),y(0),_lock(false){};
     vector<vector<int>> block;
     void init(vector<vector<int>> data,int _id)
     {
@@ -35,6 +36,18 @@ struct Block
         w = block[0].size();
         h = block.size();
         id = _id;
+    }
+    bool isLock() const
+    {
+        return _lock;
+    }
+    void lock()
+    {
+        _lock = true;
+    }
+    void unLock()
+    {
+        _lock = false;
     }
     void moveBy(int _x,int _y)
     {
@@ -364,6 +377,36 @@ vector<int> getMoveNums(const Room& room,int x,int y,int n)
     
     return vec;
 }
+vector<int> getUnlockBlocks(const vector<Block>& blockList)
+{
+    vector<int> result;
+    for(int i = 0;i < blockList.size();++i)
+    {
+        if(!blockList[i].isLock())
+        {
+            result.push_back(i);
+        }
+    }
+    return result;
+}
+vector<int> getValueBlocks(const vector<Block>& blockList,vector<int> vec,int x,int y)
+{
+    vector<int> result;
+    for(int i = 0;i < vec.size();++i)
+    {
+        int index = vec[i];
+        const Block& block = blockList[index];
+        if(!(block.x <= x && x <= block.x + block.w - 1))
+            continue;
+        if(!(block.y <= y && y <= block.y + block.h - 1))
+            continue;
+        if(block.block[y - block.y][x - block.x] != 0)
+        {
+            result.push_back(index);
+        }
+    }
+    return result;
+}
 bool move(Room room,vector<Block>& blockList,int x,int y)
 {
     if(x == 0 && y == 0)
@@ -382,22 +425,22 @@ bool move(Room room,vector<Block>& blockList,int x,int y)
     {
         return false;
     }
-    // 找出在该位置上得所有方块
-    vector<int> vec1 = getBlockAtPos(blockList,x,y);
-    if(vec1.size() == 0)
+    
+    
+    // 找出所有没被锁的木块
+    vector<int> unlockVec = getUnlockBlocks(blockList);
+    if(unlockVec.size() == 0)
+        return false;
+    // 在没被锁的木块里，找出影响该位置的木块
+    vector<int> valueVec = getValueBlocks(blockList,unlockVec,x,y);
+    if(valueVec.size() == 0)
+        return false;
+    // 在所有影响该位置的木块中，找出能移动的
+    vector<int> moveAbleVec = getMoveAbleBlock(room,blockList,valueVec,x,y);
+    if(moveAbleVec.size() == 0)
         return false;
     
-    // 找出这些方块中，在 (x,y) 上值不为0的方块
-    vec1 = getNonZeroBlock(blockList,vec1,x,y);
-    if(vec1.size() == 0)
-        return false;
-    
-    // 找出能移动的方块，既能改变(x,y)值的方块
-    vec1 = getMoveAbleBlock(room,blockList,vec1,x,y);
-    if(vec1.size() == 0)
-        return false;
-    
-    int n = vec1.size();
+    int n = moveAbleVec.size();
     
     // 对该位置，根据该位置的值和能移动的方块数，计算所有可以移动哪些个数
     vector<int> moveNums = getMoveNums(room,x,y,n);
@@ -410,25 +453,40 @@ bool move(Room room,vector<Block>& blockList,int x,int y)
     {
         int m = moveNums[i];
         // 从 vec1 的 n 个中挑 m 个出来。
-        vector<vector<int>> combs = getCombis(vec1,m);
+        vector<vector<int>> combs = getCombis(moveAbleVec,m);
         
         // 对于每种组合里面的方块，移动到下个位置。
         for(int j = 0;j < combs.size();++j)
         {
+            // 对有影响的block，加锁
+            for(int i = 0;i < valueVec.size();++i)
+            {
+                int index = valueVec[i];
+                blockList[index].lock();
+            }
+            // 仅解锁本次移动到下个位置部分的block
+            for(int k = 0;k < combs[j].size();++k)
+            {
+                int index = combs[j][k];
+                // 每个block 移动到新的位置
+                blockList[index].unLock();
+            }
             // 记下这个组合旧的位置
             map<int,pair<int,int>> oldPos;
             
             for(int k = 0;k < combs[j].size();++k)
             {
+                int index = combs[j][k];
                 // 每个block 移动到新的位置
-                Block& block = blockList[combs[j][k]];
+                Block& block = blockList[index];
                 oldPos[combs[j][k]] = make_pair(block.x,block.y);
             }
             
             // 方块移到下个位置
             for(int k = 0;k < combs[j].size();++k)
             {
-                Block& block = blockList[combs[j][k]];
+                int index = combs[j][k];
+                Block& block = blockList[index];
                 int posX,posY;
                 if(!hasNextPos(room,block,posX,posY))
                 {
@@ -468,6 +526,13 @@ bool move(Room room,vector<Block>& blockList,int x,int y)
             else
             {
                 return true;
+            }
+            
+            // 解锁，回复原装
+            for(int i = 0;i < valueVec.size();++i)
+            {
+                int index = valueVec[i];
+                blockList[index].unLock();
             }
         }
     }
@@ -744,7 +809,7 @@ int main (int argc, const char * argv[]) {
     string output;
     Room room;
     vector<Block> blockList;
-    str = string("{\"level\":8,\"modu\":\"2\",\"map\":[\"110\",\"100\",\"111\"],\"pieces\":[\".X,XX,X.\",\"XXX,..X,..X\",\"X.,XX,.X\",\"X\",\".X,XX\",\"X,X,X\"]}");
+    str = string("{\"level\":27,\"modu\":\"3\",\"map\":[\"21211\",\"20220\",\"20012\",\"22002\",\"22000\"],\"pieces\":[\"XX.,X..,XXX\",\"X..,XXX\",\"XXX,X.X\",\"..XX,..X.,XXX.\",\"X..,XXX,X..\",\".X.,XXX,XX.\",\".X.,.XX,XX.,.X.\",\"X,X,X,X\",\"X,X,X\",\"XX,XX\",\"XXXX,..X.\",\".X,XX,X.\",\".XX,XX.\"]}");
     //    str = string("{\"level\":25,\"modu\":\"3\",\"map\":[\"1222\",\"0200\",\"1012\",\"2222\",\"2121\"],\"pieces\":[\".X.,.XX,XXX\",\"X.,XX,X.,X.\",\"XXX,..X\",\".X,XX,X.,XX\",\"XXXX\",\"X.,X.,XX,X.,X.\",\"X..,XXX\",\".X,XX\",\".X,XX,X.\",\"X.,X.,X.,XX,.X\",\"X..,X..,XXX\",\".X,XX,.X\"]}");
     processInput(str,level,modu,room,blockList);
     
@@ -754,10 +819,10 @@ int main (int argc, const char * argv[]) {
     
     /// 对 Block 进行排序，面积大的在前面
     
-//    std::sort(blockList.begin(),blockList.end(),[](const Block& a,const Block& b){
-//        return a.w * a.h > b.w * b.h;
-//        //return a.w > b.w;
-//    });
+    //    std::sort(blockList.begin(),blockList.end(),[](const Block& a,const Block& b){
+    //        return a.w * a.h > b.w * b.h;
+    //        //return a.w > b.w;
+    //    });
     
     calPossibility(room,blockList,possibility);
     cout << "Total: " << possibility << endl;
