@@ -350,29 +350,24 @@ vector<int> getMoveNums(const Room& room,int x,int y,int n)
     int mod = room.mod;
     
     int nextVal = val;
-    while(nextVal > 0)
+    while(nextVal >= 0)
     {
-        if((nextVal% mod) == 0)
+        int times = nextVal / mod;
+        int closest = times * mod;
+        int offset = val - closest;
+        
+        nextVal -= mod;
+        
+        if(n >= offset)
         {
-            nextVal -= mod;
+            vec.push_back(offset);
         }
         else
         {
-            int times = nextVal / mod;
-            nextVal = times * mod;
+            break;
         }
-        int offset = val - nextVal;
-        if(offset > 0)
-        {
-            if(n >= offset)
-            {
-                vec.push_back(offset);
-            }
-            else
-            {
-                break;
-            }
-        }
+        
+        
     }
     
     return vec;
@@ -426,7 +421,16 @@ bool move(Room room,vector<Block>& blockList,int x,int y)
         return false;
     }
     
-    
+    vector<vector<int>> tmp = {
+        {0,6,3,3},
+        {2,7,3,4},
+        {2,3,2,2},
+        {3,2,0,3}
+    };
+    if(room.room == tmp)
+    {
+        cout << "find" << endl;
+    }
     // 找出所有没被锁的木块
     vector<int> unlockVec = getUnlockBlocks(blockList);
     if(unlockVec.size() == 0)
@@ -461,8 +465,6 @@ bool move(Room room,vector<Block>& blockList,int x,int y)
     
     // 在所有影响该位置的木块中，找出能移动的
     vector<int> moveAbleVec = getMoveAbleBlock(room,blockList,valueVec,x,y);
-    if(moveAbleVec.size() == 0)
-        return false;
     
     int n = moveAbleVec.size();
     
@@ -505,7 +507,6 @@ bool move(Room room,vector<Block>& blockList,int x,int y)
                 Block& block = blockList[index];
                 oldPos[combs[j][k]] = make_pair(block.x,block.y);
             }
-            
             // 方块移到下个位置
             for(int k = 0;k < combs[j].size();++k)
             {
