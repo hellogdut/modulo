@@ -11,7 +11,7 @@
 #include <vector>
 #include <map>
 #include "strings.h"
-
+#include<fstream>
 using namespace std;
 #include "cJSON.h"
 
@@ -828,77 +828,114 @@ bool calculate(Room& room,vector<Block>& blockList)
 
 int main (int argc, const char * argv[]) {
     
-    int level = 0;
-    int modu = 0;
-    string str;
-    string output;
-    Room room;
-    vector<Block> blockList;
-    str = string("{\"level\":13,\"modu\":\"3\",\"map\":[\"0210\",\"0200\",\"1011\",\"2102\"],\"pieces\":[\"X.,XX,.X\",\".X,.X,XX\",\".X,.X,.X,XX\",\"XXXX,.X..\",\".X,XX,.X,.X\",\"XX,.X\",\"XXX,..X\",\"XX\"]}");
-    //    str = string("{\"level\":25,\"modu\":\"3\",\"map\":[\"1222\",\"0200\",\"1012\",\"2222\",\"2121\"],\"pieces\":[\".X.,.XX,XXX\",\"X.,XX,X.,X.\",\"XXX,..X\",\".X,XX,X.,XX\",\"XXXX\",\"X.,X.,XX,X.,X.\",\"X..,XXX\",\".X,XX\",\".X,XX,X.\",\"X.,X.,X.,XX,.X\",\"X..,X..,XXX\",\".X,XX,.X\"]}");
-    processInput(str,level,modu,room,blockList);
-    
-    lastTime = clock();
-    tryTimes = 0;
-    
-    
-    /// 对 Block 进行排序，面积大的在前面
-    
-    //    std::sort(blockList.begin(),blockList.end(),[](const Block& a,const Block& b){
-    //        return a.w * a.h > b.w * b.h;
-    //        //return a.w > b.w;
-    //    });
-    
-    calPossibility(room,blockList,possibility);
-    cout << "Total: " << possibility << endl;
-    
-    // 方法1
-    //bool suss = calculate(room,blockList);
-    // 方法2
-    bool suss = move(room,blockList,0,0);
-    if(suss)
+    const int MAX_LEVEL = 59;
+    for(int level_it = 32;level_it < MAX_LEVEL;++level_it)
     {
-        /// 根据 id，排序回来
-        std::sort(blockList.begin(),blockList.end(),[](const Block& a,const Block& b){
-            return a.id < b.id;
-        });
-        for(int i = 0;i < blockList.size();++i)
+        
+        possibility = 1;
+        lastTime = clock();
+        tryTimes = 0;
+        percent = 0;
+        
+        
+        int level = 0;
+        int modu = 0;
+        string str;
+        string output;
+        Room room;
+        vector<Block> blockList;
+        str = strings[level_it];
+        
+        
+        processInput(str,level,modu,room,blockList);
+        
+        /// 对 Block 进行排序，面积大的在前面
+        
+        //    std::sort(blockList.begin(),blockList.end(),[](const Block& a,const Block& b){
+        //        return a.w * a.h > b.w * b.h;
+        //        //return a.w > b.w;
+        //    });
+        
+        
+        calPossibility(room,blockList,possibility);
+        cout << "Level : " << level << endl;
+        cout << "Total: " << possibility << endl;
+        
+        // 方法1
+        //bool suss = calculate(room,blockList);
+        // 方法2
+        bool suss = move(room,blockList,0,0);
+        if(suss)
         {
-            output += blockList[i].y + '0';
-            output += blockList[i].x + '0';
+            /// 根据 id，排序回来
+            std::sort(blockList.begin(),blockList.end(),[](const Block& a,const Block& b){
+                return a.id < b.id;
+            });
+            for(int i = 0;i < blockList.size();++i)
+            {
+                output += blockList[i].y + '0';
+                output += blockList[i].x + '0';
+            }
+            
+            cout << "Result:    " << output << endl;
+            cout << "tryTimes:  " << tryTimes << endl;
+            cout << "Time(s):   " << (clock() - lastTime)/CLOCKS_PER_SEC << endl;
+            
+            // 写入文件
+            ofstream outdata;
+            string fileName = std::to_string(level_it + 1) + ".txt";
+            outdata.open(fileName,ios::app);//ios::app是尾部追加的意思
+            outdata << "Level : " << level << endl;
+            outdata << "Total: " << possibility << endl;
+            outdata << "Result:    " << output << endl;
+            outdata << "tryTimes:  " << tryTimes << endl;
+            outdata << "Time(s):   " << (clock() - lastTime)/CLOCKS_PER_SEC << endl;
+            outdata.close();
+            
         }
-        
-        cout << "Result:    " << output << endl;
-        cout << "tryTimes:  " << tryTimes << endl;
-        cout << "Time(s):   " << (clock() - lastTime)/CLOCKS_PER_SEC << endl;
-    }
-    else
-    {
-        room.print();
-        
-        
-        for(int i = 0;i < blockList.size();++i)
+        else
         {
-            blockList[i].print();
-            cout << endl;
+            room.print();
+            
+            
+            for(int i = 0;i < blockList.size();++i)
+            {
+                blockList[i].print();
+                cout << endl;
+            }
+            
+            
+            /// 根据 id，排序回来
+            std::sort(blockList.begin(),blockList.end(),[](const Block& a,const Block& b){
+                return a.id < b.id;
+            });
+            for(int i = 0;i < blockList.size();++i)
+            {
+                output += blockList[i].y + '0';
+                output += blockList[i].x + '0';
+            }
+            
+            
+            cout << "no answer" << endl;
+            cout << "Result:    " << output << endl;
+            cout << "tryTimes:  " << tryTimes << endl;
+            cout << "Time(s):   " << (clock() - lastTime)/CLOCKS_PER_SEC << endl;
+            
+            
+            // 写入文件
+            ofstream outdata;
+            string fileName = std::to_string(level_it + 1) + "_fail.txt";
+            outdata.open(fileName,ios::app);//ios::app是尾部追加的意思
+            
+            
+            outdata << "no answer" << endl;
+            outdata << "Result:    " << output << endl;
+            outdata << "tryTimes:  " << tryTimes << endl;
+            outdata << "Time(s):   " << (clock() - lastTime)/CLOCKS_PER_SEC << endl;
+            outdata.close();
         }
+
         
-        
-        /// 根据 id，排序回来
-        std::sort(blockList.begin(),blockList.end(),[](const Block& a,const Block& b){
-            return a.id < b.id;
-        });
-        for(int i = 0;i < blockList.size();++i)
-        {
-            output += blockList[i].y + '0';
-            output += blockList[i].x + '0';
-        }
-        
-        
-        cout << "no answer" << endl;
-        cout << "Result:    " << output << endl;
-        cout << "tryTimes:  " << tryTimes << endl;
-        cout << "Time(s):   " << (clock() - lastTime)/CLOCKS_PER_SEC << endl;
     }
     
     return 0;
