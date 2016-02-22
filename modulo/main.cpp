@@ -431,10 +431,34 @@ bool move(Room room,vector<Block>& blockList,int x,int y)
     vector<int> unlockVec = getUnlockBlocks(blockList);
     if(unlockVec.size() == 0)
         return false;
-    // 在没被锁的木块里，找出影响该位置的木块
+    // 在没被锁的木块里，找出能覆盖到该位置的木块(可以先把没被锁的木块放到左上角
     vector<int> valueVec = getValueBlocks(blockList,unlockVec,x,y);
+    
     if(valueVec.size() == 0)
-        return false;
+    {
+        // 如果该位置满足约束，取决于后面圆不圆满
+        if(room.isZeroAt(x,y))
+        {
+            // 得到下个位置的 坐标(x1,y1)
+            int x1,y1;
+            if(x < room.m - 1)
+            {
+                x1 = x + 1;
+                y1 = y;
+            }
+            else
+            {
+                x1 = 0;
+                y1 = y + 1;
+            }
+            return move(room,blockList,x1,y1);
+        }
+        else
+        {
+            return false;
+        }
+    }
+    
     // 在所有影响该位置的木块中，找出能移动的
     vector<int> moveAbleVec = getMoveAbleBlock(room,blockList,valueVec,x,y);
     if(moveAbleVec.size() == 0)
@@ -809,7 +833,7 @@ int main (int argc, const char * argv[]) {
     string output;
     Room room;
     vector<Block> blockList;
-    str = string("{\"level\":27,\"modu\":\"3\",\"map\":[\"21211\",\"20220\",\"20012\",\"22002\",\"22000\"],\"pieces\":[\"XX.,X..,XXX\",\"X..,XXX\",\"XXX,X.X\",\"..XX,..X.,XXX.\",\"X..,XXX,X..\",\".X.,XXX,XX.\",\".X.,.XX,XX.,.X.\",\"X,X,X,X\",\"X,X,X\",\"XX,XX\",\"XXXX,..X.\",\".X,XX,X.\",\".XX,XX.\"]}");
+    str = string("{\"level\":13,\"modu\":\"3\",\"map\":[\"0210\",\"0200\",\"1011\",\"2102\"],\"pieces\":[\"X.,XX,.X\",\".X,.X,XX\",\".X,.X,.X,XX\",\"XXXX,.X..\",\".X,XX,.X,.X\",\"XX,.X\",\"XXX,..X\",\"XX\"]}");
     //    str = string("{\"level\":25,\"modu\":\"3\",\"map\":[\"1222\",\"0200\",\"1012\",\"2222\",\"2121\"],\"pieces\":[\".X.,.XX,XXX\",\"X.,XX,X.,X.\",\"XXX,..X\",\".X,XX,X.,XX\",\"XXXX\",\"X.,X.,XX,X.,X.\",\"X..,XXX\",\".X,XX\",\".X,XX,X.\",\"X.,X.,X.,XX,.X\",\"X..,X..,XXX\",\".X,XX,.X\"]}");
     processInput(str,level,modu,room,blockList);
     
