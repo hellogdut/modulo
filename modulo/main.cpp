@@ -13,6 +13,7 @@
 #include "strings.h"
 #include<fstream>
 #include <time.h>
+#include <deque>
 using namespace std;
 #include "cJSON.h"
 
@@ -21,6 +22,17 @@ static long lastTime = 0;
 static long possibility = 1;
 static long percent = 0;
 #define PrintProgess
+
+struct Task
+{
+    int x;
+    int y;
+    int number;
+    vector<int> blocksX;
+    vector<int> blocksY;
+    vector<bool> vecLock;
+};
+
 struct Block
 {
     int w;
@@ -404,6 +416,152 @@ vector<int> getValueBlocks(const vector<Block>& blockList,vector<int> vec,int x,
     }
     return result;
 }
+bool move2(Room& RRoom,vector<Block>& blockList,deque<Task> queue)
+{
+    while(!queue.empty())
+    {
+        Task task;
+        if(queue.size() < 100000)
+        {
+            task = queue.front();
+            queue.pop_front();
+        }
+        else
+        {
+            task = queue.back();
+            queue.pop_back();
+        }
+        cout << queue.size() << endl;
+        //cout << queue.size() << endl;
+        
+//        Task task = queue.front();
+//        queue.pop_front();
+        
+//        Task task = queue.back();
+//        queue.pop_back();
+//
+        
+        Room room = RRoom;
+        
+        int x = task.x;
+        int y = task.y;
+        
+        for(int i = 0;i < blockList.size();++i)
+        {
+            blockList[i].moveTo(task.blocksX[i], task.blocksY[i]);
+            room.add(blockList[i]);
+        }
+        
+        if(room.isZeroAt(x,y) && room.isZero())
+        {
+//            cout << "find :" << endl;
+//            
+            return true;
+        }
+        // 是最后一个位置
+        if(x == room.m - 1 && y == room.n - 1)
+        {
+            continue;
+        }
+        
+        // 找出所有没被锁的木块
+        vector<int> unlockVec;
+        
+        for(int i = 0;i < task.vecLock.size();++i)
+        {
+            if(!task.vecLock[i])
+            {
+                unlockVec.push_back(i);
+            }
+        }
+        
+//        if(unlockVec.size() == 0)
+//            return false;
+        // 在没被锁的木块里，找出能覆盖到该位置的木块(可以先把没被锁的木块放到左上角
+        vector<int> valueVec = getValueBlocks(blockList,unlockVec,x,y);
+        
+        // 在所有影响该位置的木块中，找出能移动的
+        vector<int> moveAbleVec = getMoveAbleBlock(room,blockList,valueVec,x,y);
+        
+        int n = moveAbleVec.size();
+        
+        // 对该位置，根据该位置的值和能移动的方块数，计算所有可以移动哪些个数
+        vector<int> moveNums = getMoveNums(room,x,y,n);
+        
+//        if(moveNums.size() == 0)
+//            return false;
+        for(int i = 0;i < moveNums.size();++i)
+        {
+            int m = moveNums[i];
+            // 从 vec1 的 n 个中挑 m 个出来。
+            vector<vector<int>> combs = getCombis(moveAbleVec,m);
+            
+            // 对于每种组合里面的方块，移动到下个位置。
+            for(int j = 0;j < combs.size();++j)
+            {
+                Task newTask = task;
+                
+                
+                // 对有影响的block，加锁
+                for(int i = 0;i < valueVec.size();++i)
+                {
+                    int index = valueVec[i];
+                    //blockList[index].lock();
+                    newTask.vecLock[index] = true;
+                }
+                // 仅解锁本次移动到下个位置部分的block
+                for(int k = 0;k < combs[j].size();++k)
+                {
+                    int index = combs[j][k];
+                    // 每个block 移动到新的位置
+                    //blockList[index].unLock();
+                    newTask.vecLock[index] = false;
+                }
+                
+                
+                Room testRoom = room;
+                // 方块移到下个位置
+                for(int k = 0;k < combs[j].size();++k)
+                {
+                    int index = combs[j][k];
+                    Block& block = blockList[index];
+                    int posX,posY;
+                    if(!hasNextPos(room,block,posX,posY))
+                    {
+                        cout << "+++++ error +++++" << endl;
+                    }
+                    newTask.blocksX[index] = posX;
+                    newTask.blocksY[index] = posY;
+                    
+                }
+                // 得到下个位置的 坐标(x1,y1)
+                int x1,y1;
+                if(x < room.m - 1)
+                {
+                    x1 = x + 1;
+                    y1 = y;
+                }
+                else
+                {
+                    x1 = 0;
+                    y1 = y + 1;
+                }
+                
+                newTask.x = x1;
+                newTask.y = y1;
+                newTask.number = task.number + 1;
+                queue.push_back(newTask);
+                
+            }
+        }
+        
+    }
+    
+    return false;
+    
+}
+
+
 bool move(Room& room,vector<Block>& blockList,int x,int y)
 {
     if(room.isZeroAt(x,y) && room.isZero())
@@ -788,9 +946,9 @@ bool calculate(Room& room,vector<Block>& blockList)
 int main (int argc, const char * argv[]) {
     
     const int MAX_LEVEL = 59;
-    const int BEGIN_LEVEL = 1;
-    const int END_LEVEL = 59;
-    for(int level_it = BEGIN_LEVEL - 1;level_it < MAX_LEVEL;++level_it)
+    const int BEGIN_LEVEL = 39;
+    const int END_LEVEL = 39;
+    for(int level_it = BEGIN_LEVEL - 1;level_it < END_LEVEL;++level_it)
     {
         
         possibility = 1;
@@ -830,11 +988,27 @@ int main (int argc, const char * argv[]) {
         // 方法1
         //bool suss = calculate(room,blockList);
         // 方法2
+//        for(int i = 0;i < blockList.size();++i)
+//        {
+//            room.add(blockList[i]);
+//        }
+//        bool suss = move(room,blockList,0,0);
+        // 方法 3
+        deque<Task> queue;
+        Task task;
         for(int i = 0;i < blockList.size();++i)
         {
-            room.add(blockList[i]);
+            task.x = 0;
+            task.y = 0;
+            task.number = 0;
+            task.blocksX.push_back(0);
+            task.blocksY.push_back(0);
+            task.vecLock.push_back(false);
         }
-        bool suss = move(room,blockList,0,0);
+        queue.push_back(task);
+        
+        bool suss = move2(room,blockList,queue);
+
         if(suss)
         {
             /// 根据 id，排序回来
@@ -900,3 +1074,4 @@ int main (int argc, const char * argv[]) {
     
     return 0;
 }
+
