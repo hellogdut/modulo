@@ -101,6 +101,7 @@ struct Room
     }
     bool isZeroAt(int x,int y)
     {
+        tryTimes++;
         return (room[y][x] % mod) == 0;
     }
     bool canRight(const Block& block)
