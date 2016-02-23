@@ -12,6 +12,7 @@
 #include <map>
 #include "strings.h"
 #include<fstream>
+#include <time.h>
 using namespace std;
 #include "cJSON.h"
 
@@ -162,12 +163,12 @@ struct Room
         }
         tryTimes++;
 #ifdef PrintProgess
-        double currPercent = (double)tryTimes * 100 / possibility;
-        if(currPercent >= percent +  1.0)
-        {
-            cout << (int)currPercent << "%," << tryTimes << " / " << possibility << endl;
-            percent = currPercent;
-        }
+//        double currPercent = (double)tryTimes * 100 / possibility;
+//        if(currPercent >= percent +  1.0)
+//        {
+//            cout << (int)currPercent << "%," << tryTimes << " / " << possibility << endl;
+//            percent = currPercent;
+//        }
 #endif
         return ret;
     };
@@ -829,7 +830,9 @@ bool calculate(Room& room,vector<Block>& blockList)
 int main (int argc, const char * argv[]) {
     
     const int MAX_LEVEL = 59;
-    for(int level_it = 32;level_it < MAX_LEVEL;++level_it)
+    const int BEGIN_LEVEL = 1;
+    const int END_LEVEL = 59;
+    for(int level_it = BEGIN_LEVEL - 1;level_it < MAX_LEVEL;++level_it)
     {
         
         possibility = 1;
@@ -858,8 +861,13 @@ int main (int argc, const char * argv[]) {
         
         
         calPossibility(room,blockList,possibility);
+        
+        time_t beginTime;
+        time(&beginTime);
+        
         cout << "Level : " << level << endl;
         cout << "Total: " << possibility << endl;
+        cout << "Begin Time :" << ctime(&beginTime);
         
         // 方法1
         //bool suss = calculate(room,blockList);
@@ -868,73 +876,63 @@ int main (int argc, const char * argv[]) {
         if(suss)
         {
             /// 根据 id，排序回来
-            std::sort(blockList.begin(),blockList.end(),[](const Block& a,const Block& b){
-                return a.id < b.id;
-            });
+//            std::sort(blockList.begin(),blockList.end(),[](const Block& a,const Block& b){
+//                return a.id < b.id;
+//            });
             for(int i = 0;i < blockList.size();++i)
             {
                 output += blockList[i].y + '0';
                 output += blockList[i].x + '0';
             }
-            
-            cout << "Result:    " << output << endl;
-            cout << "tryTimes:  " << tryTimes << endl;
-            cout << "Time(s):   " << (clock() - lastTime)/CLOCKS_PER_SEC << endl;
-            
-            // 写入文件
-            ofstream outdata;
-            string fileName = std::to_string(level_it + 1) + ".txt";
-            outdata.open(fileName,ios::app);//ios::app是尾部追加的意思
-            outdata << "Level : " << level << endl;
-            outdata << "Total: " << possibility << endl;
-            outdata << "Result:    " << output << endl;
-            outdata << "tryTimes:  " << tryTimes << endl;
-            outdata << "Time(s):   " << (clock() - lastTime)/CLOCKS_PER_SEC << endl;
-            outdata.close();
-            
         }
         else
         {
-            room.print();
+            output = "XXXXXXXXXXXXXXXXXXXXXX";
+//            room.print();
             
-            
-            for(int i = 0;i < blockList.size();++i)
-            {
-                blockList[i].print();
-                cout << endl;
-            }
-            
-            
-            /// 根据 id，排序回来
-            std::sort(blockList.begin(),blockList.end(),[](const Block& a,const Block& b){
-                return a.id < b.id;
-            });
-            for(int i = 0;i < blockList.size();++i)
-            {
-                output += blockList[i].y + '0';
-                output += blockList[i].x + '0';
-            }
-            
-            
-            cout << "no answer" << endl;
-            cout << "Result:    " << output << endl;
-            cout << "tryTimes:  " << tryTimes << endl;
-            cout << "Time(s):   " << (clock() - lastTime)/CLOCKS_PER_SEC << endl;
-            
-            
-            // 写入文件
-            ofstream outdata;
-            string fileName = std::to_string(level_it + 1) + "_fail.txt";
-            outdata.open(fileName,ios::app);//ios::app是尾部追加的意思
-            
-            
-            outdata << "no answer" << endl;
-            outdata << "Result:    " << output << endl;
-            outdata << "tryTimes:  " << tryTimes << endl;
-            outdata << "Time(s):   " << (clock() - lastTime)/CLOCKS_PER_SEC << endl;
-            outdata.close();
+//            for(int i = 0;i < blockList.size();++i)
+//            {
+//                blockList[i].print();
+//                cout << endl;
+//            }
+//            /// 根据 id，排序回来
+//            std::sort(blockList.begin(),blockList.end(),[](const Block& a,const Block& b){
+//                return a.id < b.id;
+//            });
+//            for(int i = 0;i < blockList.size();++i)
+//            {
+//                output += blockList[i].y + '0';
+//                output += blockList[i].x + '0';
+//            }
         }
-
+        
+        time_t endTime;
+        time(&endTime);
+        
+        long second = (clock() - lastTime)/CLOCKS_PER_SEC;
+        
+        cout << "Result:    " << output << endl;
+        cout << "tryTimes:  " << tryTimes << endl;
+        cout << "Time(s):   " << second << endl;
+        cout << "Speed:     " << tryTimes / max((long)1,second) << endl;
+        cout << "Begin Time :" << ctime(&beginTime);
+        cout << "End Time :" << ctime(&endTime);
+        cout << endl;
+        
+        
+        // 写入文件
+        ofstream outdata;
+        string fileName = std::to_string(level_it + 1) + ".txt";
+        outdata.open(fileName,ios::app);//ios::app是尾部追加的意思
+        outdata << "Level : " << level << endl;
+        outdata << "Total: " << possibility << endl;
+        outdata << "Result:    " << output << endl;
+        outdata << "tryTimes:  " << tryTimes << endl;
+        outdata << "Time(s):   " << (clock() - lastTime)/CLOCKS_PER_SEC << endl;
+        outdata << "Speed:     " << tryTimes / max((long)1,second) << endl;
+        outdata << "Begin Time :" << ctime(&beginTime);
+        outdata << "End Time :" << ctime(&endTime);
+        outdata.close();
         
     }
     
