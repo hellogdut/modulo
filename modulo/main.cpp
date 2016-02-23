@@ -403,15 +403,8 @@ vector<int> getValueBlocks(const vector<Block>& blockList,vector<int> vec,int x,
     }
     return result;
 }
-bool move(Room room,vector<Block>& blockList,int x,int y)
+bool move(Room& room,vector<Block>& blockList,int x,int y)
 {
-    if(x == 0 && y == 0)
-    {
-        for(int i = 0;i < blockList.size();++i)
-        {
-            room.add(blockList[i]);
-        }
-    }
     if(room.isZeroAt(x,y) && room.isZero())
     {
         return true;
@@ -421,48 +414,12 @@ bool move(Room room,vector<Block>& blockList,int x,int y)
     {
         return false;
     }
-    
-    vector<vector<int>> tmp = {
-        {0,6,3,3},
-        {2,7,3,4},
-        {2,3,2,2},
-        {3,2,0,3}
-    };
-    if(room.room == tmp)
-    {
-        cout << "find" << endl;
-    }
     // 找出所有没被锁的木块
     vector<int> unlockVec = getUnlockBlocks(blockList);
     if(unlockVec.size() == 0)
         return false;
     // 在没被锁的木块里，找出能覆盖到该位置的木块(可以先把没被锁的木块放到左上角
     vector<int> valueVec = getValueBlocks(blockList,unlockVec,x,y);
-    
-    if(valueVec.size() == 0)
-    {
-        // 如果该位置满足约束，取决于后面圆不圆满
-        if(room.isZeroAt(x,y))
-        {
-            // 得到下个位置的 坐标(x1,y1)
-            int x1,y1;
-            if(x < room.m - 1)
-            {
-                x1 = x + 1;
-                y1 = y;
-            }
-            else
-            {
-                x1 = 0;
-                y1 = y + 1;
-            }
-            return move(room,blockList,x1,y1);
-        }
-        else
-        {
-            return false;
-        }
-    }
     
     // 在所有影响该位置的木块中，找出能移动的
     vector<int> moveAbleVec = getMoveAbleBlock(room,blockList,valueVec,x,y);
@@ -499,15 +456,18 @@ bool move(Room room,vector<Block>& blockList,int x,int y)
                 blockList[index].unLock();
             }
             // 记下这个组合旧的位置
-            map<int,pair<int,int>> oldPos;
             
+            vector<int> vx(combs[j].size());
+            vector<int> vy(combs[j].size());
             for(int k = 0;k < combs[j].size();++k)
             {
                 int index = combs[j][k];
-                // 每个block 移动到新的位置
                 Block& block = blockList[index];
-                oldPos[combs[j][k]] = make_pair(block.x,block.y);
+                vx[k] = block.x;
+                vy[k] = block.y;
             }
+            
+            Room testRoom = room;
             // 方块移到下个位置
             for(int k = 0;k < combs[j].size();++k)
             {
@@ -516,12 +476,12 @@ bool move(Room room,vector<Block>& blockList,int x,int y)
                 int posX,posY;
                 if(!hasNextPos(room,block,posX,posY))
                 {
-                    cout << "error" << endl;
+                    cout << "+++++ error +++++" << endl;
                 }
                 
-                room.remove(block);
+                testRoom.remove(block);
                 block.moveTo(posX,posY);
-                room.add(block);
+                testRoom.add(block);
                 
             }
             // 得到下个位置的 坐标(x1,y1)
@@ -537,16 +497,13 @@ bool move(Room room,vector<Block>& blockList,int x,int y)
                 y1 = y + 1;
             }
             
-            if(!move(room,blockList,x1,y1))
+            if(!move(testRoom,blockList,x1,y1))
             {
-                // 如果没找到，恢复方块的位置
-                for(auto it = oldPos.begin(); it != oldPos.end();++it)
+                for(int k = 0;k < combs[j].size();++k)
                 {
-                    Block& block = blockList[(*it).first];
-                    pair<int,int> pos = (*it).second;
-                    room.remove(block);
-                    block.moveTo(pos.first,pos.second);
-                    room.add(block);
+                    int index = combs[j][k];
+                    Block& block = blockList[index];
+                    block.moveTo(vx[k], vy[k]);
                 }
             }
             else
@@ -872,6 +829,10 @@ int main (int argc, const char * argv[]) {
         // 方法1
         //bool suss = calculate(room,blockList);
         // 方法2
+        for(int i = 0;i < blockList.size();++i)
+        {
+            room.add(blockList[i]);
+        }
         bool suss = move(room,blockList,0,0);
         if(suss)
         {
