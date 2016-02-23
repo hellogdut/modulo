@@ -416,7 +416,7 @@ vector<int> getValueBlocks(const vector<Block>& blockList,vector<int> vec,int x,
     }
     return result;
 }
-bool move2(Room& RRoom,vector<Block>& blockList,deque<Task> queue)
+bool move2(Room RRoom,vector<Block> blockList,deque<Task>& queue)
 {
     while(!queue.empty())
     {
