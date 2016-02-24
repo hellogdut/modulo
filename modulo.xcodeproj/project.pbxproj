@@ -28,6 +28,8 @@
 		AC2164071C777E2800F5F042 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		AC21640E1C777E3800F5F042 /* cJSON.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cJSON.c; sourceTree = "<group>"; };
 		AC21640F1C777E3800F5F042 /* cJSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cJSON.h; sourceTree = "<group>"; };
+		AC5B0AD41C7DF4D6007D371E /* Block.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Block.h; sourceTree = "<group>"; };
+		AC5B0AD51C7DF4EE007D371E /* Room.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Room.h; sourceTree = "<group>"; };
 		ACB586F31C7A07EE0045005B /* strings.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = strings.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -65,6 +67,8 @@
 				AC21640F1C777E3800F5F042 /* cJSON.h */,
 				AC2164071C777E2800F5F042 /* main.cpp */,
 				ACB586F31C7A07EE0045005B /* strings.h */,
+				AC5B0AD41C7DF4D6007D371E /* Block.h */,
+				AC5B0AD51C7DF4EE007D371E /* Room.h */,
 			);
 			path = modulo;
 			sourceTree = "<group>";

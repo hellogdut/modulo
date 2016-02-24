@@ -14,8 +14,13 @@
 #include<fstream>
 #include <time.h>
 #include <deque>
-using namespace std;
 #include "cJSON.h"
+
+
+#include "Block.h"
+#include "Room.h"
+
+using namespace std;
 
 static long tryTimes = 0;
 static long lastTime = 0;
@@ -23,223 +28,23 @@ static long possibility = 1;
 static long percent = 0;
 #define PrintProgess
 
+#define MAX_BLOCK_NUMS 20
+#define MAX_ROOM_SIZE 10
 struct Task
 {
-    int x;
-    int y;
-    int number;
-    vector<int> blocksX;
-    vector<int> blocksY;
-    vector<bool> vecLock;
+    char x;
+    char y;
+    char number;
+    
+    char blocksX[MAX_BLOCK_NUMS];
+    char blocksY[MAX_BLOCK_NUMS];
+    char vecLock[MAX_BLOCK_NUMS];
+    //vector<int> blocksX;
+//    vector<int> blocksY;
+//    vector<bool> vecLock;
 };
 
-struct Block
-{
-    int w;
-    int h;
-    int x;
-    int y;
-    int id;
-    bool _lock;
-    Block():x(0),y(0),_lock(false){};
-    vector<vector<int>> block;
-    void init(vector<vector<int>> data,int _id)
-    {
-        block = data;
-        w = block[0].size();
-        h = block.size();
-        id = _id;
-    }
-    bool isLock() const
-    {
-        return _lock;
-    }
-    void lock()
-    {
-        _lock = true;
-    }
-    void unLock()
-    {
-        _lock = false;
-    }
-    void moveBy(int _x,int _y)
-    {
-        x += _x;
-        y += _y;
-    }
-    void moveTo(int _x,int _y)
-    {
-        x = _x;
-        y = _y;
-    }
-    void print()
-    {
-        cout << "block id = " << id << endl;
-        for(int i = 0;i < block.size();++i)
-        {
-            cout << "[";
-            for(int j = 0;j < block[0].size();++j)
-            {
-                cout << block[i][j];
-                if(j != block.size() - 1)
-                {
-                    cout << ",";
-                }
-            }
-            cout << "]" <<endl;
-        }
-    }
-};
 
-struct Room
-{
-    void init(vector<vector<int>> data,int modu)
-    {
-        room = data;
-        m = room[0].size();
-        n = room.size();
-        mod = modu;
-    }
-    bool isFit(const Block& block)
-    {
-        if(m >= block.w && n >= block.h)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
-    bool isZeroAt(int x,int y)
-    {
-        tryTimes++;
-        return (room[y][x] % mod) == 0;
-    }
-    bool canRight(const Block& block)
-    {
-        return block.x + block.w + 1 <= m;
-    }
-    bool canDown(const Block& block)
-    {
-        return block.y + block.h + 1 <= n;
-    }
-    bool canRightWithLimitArea(const Block& block,pair<int,int> area)
-    {
-        bool ret = block.x + block.w + 1 <= m;
-        ret &= (block.y < area.second ? block.x <= m : block.x <= area.first);
-        return ret;
-    }
-    bool canDownWithLimitArea(const Block& block,pair<int,int> area)
-    {
-        bool ret = block.y + block.h + 1 <= n;
-        ret &= (block.y < area.second ? block.x <= m : block.x <= area.first);
-        
-        return ret;
-    }
-    void add(const Block& block)
-    {
-        for(int i = 0; i < block.w; ++i)
-        {
-            for(int j = 0; j < block.h;++j)
-            {
-                room[j + block.y][i + block.x] += block.block[j][i];
-            }
-        }
-    }
-    void remove(const Block& block)
-    {
-        for(int i = 0; i < block.w; ++i)
-        {
-            for(int j = 0; j < block.h;++j)
-            {
-                room[j + block.y][i + block.x] -= block.block[j][i];
-            }
-        }
-    }
-    
-    bool isZero()
-    {
-        bool ret = true;
-        for(int j = 0;j < n;++j)
-        {
-            if(ret == false)
-                break;
-            for(int i = 0;i < m;++i)
-            {
-                if((room[j][i] % mod) != 0)
-                {
-                    ret = false;
-                    break;
-                }
-            }
-        }
-        tryTimes++;
-#ifdef PrintProgess
-//        double currPercent = (double)tryTimes * 100 / possibility;
-//        if(currPercent >= percent +  1.0)
-//        {
-//            cout << (int)currPercent << "%," << tryTimes << " / " << possibility << endl;
-//            percent = currPercent;
-//        }
-#endif
-        return ret;
-    };
-    bool isZeroWithLimitArea(pair<int,int> area)
-    {
-        bool ret = true;
-        if(area.second == 0)
-        {
-            for(int i = 0;i < area.first;++i)
-            {
-                if((room[0][i] % mod) != 0)
-                {
-                    ret =false;
-                    break;
-                }
-            }
-        }
-        else
-        {
-            for(int i = 0;i <= area.second && ret;++i)
-            {
-                int len = (i == area.second ? area.first : m);
-                for(int j = 0;j < len;++j)
-                {
-                    if((room[i][j] % mod) != 0)
-                    {
-                        ret =false;
-                        break;
-                    }
-                }
-            }
-        }
-        //tryTimes++;
-        return ret;
-    }
-    void print()
-    {
-        cout << "room" << endl;
-        for(int i = 0;i < room.size();++i)
-        {
-            cout << "[";
-            for(int j = 0;j < room[0].size();++j)
-            {
-                cout << room[i][j];
-                if(j != room.size())
-                {
-                    cout << ",";
-                }
-            }
-            cout << "]" <<endl;
-        }
-    }
-    
-    int m;
-    int n;
-    int mod;
-    vector<vector<int>> room;
-};
 
 bool hasNextPos(Room& room,Block& block,int& posX,int& posY)
 {
@@ -290,9 +95,9 @@ vector<int> getBlockAtPos(const vector<Block>& blockList,int x,int y)
     }
     return vec;
 }
-vector<int> getMoveAbleBlock(Room& room,vector<Block>& blockList,const vector<int>& vec,int x,int y)
+void getMoveAbleBlock(Room& room,vector<Block>& blockList,const vector<int>& vec,int x,int y,vector<int>& result)
 {
-    vector<int> vec1;
+    result.clear();
     
     for(int i = 0;i < vec.size();++i)
     {
@@ -301,10 +106,9 @@ vector<int> getMoveAbleBlock(Room& room,vector<Block>& blockList,const vector<in
         int posX,posY;
         if(hasNextPos(room, block, posX, posY))
         {
-            vec1.push_back(blockIndex);
+            result.push_back(blockIndex);
         }
     }
-    return vec1;
 }
 vector<int> getNonZeroBlock(vector<Block>& blockList,const vector<int>& vec,int x,int y)
 {
@@ -320,13 +124,14 @@ vector<int> getNonZeroBlock(vector<Block>& blockList,const vector<int>& vec,int 
     }
     return vec1;
 }
-vector<vector<int>> getCombis(vector<int> vec,int m)
+void getCombis(vector<int> vec,int m,vector<vector<int>>& result)
 {
     // 参考 http://mingxinglai.com/cn/2012/09/generate-permutation-use-stl/
     // 这里用的是 next_permutaion,前面补 0
     
     // n 个中取 m 个组合
-    vector<vector<int>> result;
+    result.clear();
+    
     int n = vec.size();
     
     vector<int> selectors;
@@ -353,12 +158,12 @@ vector<vector<int>> getCombis(vector<int> vec,int m)
     } while (next_permutation(selectors.begin(), selectors.end()));
     
     
-    return result;
 }
-vector<int> getMoveNums(const Room& room,int x,int y,int n)
+void getMoveNums(const Room& room,int x,int y,int n,vector<int>& result)
 {
     // 计算(x,y) 位置可以 移除多少个方块达到圆满。排除0（即不移除的情况)
-    vector<int> vec;
+    
+    result.clear();
     
     int val = room.room[y][x];
     int mod = room.mod;
@@ -374,7 +179,7 @@ vector<int> getMoveNums(const Room& room,int x,int y,int n)
         
         if(n >= offset)
         {
-            vec.push_back(offset);
+            result.push_back(offset);
         }
         else
         {
@@ -384,11 +189,10 @@ vector<int> getMoveNums(const Room& room,int x,int y,int n)
         
     }
     
-    return vec;
 }
-vector<int> getUnlockBlocks(const vector<Block>& blockList)
+void getUnlockBlocks(const vector<Block>& blockList,vector<int>& result)
 {
-    vector<int> result;
+    result.clear();
     for(int i = 0;i < blockList.size();++i)
     {
         if(!blockList[i].isLock())
@@ -396,11 +200,11 @@ vector<int> getUnlockBlocks(const vector<Block>& blockList)
             result.push_back(i);
         }
     }
-    return result;
+
 }
-vector<int> getValueBlocks(const vector<Block>& blockList,vector<int> vec,int x,int y)
+void getValueBlocks(const vector<Block>& blockList,vector<int> vec,int x,int y,vector<int>& result)
 {
-    vector<int> result;
+    result.clear();
     for(int i = 0;i < vec.size();++i)
     {
         int index = vec[i];
@@ -414,10 +218,18 @@ vector<int> getValueBlocks(const vector<Block>& blockList,vector<int> vec,int x,
             result.push_back(index);
         }
     }
-    return result;
 }
-bool move2(Room RRoom,vector<Block> blockList,deque<Task>& queue)
+bool move2(Room RRoom,vector<Block>& blockList,deque<Task>& queue)
 {
+    Room room;
+    Room testRoom;
+    vector<vector<int>> combs;
+    vector<int> unlockVec;
+    vector<int> valueVec;
+    vector<int> moveAbleVec;
+    vector<int> moveNums;
+    int blockNums = blockList.size();
+    
     while(!queue.empty())
     {
         Task task;
@@ -431,31 +243,23 @@ bool move2(Room RRoom,vector<Block> blockList,deque<Task>& queue)
             task = queue.back();
             queue.pop_back();
         }
-        cout << queue.size() << endl;
-        //cout << queue.size() << endl;
         
-//        Task task = queue.front();
-//        queue.pop_front();
-        
-//        Task task = queue.back();
-//        queue.pop_back();
-//
-        
-        Room room = RRoom;
+        room = RRoom;
         
         int x = task.x;
         int y = task.y;
         
-        for(int i = 0;i < blockList.size();++i)
+        for(int i = 0;i < blockNums;++i)
         {
             blockList[i].moveTo(task.blocksX[i], task.blocksY[i]);
             room.add(blockList[i]);
         }
         
+        tryTimes++;
+
         if(room.isZeroAt(x,y) && room.isZero())
         {
-//            cout << "find :" << endl;
-//            
+            
             return true;
         }
         // 是最后一个位置
@@ -465,9 +269,11 @@ bool move2(Room RRoom,vector<Block> blockList,deque<Task>& queue)
         }
         
         // 找出所有没被锁的木块
-        vector<int> unlockVec;
+//        vector<int> unlockVec;
         
-        for(int i = 0;i < task.vecLock.size();++i)
+        unlockVec.clear();
+        
+        for(int i = 0;i < blockNums;++i)
         {
             if(!task.vecLock[i])
             {
@@ -478,15 +284,17 @@ bool move2(Room RRoom,vector<Block> blockList,deque<Task>& queue)
 //        if(unlockVec.size() == 0)
 //            return false;
         // 在没被锁的木块里，找出能覆盖到该位置的木块(可以先把没被锁的木块放到左上角
-        vector<int> valueVec = getValueBlocks(blockList,unlockVec,x,y);
         
+//        valueVec = getValueBlocks(blockList,unlockVec,x,y);
+        getValueBlocks(blockList,unlockVec,x,y,valueVec);
         // 在所有影响该位置的木块中，找出能移动的
-        vector<int> moveAbleVec = getMoveAbleBlock(room,blockList,valueVec,x,y);
+//        moveAbleVec = getMoveAbleBlock(room,blockList,valueVec,x,y);
+        getMoveAbleBlock(room,blockList,valueVec,x,y,moveAbleVec);
         
         int n = moveAbleVec.size();
         
         // 对该位置，根据该位置的值和能移动的方块数，计算所有可以移动哪些个数
-        vector<int> moveNums = getMoveNums(room,x,y,n);
+        getMoveNums(room,x,y,n,moveNums);
         
 //        if(moveNums.size() == 0)
 //            return false;
@@ -494,7 +302,7 @@ bool move2(Room RRoom,vector<Block> blockList,deque<Task>& queue)
         {
             int m = moveNums[i];
             // 从 vec1 的 n 个中挑 m 个出来。
-            vector<vector<int>> combs = getCombis(moveAbleVec,m);
+            getCombis(moveAbleVec,m,combs);
             
             // 对于每种组合里面的方块，移动到下个位置。
             for(int j = 0;j < combs.size();++j)
@@ -518,8 +326,8 @@ bool move2(Room RRoom,vector<Block> blockList,deque<Task>& queue)
                     newTask.vecLock[index] = false;
                 }
                 
-                
-                Room testRoom = room;
+//                Room testRoom;
+                testRoom = room;
                 // 方块移到下个位置
                 for(int k = 0;k < combs[j].size();++k)
                 {
@@ -562,126 +370,126 @@ bool move2(Room RRoom,vector<Block> blockList,deque<Task>& queue)
 }
 
 
-bool move(Room& room,vector<Block>& blockList,int x,int y)
-{
-    if(room.isZeroAt(x,y) && room.isZero())
-    {
-        return true;
-    }
-    // 是最后一个位置
-    if(x == room.m - 1 && y == room.n - 1)
-    {
-        return false;
-    }
-    // 找出所有没被锁的木块
-    vector<int> unlockVec = getUnlockBlocks(blockList);
-    if(unlockVec.size() == 0)
-        return false;
-    // 在没被锁的木块里，找出能覆盖到该位置的木块(可以先把没被锁的木块放到左上角
-    vector<int> valueVec = getValueBlocks(blockList,unlockVec,x,y);
-    
-    // 在所有影响该位置的木块中，找出能移动的
-    vector<int> moveAbleVec = getMoveAbleBlock(room,blockList,valueVec,x,y);
-    
-    int n = moveAbleVec.size();
-    
-    // 对该位置，根据该位置的值和能移动的方块数，计算所有可以移动哪些个数
-    vector<int> moveNums = getMoveNums(room,x,y,n);
-    
-    if(moveNums.size() == 0)
-        return false;
-    
-    
-    for(int i = 0;i < moveNums.size();++i)
-    {
-        int m = moveNums[i];
-        // 从 vec1 的 n 个中挑 m 个出来。
-        vector<vector<int>> combs = getCombis(moveAbleVec,m);
-        
-        // 对于每种组合里面的方块，移动到下个位置。
-        for(int j = 0;j < combs.size();++j)
-        {
-            // 对有影响的block，加锁
-            for(int i = 0;i < valueVec.size();++i)
-            {
-                int index = valueVec[i];
-                blockList[index].lock();
-            }
-            // 仅解锁本次移动到下个位置部分的block
-            for(int k = 0;k < combs[j].size();++k)
-            {
-                int index = combs[j][k];
-                // 每个block 移动到新的位置
-                blockList[index].unLock();
-            }
-            // 记下这个组合旧的位置
-            
-            vector<int> vx(combs[j].size());
-            vector<int> vy(combs[j].size());
-            for(int k = 0;k < combs[j].size();++k)
-            {
-                int index = combs[j][k];
-                Block& block = blockList[index];
-                vx[k] = block.x;
-                vy[k] = block.y;
-            }
-            
-            Room testRoom = room;
-            // 方块移到下个位置
-            for(int k = 0;k < combs[j].size();++k)
-            {
-                int index = combs[j][k];
-                Block& block = blockList[index];
-                int posX,posY;
-                if(!hasNextPos(room,block,posX,posY))
-                {
-                    cout << "+++++ error +++++" << endl;
-                }
-                
-                testRoom.remove(block);
-                block.moveTo(posX,posY);
-                testRoom.add(block);
-                
-            }
-            // 得到下个位置的 坐标(x1,y1)
-            int x1,y1;
-            if(x < room.m - 1)
-            {
-                x1 = x + 1;
-                y1 = y;
-            }
-            else
-            {
-                x1 = 0;
-                y1 = y + 1;
-            }
-            
-            if(!move(testRoom,blockList,x1,y1))
-            {
-                for(int k = 0;k < combs[j].size();++k)
-                {
-                    int index = combs[j][k];
-                    Block& block = blockList[index];
-                    block.moveTo(vx[k], vy[k]);
-                }
-            }
-            else
-            {
-                return true;
-            }
-            
-            // 解锁，回复原装
-            for(int i = 0;i < valueVec.size();++i)
-            {
-                int index = valueVec[i];
-                blockList[index].unLock();
-            }
-        }
-    }
-    return false;
-    
-}
-
+//bool move(Room& room,vector<Block>& blockList,int x,int y)
+//{
+//    if(room.isZeroAt(x,y) && room.isZero())
+//    {
+//        return true;
+//    }
+//    // 是最后一个位置
+//    if(x == room.m - 1 && y == room.n - 1)
+//    {
+//        return false;
+//    }
+//    // 找出所有没被锁的木块
+//    vector<int> unlockVec = getUnlockBlocks(blockList);
+//    if(unlockVec.size() == 0)
+//        return false;
+//    // 在没被锁的木块里，找出能覆盖到该位置的木块(可以先把没被锁的木块放到左上角
+//    vector<int> valueVec = getValueBlocks(blockList,unlockVec,x,y);
+//    
+//    // 在所有影响该位置的木块中，找出能移动的
+//    vector<int> moveAbleVec = getMoveAbleBlock(room,blockList,valueVec,x,y);
+//    
+//    int n = moveAbleVec.size();
+//    
+//    // 对该位置，根据该位置的值和能移动的方块数，计算所有可以移动哪些个数
+//    vector<int> moveNums = getMoveNums(room,x,y,n);
+//    
+//    if(moveNums.size() == 0)
+//        return false;
+//    
+//    
+//    for(int i = 0;i < moveNums.size();++i)
+//    {
+//        int m = moveNums[i];
+//        // 从 vec1 的 n 个中挑 m 个出来。
+//        vector<vector<int>> combs = getCombis(moveAbleVec,m);
+//        
+//        // 对于每种组合里面的方块，移动到下个位置。
+//        for(int j = 0;j < combs.size();++j)
+//        {
+//            // 对有影响的block，加锁
+//            for(int i = 0;i < valueVec.size();++i)
+//            {
+//                int index = valueVec[i];
+//                blockList[index].lock();
+//            }
+//            // 仅解锁本次移动到下个位置部分的block
+//            for(int k = 0;k < combs[j].size();++k)
+//            {
+//                int index = combs[j][k];
+//                // 每个block 移动到新的位置
+//                blockList[index].unLock();
+//            }
+//            // 记下这个组合旧的位置
+//            
+//            vector<int> vx(combs[j].size());
+//            vector<int> vy(combs[j].size());
+//            for(int k = 0;k < combs[j].size();++k)
+//            {
+//                int index = combs[j][k];
+//                Block& block = blockList[index];
+//                vx[k] = block.x;
+//                vy[k] = block.y;
+//            }
+//            
+//            Room testRoom = room;
+//            // 方块移到下个位置
+//            for(int k = 0;k < combs[j].size();++k)
+//            {
+//                int index = combs[j][k];
+//                Block& block = blockList[index];
+//                int posX,posY;
+//                if(!hasNextPos(room,block,posX,posY))
+//                {
+//                    cout << "+++++ error +++++" << endl;
+//                }
+//                
+//                testRoom.remove(block);
+//                block.moveTo(posX,posY);
+//                testRoom.add(block);
+//                
+//            }
+//            // 得到下个位置的 坐标(x1,y1)
+//            int x1,y1;
+//            if(x < room.m - 1)
+//            {
+//                x1 = x + 1;
+//                y1 = y;
+//            }
+//            else
+//            {
+//                x1 = 0;
+//                y1 = y + 1;
+//            }
+//            
+//            if(!move(testRoom,blockList,x1,y1))
+//            {
+//                for(int k = 0;k < combs[j].size();++k)
+//                {
+//                    int index = combs[j][k];
+//                    Block& block = blockList[index];
+//                    block.moveTo(vx[k], vy[k]);
+//                }
+//            }
+//            else
+//            {
+//                return true;
+//            }
+//            
+//            // 解锁，回复原装
+//            for(int i = 0;i < valueVec.size();++i)
+//            {
+//                int index = valueVec[i];
+//                blockList[index].unLock();
+//            }
+//        }
+//    }
+//    return false;
+//    
+//}
+//
 
 
 void processInput(string str,int& level,int& modu,Room& room,vector<Block>& blockList)
@@ -838,116 +646,116 @@ void calPossibility(Room& room,vector<Block>& blockList,long& possibility)
         possibility *= rightStep * downStep;
     }
 }
-bool calculate(Room& room,vector<Block>& blockList)
-{
-    string str;
-    //bool ret = move(room,blockList,0);
-    
-    for(int i = 0;i < blockList.size();++i)
-    {
-        room.add(blockList[i]);
-    }
-    int k = blockList.size() - 1;	// 最左边的可以更改的索引
-    int n = blockList.size();
-    while(k >= 0)
-    {
-        if(room.isZero())
-            return true;
-        
-        Block& block = blockList[k];
-        //block.print();
-        for(int j = k + 1; j < n;++j)
-        {
-            Block& bk = blockList[j];
-            room.remove(bk);
-            bk.moveTo(0,0);
-            room.add(bk);
-            
-        }
-        if(k == 1)
-        {
-            int j = 0;
-        }
-        /*************************************************/
-        //如果是最后一个
-        if(k == n - 1)
-        {
-            bool toContinue = false;
-            
-            
-            for(int j = 0;j <= block.y;++j)
-            {
-                if(toContinue == true)
-                    break;
-                int w = (j == block.y ? block.x : room.m);
-                for(int i = 0;i < w;++i)
-                {
-                    if((room.room[j][i] % room.mod) != 0)
-                    {
-                        toContinue = true;
-                        break;
-                    }
-                }
-            }
-            if(toContinue)
-            {
-                k--;
-                continue;
-            }
-        }
-        //*********************************************
-        int newX,newY;
-        if(hasNextPos(room,block,newX,newY))
-        {
-            room.remove(block);
-            block.moveTo(newX,newY);
-            room.add(block);
-            
-            for(int j = k + 1; j < n;++j)
-            {
-                Block& bk = blockList[j];
-                room.remove(bk);
-                bk.moveTo(0,0);
-                room.add(bk);
-                
-            }
-            if(k == 1 && block.y == 1)  //debug
-            {
-                int ddd = 0;
-            }
-            //            if(k != n - 1)
-            //            {
-            //                pair<int,int> area;
-            //                bool ret = hasUntouchableArea(room,block, area);
-            //                if(ret)
-            //                {
-            //                    if(!canZeroWithChildBlock(room,blockList, k + 1, area))
-            //                    {
-            //                        k--;
-            //                        continue;
-            //                    }
-            //                }
-            //            }
-            
-            k = n - 1;
-        }
-        else
-        {
-            k--;
-            if(k < 0)
-            {
-                int j = 0;
-            }
-        }
-    }
-    return false;
-}
+//bool calculate(Room& room,vector<Block>& blockList)
+//{
+//    string str;
+//    //bool ret = move(room,blockList,0);
+//    
+//    for(int i = 0;i < blockList.size();++i)
+//    {
+//        room.add(blockList[i]);
+//    }
+//    int k = blockList.size() - 1;	// 最左边的可以更改的索引
+//    int n = blockList.size();
+//    while(k >= 0)
+//    {
+//        if(room.isZero())
+//            return true;
+//        
+//        Block& block = blockList[k];
+//        //block.print();
+//        for(int j = k + 1; j < n;++j)
+//        {
+//            Block& bk = blockList[j];
+//            room.remove(bk);
+//            bk.moveTo(0,0);
+//            room.add(bk);
+//            
+//        }
+//        if(k == 1)
+//        {
+//            int j = 0;
+//        }
+//        /*************************************************/
+//        //如果是最后一个
+//        if(k == n - 1)
+//        {
+//            bool toContinue = false;
+//            
+//            
+//            for(int j = 0;j <= block.y;++j)
+//            {
+//                if(toContinue == true)
+//                    break;
+//                int w = (j == block.y ? block.x : room.m);
+//                for(int i = 0;i < w;++i)
+//                {
+//                    if((room.room[j][i] % room.mod) != 0)
+//                    {
+//                        toContinue = true;
+//                        break;
+//                    }
+//                }
+//            }
+//            if(toContinue)
+//            {
+//                k--;
+//                continue;
+//            }
+//        }
+//        //*********************************************
+//        int newX,newY;
+//        if(hasNextPos(room,block,newX,newY))
+//        {
+//            room.remove(block);
+//            block.moveTo(newX,newY);
+//            room.add(block);
+//            
+//            for(int j = k + 1; j < n;++j)
+//            {
+//                Block& bk = blockList[j];
+//                room.remove(bk);
+//                bk.moveTo(0,0);
+//                room.add(bk);
+//                
+//            }
+//            if(k == 1 && block.y == 1)  //debug
+//            {
+//                int ddd = 0;
+//            }
+//            //            if(k != n - 1)
+//            //            {
+//            //                pair<int,int> area;
+//            //                bool ret = hasUntouchableArea(room,block, area);
+//            //                if(ret)
+//            //                {
+//            //                    if(!canZeroWithChildBlock(room,blockList, k + 1, area))
+//            //                    {
+//            //                        k--;
+//            //                        continue;
+//            //                    }
+//            //                }
+//            //            }
+//            
+//            k = n - 1;
+//        }
+//        else
+//        {
+//            k--;
+//            if(k < 0)
+//            {
+//                int j = 0;
+//            }
+//        }
+//    }
+//    return false;
+//}
 
 int main (int argc, const char * argv[]) {
     
     const int MAX_LEVEL = 59;
-    const int BEGIN_LEVEL = 39;
-    const int END_LEVEL = 39;
+    const int BEGIN_LEVEL = 57;
+    const int END_LEVEL = 57;
     for(int level_it = BEGIN_LEVEL - 1;level_it < END_LEVEL;++level_it)
     {
         
@@ -1001,9 +809,11 @@ int main (int argc, const char * argv[]) {
             task.x = 0;
             task.y = 0;
             task.number = 0;
-            task.blocksX.push_back(0);
-            task.blocksY.push_back(0);
-            task.vecLock.push_back(false);
+//            task.blocksX.push_back(0);
+//            task.blocksY.push_back(0);
+            task.blocksX[i] = 0;
+            task.blocksY[i] = 0;
+            task.vecLock[i] = false;
         }
         queue.push_back(task);
         
