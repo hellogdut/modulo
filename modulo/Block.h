@@ -10,6 +10,7 @@
 #define Block_h
 #include <iostream>
 using namespace std;;
+#define BLOCK_SIZE 10
 struct Block
 {
     int w;
@@ -19,12 +20,22 @@ struct Block
     int id;
     bool _lock;
     Block():x(0),y(0),_lock(false){};
-    vector<vector<int>> block;
+    //vector<vector<int>> block;
+    int block[BLOCK_SIZE][BLOCK_SIZE];
     void init(vector<vector<int>> data,int _id)
     {
-        block = data;
-        w = block[0].size();
-        h = block.size();
+        //block = data;
+        w = data[0].size();
+        h = data.size();
+        for(int i = 0;i < data.size();++i)
+        {
+            for(int j = 0;j <data[0].size();++j)
+            {
+                block[i][j] = data[i][j];
+            }
+        }
+//        w = block[0].size();
+//        h = block.size();
         id = _id;
     }
     bool isLock() const
@@ -52,13 +63,13 @@ struct Block
     void print()
     {
         cout << "block id = " << id << endl;
-        for(int i = 0;i < block.size();++i)
+        for(int i = 0;i < h;++i)
         {
             cout << "[";
-            for(int j = 0;j < block[0].size();++j)
+            for(int j = 0;j < w;++j)
             {
                 cout << block[i][j];
-                if(j != block.size() - 1)
+                if(j != h - 1)
                 {
                     cout << ",";
                 }

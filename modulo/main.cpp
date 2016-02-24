@@ -15,34 +15,30 @@
 #include <time.h>
 #include <deque>
 #include "cJSON.h"
-
+#include <thread>
+#include <mutex>
+#include <atomic>
 
 #include "Block.h"
 #include "Room.h"
+#include "Task.h"
 
+#define PrintProgess
 using namespace std;
 
-static long tryTimes = 0;
+static std::atomic_ullong tryTimes;
 static long lastTime = 0;
 static long possibility = 1;
 static long percent = 0;
-#define PrintProgess
 
-#define MAX_BLOCK_NUMS 20
-#define MAX_ROOM_SIZE 10
-struct Task
-{
-    char x;
-    char y;
-    char number;
-    
-    char blocksX[MAX_BLOCK_NUMS];
-    char blocksY[MAX_BLOCK_NUMS];
-    char vecLock[MAX_BLOCK_NUMS];
-    //vector<int> blocksX;
-//    vector<int> blocksY;
-//    vector<bool> vecLock;
-};
+static Room room;
+static vector<Block> BlockList;
+
+static deque<Task> queue;
+static bool foundResult = false;
+static Task resultTask;
+std::mutex mtx;
+
 
 
 
@@ -219,31 +215,63 @@ void getValueBlocks(const vector<Block>& blockList,vector<int> vec,int x,int y,v
         }
     }
 }
-bool move2(Room RRoom,vector<Block>& blockList,deque<Task>& queue)
+bool move2(Room RRoom,vector<Block> blockList/*,deque<Task>& queue*/)
 {
     Room room;
-    Room testRoom;
     vector<vector<int>> combs;
     vector<int> unlockVec;
     vector<int> valueVec;
     vector<int> moveAbleVec;
     vector<int> moveNums;
     int blockNums = blockList.size();
-    
-    while(!queue.empty())
+    deque<Task> local_queue;
+    while(1)
     {
         Task task;
-        if(queue.size() < 100000)
+        
+        if(foundResult)
         {
-            task = queue.front();
-            queue.pop_front();
+            return true;
+        }
+        
+        /// 先从本线程的队列里面拿
+        if(!local_queue.empty())
+        {
+            if(local_queue.size() < 10000)
+            {
+                task = local_queue.front();
+                local_queue.pop_front();
+            }
+            else
+            {
+                task = local_queue.back();
+                local_queue.pop_back();
+            }
         }
         else
         {
-            task = queue.back();
-            queue.pop_back();
+            /// 没有的话再去公用队列中拿
+            mtx.lock();
+            if(!queue.empty())
+            {
+                // 拿一半，最少一个
+                int halfSize = max(int(1),int(queue.size() / 2));
+                
+                while(halfSize--)
+                {
+                    local_queue.push_back(queue.front());
+                    queue.pop_front();
+                }
+            }
+            mtx.unlock();
+            // 如果没取到，过一会再尝试
+            if(local_queue.empty())
+            {
+                sleep(1);
+            }
+            continue;
         }
-        
+
         room = RRoom;
         
         int x = task.x;
@@ -256,10 +284,11 @@ bool move2(Room RRoom,vector<Block>& blockList,deque<Task>& queue)
         }
         
         tryTimes++;
-
+        
         if(room.isZeroAt(x,y) && room.isZero())
         {
-            
+            resultTask = task;
+            foundResult = true;
             return true;
         }
         // 是最后一个位置
@@ -269,7 +298,7 @@ bool move2(Room RRoom,vector<Block>& blockList,deque<Task>& queue)
         }
         
         // 找出所有没被锁的木块
-//        vector<int> unlockVec;
+        //        vector<int> unlockVec;
         
         unlockVec.clear();
         
@@ -281,14 +310,14 @@ bool move2(Room RRoom,vector<Block>& blockList,deque<Task>& queue)
             }
         }
         
-//        if(unlockVec.size() == 0)
-//            return false;
+        //        if(unlockVec.size() == 0)
+        //            return false;
         // 在没被锁的木块里，找出能覆盖到该位置的木块(可以先把没被锁的木块放到左上角
         
-//        valueVec = getValueBlocks(blockList,unlockVec,x,y);
+        //        valueVec = getValueBlocks(blockList,unlockVec,x,y);
         getValueBlocks(blockList,unlockVec,x,y,valueVec);
         // 在所有影响该位置的木块中，找出能移动的
-//        moveAbleVec = getMoveAbleBlock(room,blockList,valueVec,x,y);
+        //        moveAbleVec = getMoveAbleBlock(room,blockList,valueVec,x,y);
         getMoveAbleBlock(room,blockList,valueVec,x,y,moveAbleVec);
         
         int n = moveAbleVec.size();
@@ -296,8 +325,8 @@ bool move2(Room RRoom,vector<Block>& blockList,deque<Task>& queue)
         // 对该位置，根据该位置的值和能移动的方块数，计算所有可以移动哪些个数
         getMoveNums(room,x,y,n,moveNums);
         
-//        if(moveNums.size() == 0)
-//            return false;
+        //        if(moveNums.size() == 0)
+        //            return false;
         for(int i = 0;i < moveNums.size();++i)
         {
             int m = moveNums[i];
@@ -308,8 +337,7 @@ bool move2(Room RRoom,vector<Block>& blockList,deque<Task>& queue)
             for(int j = 0;j < combs.size();++j)
             {
                 Task newTask = task;
-                
-                
+
                 // 对有影响的block，加锁
                 for(int i = 0;i < valueVec.size();++i)
                 {
@@ -326,8 +354,6 @@ bool move2(Room RRoom,vector<Block>& blockList,deque<Task>& queue)
                     newTask.vecLock[index] = false;
                 }
                 
-//                Room testRoom;
-                testRoom = room;
                 // 方块移到下个位置
                 for(int k = 0;k < combs[j].size();++k)
                 {
@@ -358,15 +384,33 @@ bool move2(Room RRoom,vector<Block>& blockList,deque<Task>& queue)
                 newTask.x = x1;
                 newTask.y = y1;
                 newTask.number = task.number + 1;
-                queue.push_back(newTask);
-                
+                local_queue.push_back(newTask);
             }
         }
         
+        
+        // 丢一半给主队列，避免其他队列没事干
+        if(queue.empty())
+        {
+            // 拿出一半
+            int halfSize = local_queue.size() / 2;
+            vector<Task> vecTmp;
+            while(halfSize--)
+            {
+                vecTmp.push_back(local_queue.front());
+                local_queue.pop_front();
+            }
+            mtx.lock();
+            for(int i = 0;i < vecTmp.size();++i)
+            {
+                queue.push_back(vecTmp[i]);
+            }
+            mtx.unlock();
+        }
+        
     }
-    
     return false;
-    
+
 }
 
 
@@ -750,31 +794,38 @@ void calPossibility(Room& room,vector<Block>& blockList,long& possibility)
 //    }
 //    return false;
 //}
+void threadHelper()
+{
+    move2(room,BlockList);
+    
+}
 
 int main (int argc, const char * argv[]) {
     
     const int MAX_LEVEL = 59;
-    const int BEGIN_LEVEL = 57;
-    const int END_LEVEL = 57;
+    const int BEGIN_LEVEL = 39;
+    const int END_LEVEL = 39;
     for(int level_it = BEGIN_LEVEL - 1;level_it < END_LEVEL;++level_it)
     {
         
         possibility = 1;
-        lastTime = clock();
+        
         tryTimes = 0;
         percent = 0;
-        
+        foundResult = false;
         
         int level = 0;
         int modu = 0;
         string str;
         string output;
-        Room room;
-        vector<Block> blockList;
+//        Room room;
+//        vector<Block> blockList;
         str = strings[level_it];
         
-        
-        processInput(str,level,modu,room,blockList);
+        room = Room();
+        queue.clear();
+        BlockList.clear();
+        processInput(str,level,modu,room,BlockList);
         
         /// 对 Block 进行排序，面积大的在前面
         
@@ -784,10 +835,11 @@ int main (int argc, const char * argv[]) {
         //    });
         
         
-        calPossibility(room,blockList,possibility);
+        calPossibility(room,BlockList,possibility);
         
         time_t beginTime;
         time(&beginTime);
+        lastTime = clock();
         
         cout << "Level : " << level << endl;
         cout << "Total: " << possibility << endl;
@@ -802,9 +854,9 @@ int main (int argc, const char * argv[]) {
 //        }
 //        bool suss = move(room,blockList,0,0);
         // 方法 3
-        deque<Task> queue;
+        
         Task task;
-        for(int i = 0;i < blockList.size();++i)
+        for(int i = 0;i < BlockList.size();++i)
         {
             task.x = 0;
             task.y = 0;
@@ -817,18 +869,38 @@ int main (int argc, const char * argv[]) {
         }
         queue.push_back(task);
         
-        bool suss = move2(room,blockList,queue);
-
-        if(suss)
+        //bool suss = move2(room,blockList,queue);
+        
+        int thread_nums = 2;
+        vector<thread> vecThread;
+        for(int i =0;i < thread_nums;++i)
+        {
+            thread t1(threadHelper);
+            t1.detach();
+        }
+        
+        while(!foundResult)
+        {
+            sleep(1);
+        }
+        
+        if(foundResult)
         {
             /// 根据 id，排序回来
 //            std::sort(blockList.begin(),blockList.end(),[](const Block& a,const Block& b){
 //                return a.id < b.id;
 //            });
-            for(int i = 0;i < blockList.size();++i)
+            
+            
+//            for(int i = 0;i < blockList.size();++i)
+//            {
+//                output += blockList[i].y + '0';
+//                output += blockList[i].x + '0';
+//            }
+            for(int i = 0;i < BlockList.size();++i)
             {
-                output += blockList[i].y + '0';
-                output += blockList[i].x + '0';
+                output += resultTask.blocksY[i] + '0';
+                output += resultTask.blocksX[i] + '0';
             }
         }
         else
