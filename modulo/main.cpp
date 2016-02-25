@@ -28,7 +28,7 @@ using namespace std;
 
 static std::atomic_ullong tryTimes;
 static long lastTime = 0;
-static long possibility = 1;
+static unsigned long long possibility = 1;
 static long percent = 0;
 
 static Room room;
@@ -41,6 +41,18 @@ std::mutex mtx;
 
 
 
+#ifdef _WIN32
+#include <windows.h>
+#endif
+
+void mySleep(int millSecond)
+{
+#ifdef _WIN32
+        Sleep(millSecond);
+#else
+    sleep(millSecond);
+#endif
+}
 
 bool hasNextPos(Room& room,Block& block,int& posX,int& posY)
 {
@@ -131,6 +143,7 @@ void getCombis(vector<int> vec,int m,vector<vector<int>>& result)
     int n = vec.size();
     
     vector<int> selectors;
+    selectors.clear();
     for(int i = 0;i < n - m;++i)
     {
         selectors.push_back(0);
@@ -153,6 +166,8 @@ void getCombis(vector<int> vec,int m,vector<vector<int>>& result)
         result.push_back(oneComb);
     } while (next_permutation(selectors.begin(), selectors.end()));
     
+    
+
     
 }
 void getMoveNums(const Room& room,int x,int y,int n,vector<int>& result)
@@ -237,16 +252,8 @@ bool move2(Room RRoom,vector<Block> blockList/*,deque<Task>& queue*/)
         /// 先从本线程的队列里面拿
         if(!local_queue.empty())
         {
-            if(local_queue.size() < 10000)
-            {
-                task = local_queue.front();
-                local_queue.pop_front();
-            }
-            else
-            {
-                task = local_queue.back();
-                local_queue.pop_back();
-            }
+            task = local_queue.back();
+            local_queue.pop_back();
         }
         else
         {
@@ -259,19 +266,18 @@ bool move2(Room RRoom,vector<Block> blockList/*,deque<Task>& queue*/)
                 
                 while(halfSize--)
                 {
-                    local_queue.push_back(queue.front());
-                    queue.pop_front();
+                    local_queue.push_back(queue.back());
+                    queue.pop_back();
                 }
             }
             mtx.unlock();
             // 如果没取到，过一会再尝试
             if(local_queue.empty())
             {
-                sleep(1);
+                mySleep(1);
             }
             continue;
         }
-
         room = RRoom;
         
         int x = task.x;
@@ -334,7 +340,7 @@ bool move2(Room RRoom,vector<Block> blockList/*,deque<Task>& queue*/)
             getCombis(moveAbleVec,m,combs);
             
             // 对于每种组合里面的方块，移动到下个位置。
-            for(int j = 0;j < combs.size();++j)
+            for(int j = 0;j < combs.size();/*++j*/)
             {
                 Task newTask = task;
 
@@ -385,6 +391,8 @@ bool move2(Room RRoom,vector<Block> blockList/*,deque<Task>& queue*/)
                 newTask.y = y1;
                 newTask.number = task.number + 1;
                 local_queue.push_back(newTask);
+                //cout << local_queue.size()<<",";
+                ++j;
             }
         }
         
@@ -397,8 +405,8 @@ bool move2(Room RRoom,vector<Block> blockList/*,deque<Task>& queue*/)
             vector<Task> vecTmp;
             while(halfSize--)
             {
-                vecTmp.push_back(local_queue.front());
-                local_queue.pop_front();
+                vecTmp.push_back(local_queue.back());
+                local_queue.pop_back();
             }
             mtx.lock();
             for(int i = 0;i < vecTmp.size();++i)
@@ -679,7 +687,7 @@ bool canZeroWithChildBlock(Room room,vector<Block> blockList,int beginIndex,pair
     
     return false;
 }
-void calPossibility(Room& room,vector<Block>& blockList,long& possibility)
+void calPossibility(Room& room,vector<Block>& blockList,unsigned long long& possibility)
 {
     for(int i = 0;i < blockList.size();++i)
     {
@@ -803,10 +811,11 @@ void threadHelper()
 int main (int argc, const char * argv[]) {
     
     const int MAX_LEVEL = 59;
-    const int BEGIN_LEVEL = 39;
-    const int END_LEVEL = 39;
+    const int BEGIN_LEVEL = 59;
+    const int END_LEVEL = 59;
     for(int level_it = BEGIN_LEVEL - 1;level_it < END_LEVEL;++level_it)
     {
+        lastTime = clock();
         
         possibility = 1;
         
@@ -818,22 +827,14 @@ int main (int argc, const char * argv[]) {
         int modu = 0;
         string str;
         string output;
-//        Room room;
-//        vector<Block> blockList;
+        
         str = strings[level_it];
         
         room = Room();
         queue.clear();
         BlockList.clear();
+        
         processInput(str,level,modu,room,BlockList);
-        
-        /// 对 Block 进行排序，面积大的在前面
-        
-        //    std::sort(blockList.begin(),blockList.end(),[](const Block& a,const Block& b){
-        //        return a.w * a.h > b.w * b.h;
-        //        //return a.w > b.w;
-        //    });
-        
         
         calPossibility(room,BlockList,possibility);
         
@@ -845,15 +846,6 @@ int main (int argc, const char * argv[]) {
         cout << "Total: " << possibility << endl;
         cout << "Begin Time :" << ctime(&beginTime);
         
-        // 方法1
-        //bool suss = calculate(room,blockList);
-        // 方法2
-//        for(int i = 0;i < blockList.size();++i)
-//        {
-//            room.add(blockList[i]);
-//        }
-//        bool suss = move(room,blockList,0,0);
-        // 方法 3
         
         Task task;
         for(int i = 0;i < BlockList.size();++i)
@@ -861,8 +853,6 @@ int main (int argc, const char * argv[]) {
             task.x = 0;
             task.y = 0;
             task.number = 0;
-//            task.blocksX.push_back(0);
-//            task.blocksY.push_back(0);
             task.blocksX[i] = 0;
             task.blocksY[i] = 0;
             task.vecLock[i] = false;
@@ -879,24 +869,26 @@ int main (int argc, const char * argv[]) {
             t1.detach();
         }
         
+        long lastReportTime = clock();
         while(!foundResult)
         {
-            sleep(1);
+            mySleep(1);
+            long currReportTime = clock();
+            long interval = (currReportTime - lastReportTime)/CLOCKS_PER_SEC;
+            
+            // 60秒报告一次
+            if(interval > 60)
+            {
+                lastReportTime = currReportTime;
+                long speedTime = (clock() - lastTime)/CLOCKS_PER_SEC;
+                cout << "tryTimes:" << tryTimes << " ,speed: " << tryTimes/speedTime << " ,time: " << speedTime << endl;
+            }
+            
+            
         }
         
         if(foundResult)
         {
-            /// 根据 id，排序回来
-//            std::sort(blockList.begin(),blockList.end(),[](const Block& a,const Block& b){
-//                return a.id < b.id;
-//            });
-            
-            
-//            for(int i = 0;i < blockList.size();++i)
-//            {
-//                output += blockList[i].y + '0';
-//                output += blockList[i].x + '0';
-//            }
             for(int i = 0;i < BlockList.size();++i)
             {
                 output += resultTask.blocksY[i] + '0';
@@ -906,22 +898,6 @@ int main (int argc, const char * argv[]) {
         else
         {
             output = "XXXXXXXXXXXXXXXXXXXXXX";
-//            room.print();
-            
-//            for(int i = 0;i < blockList.size();++i)
-//            {
-//                blockList[i].print();
-//                cout << endl;
-//            }
-//            /// 根据 id，排序回来
-//            std::sort(blockList.begin(),blockList.end(),[](const Block& a,const Block& b){
-//                return a.id < b.id;
-//            });
-//            for(int i = 0;i < blockList.size();++i)
-//            {
-//                output += blockList[i].y + '0';
-//                output += blockList[i].x + '0';
-//            }
         }
         
         time_t endTime;

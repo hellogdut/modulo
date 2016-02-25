@@ -9,16 +9,16 @@
 #ifndef Task_h
 #define Task_h
 
-#define MAX_BLOCK_NUMS 20
+#define MAX_BLOCK_NUMS 40
 struct Task
 {
-    int x;
-    int y;
-    int number;
+    char x;
+    char y;
+    char number;
     
-    int blocksX[MAX_BLOCK_NUMS];
-    int blocksY[MAX_BLOCK_NUMS];
-    int vecLock[MAX_BLOCK_NUMS];
+    char blocksX[MAX_BLOCK_NUMS];
+    char blocksY[MAX_BLOCK_NUMS];
+    bool vecLock[MAX_BLOCK_NUMS];
     //vector<int> blocksX;
     //    vector<int> blocksY;
     //    vector<bool> vecLock;

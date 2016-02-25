@@ -10,7 +10,7 @@
 #define Block_h
 #include <iostream>
 using namespace std;;
-#define BLOCK_SIZE 10
+#define BLOCK_SIZE 40
 struct Block
 {
     int w;
