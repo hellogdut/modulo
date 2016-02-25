@@ -18,7 +18,9 @@
 #include <thread>
 #include <mutex>
 #include <atomic>
-
+#include <algorithm>
+#include <stdlib.h>
+#include <unistd.h>
 #include "Block.h"
 #include "Room.h"
 #include "Task.h"
@@ -48,7 +50,7 @@ std::mutex mtx;
 void mySleep(int millSecond)
 {
 #ifdef _WIN32
-        Sleep(millSecond);
+    Sleep(millSecond);
 #else
     sleep(millSecond);
 #endif
@@ -167,7 +169,7 @@ void getCombis(vector<int> vec,int m,vector<vector<int>>& result)
     } while (next_permutation(selectors.begin(), selectors.end()));
     
     
-
+    
     
 }
 void getMoveNums(const Room& room,int x,int y,int n,vector<int>& result)
@@ -211,7 +213,7 @@ void getUnlockBlocks(const vector<Block>& blockList,vector<int>& result)
             result.push_back(i);
         }
     }
-
+    
 }
 void getValueBlocks(const vector<Block>& blockList,vector<int> vec,int x,int y,vector<int>& result)
 {
@@ -343,7 +345,7 @@ bool move2(Room RRoom,vector<Block> blockList/*,deque<Task>& queue*/)
             for(int j = 0;j < combs.size();/*++j*/)
             {
                 Task newTask = task;
-
+                
                 // 对有影响的block，加锁
                 for(int i = 0;i < valueVec.size();++i)
                 {
@@ -418,7 +420,7 @@ bool move2(Room RRoom,vector<Block> blockList/*,deque<Task>& queue*/)
         
     }
     return false;
-
+    
 }
 
 
@@ -439,25 +441,25 @@ bool move2(Room RRoom,vector<Block> blockList/*,deque<Task>& queue*/)
 //        return false;
 //    // 在没被锁的木块里，找出能覆盖到该位置的木块(可以先把没被锁的木块放到左上角
 //    vector<int> valueVec = getValueBlocks(blockList,unlockVec,x,y);
-//    
+//
 //    // 在所有影响该位置的木块中，找出能移动的
 //    vector<int> moveAbleVec = getMoveAbleBlock(room,blockList,valueVec,x,y);
-//    
+//
 //    int n = moveAbleVec.size();
-//    
+//
 //    // 对该位置，根据该位置的值和能移动的方块数，计算所有可以移动哪些个数
 //    vector<int> moveNums = getMoveNums(room,x,y,n);
-//    
+//
 //    if(moveNums.size() == 0)
 //        return false;
-//    
-//    
+//
+//
 //    for(int i = 0;i < moveNums.size();++i)
 //    {
 //        int m = moveNums[i];
 //        // 从 vec1 的 n 个中挑 m 个出来。
 //        vector<vector<int>> combs = getCombis(moveAbleVec,m);
-//        
+//
 //        // 对于每种组合里面的方块，移动到下个位置。
 //        for(int j = 0;j < combs.size();++j)
 //        {
@@ -475,7 +477,7 @@ bool move2(Room RRoom,vector<Block> blockList/*,deque<Task>& queue*/)
 //                blockList[index].unLock();
 //            }
 //            // 记下这个组合旧的位置
-//            
+//
 //            vector<int> vx(combs[j].size());
 //            vector<int> vy(combs[j].size());
 //            for(int k = 0;k < combs[j].size();++k)
@@ -485,7 +487,7 @@ bool move2(Room RRoom,vector<Block> blockList/*,deque<Task>& queue*/)
 //                vx[k] = block.x;
 //                vy[k] = block.y;
 //            }
-//            
+//
 //            Room testRoom = room;
 //            // 方块移到下个位置
 //            for(int k = 0;k < combs[j].size();++k)
@@ -497,11 +499,11 @@ bool move2(Room RRoom,vector<Block> blockList/*,deque<Task>& queue*/)
 //                {
 //                    cout << "+++++ error +++++" << endl;
 //                }
-//                
+//
 //                testRoom.remove(block);
 //                block.moveTo(posX,posY);
 //                testRoom.add(block);
-//                
+//
 //            }
 //            // 得到下个位置的 坐标(x1,y1)
 //            int x1,y1;
@@ -515,7 +517,7 @@ bool move2(Room RRoom,vector<Block> blockList/*,deque<Task>& queue*/)
 //                x1 = 0;
 //                y1 = y + 1;
 //            }
-//            
+//
 //            if(!move(testRoom,blockList,x1,y1))
 //            {
 //                for(int k = 0;k < combs[j].size();++k)
@@ -529,7 +531,7 @@ bool move2(Room RRoom,vector<Block> blockList/*,deque<Task>& queue*/)
 //            {
 //                return true;
 //            }
-//            
+//
 //            // 解锁，回复原装
 //            for(int i = 0;i < valueVec.size();++i)
 //            {
@@ -539,7 +541,7 @@ bool move2(Room RRoom,vector<Block> blockList/*,deque<Task>& queue*/)
 //        }
 //    }
 //    return false;
-//    
+//
 //}
 //
 
@@ -702,7 +704,7 @@ void calPossibility(Room& room,vector<Block>& blockList,unsigned long long& poss
 //{
 //    string str;
 //    //bool ret = move(room,blockList,0);
-//    
+//
 //    for(int i = 0;i < blockList.size();++i)
 //    {
 //        room.add(blockList[i]);
@@ -713,7 +715,7 @@ void calPossibility(Room& room,vector<Block>& blockList,unsigned long long& poss
 //    {
 //        if(room.isZero())
 //            return true;
-//        
+//
 //        Block& block = blockList[k];
 //        //block.print();
 //        for(int j = k + 1; j < n;++j)
@@ -722,7 +724,7 @@ void calPossibility(Room& room,vector<Block>& blockList,unsigned long long& poss
 //            room.remove(bk);
 //            bk.moveTo(0,0);
 //            room.add(bk);
-//            
+//
 //        }
 //        if(k == 1)
 //        {
@@ -733,8 +735,8 @@ void calPossibility(Room& room,vector<Block>& blockList,unsigned long long& poss
 //        if(k == n - 1)
 //        {
 //            bool toContinue = false;
-//            
-//            
+//
+//
 //            for(int j = 0;j <= block.y;++j)
 //            {
 //                if(toContinue == true)
@@ -762,14 +764,14 @@ void calPossibility(Room& room,vector<Block>& blockList,unsigned long long& poss
 //            room.remove(block);
 //            block.moveTo(newX,newY);
 //            room.add(block);
-//            
+//
 //            for(int j = k + 1; j < n;++j)
 //            {
 //                Block& bk = blockList[j];
 //                room.remove(bk);
 //                bk.moveTo(0,0);
 //                room.add(bk);
-//                
+//
 //            }
 //            if(k == 1 && block.y == 1)  //debug
 //            {
@@ -788,7 +790,7 @@ void calPossibility(Room& room,vector<Block>& blockList,unsigned long long& poss
 //            //                    }
 //            //                }
 //            //            }
-//            
+//
 //            k = n - 1;
 //        }
 //        else
@@ -807,11 +809,14 @@ void threadHelper()
     move2(room,BlockList);
     
 }
-
+void sendMail(int level,string result,long tryTimes,int second)
+{
+    
+}
 int main (int argc, const char * argv[]) {
     
     const int MAX_LEVEL = 59;
-    const int BEGIN_LEVEL = 59;
+    const int BEGIN_LEVEL = 41;
     const int END_LEVEL = 59;
     for(int level_it = BEGIN_LEVEL - 1;level_it < END_LEVEL;++level_it)
     {
@@ -928,6 +933,7 @@ int main (int argc, const char * argv[]) {
         outdata << "End Time :" << ctime(&endTime);
         outdata.close();
         
+        sendMail(level, output, tryTimes, second);
     }
     
     return 0;
