@@ -135,7 +135,7 @@ vector<int> getNonZeroBlock(vector<Block>& blockList,const vector<int>& vec,int 
     }
     return vec1;
 }
-void getCombis(vector<int> vec,int m,vector<vector<int>>& result,vector<int>& selectors,vector<int>& oneComb)
+void getCombis(const vector<int>& vec,int m,vector<vector<int>>& result,vector<int>& selectors,vector<int>& oneComb)
 {
     // 参考 http://mingxinglai.com/cn/2012/09/generate-permutation-use-stl/
     // 这里用的是 next_permutaion,前面补 0
@@ -247,7 +247,7 @@ void getUnlockBlocks(const vector<Block>& blockList,vector<int>& result)
     }
     
 }
-void getValueBlocks(const vector<Block>& blockList,vector<int> vec,int x,int y,vector<int>& result)
+void getValueBlocks(const vector<Block>& blockList,const vector<int>& vec,int x,int y,vector<int>& result)
 {
     result.clear();
     for(int i = 0;i < vec.size();++i)
@@ -892,7 +892,7 @@ void sendMail(int level,string result,long tryTimes,int second)
 int main (int argc, const char * argv[]) {
     
     const int MAX_LEVEL = 59;
-    const int BEGIN_LEVEL = 1;
+    const int BEGIN_LEVEL = 45;
     const int END_LEVEL = 59;
     for(int level_it = BEGIN_LEVEL - 1;level_it < END_LEVEL;++level_it)
     {
