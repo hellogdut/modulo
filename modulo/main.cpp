@@ -204,6 +204,37 @@ void getMoveNums(const Room& room,int x,int y,int n,vector<int>& result)
     }
     
 }
+void getMoveNums_lazy(int sum,int mod,int n,vector<int>& result)
+{
+    // 计算(x,y) 位置可以 移除多少个方块达到圆满。排除0（即不移除的情况)
+    
+    result.clear();
+    
+    int val = sum;
+    
+    int nextVal = val;
+    while(nextVal >= 0)
+    {
+        int times = nextVal / mod;
+        int closest = times * mod;
+        int offset = val - closest;
+        
+        nextVal -= mod;
+        
+        if(n >= offset)
+        {
+            result.push_back(offset);
+        }
+        else
+        {
+            break;
+        }
+        
+        
+    }
+    
+}
+
 void getUnlockBlocks(const vector<Block>& blockList,vector<int>& result)
 {
     result.clear();
@@ -233,9 +264,52 @@ void getValueBlocks(const vector<Block>& blockList,vector<int> vec,int x,int y,v
         }
     }
 }
-bool move2(Room RRoom,vector<Block> blockList/*,deque<Task>& queue*/)
+int getBlocksValueAt(const vector<Block>& blockList,int x,int y)
 {
-    Room room;
+    int result = 0;
+    for(int i = 0;i < blockList.size();++i)
+    {
+        const Block& block = blockList[i];
+        if(!(block.x <= x && x <= block.x + block.w - 1))
+            continue;
+        if(!(block.y <= y && y <= block.y + block.h - 1))
+            continue;
+        if(block.block[y - block.y][x - block.x] != 0)
+        {
+            result++;
+        }
+    }
+    return result;
+}
+bool isZeroAt_lazy(const Room& room,const vector<Block>& blockList,int x,int y,int& sum)
+{
+    sum = getBlocksValueAt(blockList, x, y) + room.room[y][x];
+    return (sum % room.mod) == 0;
+}
+bool isZeroFrom_lazy(const Room& room,const vector<Block>& blockList,int x,int y)
+{
+    // 从 (x,y) 的下一个位置开始,到整个room结束，是否都为 0
+    while(1)
+    {
+        int nextX;
+        int nextY;
+        int sum;
+        bool ret = room.getNextPos(x,y,nextX,nextY);
+        x = nextX;
+        y = nextY;
+        if(!ret)
+        {
+            // 到结尾了，前面都为0
+            return true;
+        }
+        if(!isZeroAt_lazy(room, blockList, nextX, nextY,sum))
+        {
+            return false;
+        }
+    }
+}
+bool move2(Room room,vector<Block> blockList/*,deque<Task>& queue*/)
+{
     vector<vector<int>> combs;
     vector<int> unlockVec;
     vector<int> valueVec;
@@ -243,6 +317,7 @@ bool move2(Room RRoom,vector<Block> blockList/*,deque<Task>& queue*/)
     vector<int> moveNums;
     vector<int> selectors;
     vector<int> oneComb;
+    int sumAtXY = 0;
     int blockNums = blockList.size();
     deque<Task> local_queue;
     while(1)
@@ -283,7 +358,7 @@ bool move2(Room RRoom,vector<Block> blockList/*,deque<Task>& queue*/)
             }
             continue;
         }
-        room = RRoom;
+        //room = RRoom;
         
         int x = task.x;
         int y = task.y;
@@ -291,12 +366,12 @@ bool move2(Room RRoom,vector<Block> blockList/*,deque<Task>& queue*/)
         for(int i = 0;i < blockNums;++i)
         {
             blockList[i].moveTo(task.blocksX[i], task.blocksY[i]);
-            room.add(blockList[i]);
+            //room.add(blockList[i]);
         }
         
         tryTimes++;
-        
-        if(room.isZeroAt(x,y) && room.isZero())
+        //if(room.isZeroAt(x,y) && room.isZero())
+        if(isZeroAt_lazy(room, blockList, x, y,sumAtXY) && isZeroFrom_lazy(room, blockList, x, y))
         {
             resultTask = task;
             foundResult = true;
@@ -321,11 +396,7 @@ bool move2(Room RRoom,vector<Block> blockList/*,deque<Task>& queue*/)
             }
         }
         
-        //        if(unlockVec.size() == 0)
-        //            return false;
-        // 在没被锁的木块里，找出能覆盖到该位置的木块(可以先把没被锁的木块放到左上角
-        
-        //        valueVec = getValueBlocks(blockList,unlockVec,x,y);
+        // 在没被锁的木块里，找出能覆盖到该位置的木块(值不为0)。可以先把没被锁的木块放到左上角
         getValueBlocks(blockList,unlockVec,x,y,valueVec);
         // 在所有影响该位置的木块中，找出能移动的
         //        moveAbleVec = getMoveAbleBlock(room,blockList,valueVec,x,y);
@@ -334,11 +405,12 @@ bool move2(Room RRoom,vector<Block> blockList/*,deque<Task>& queue*/)
         int n = moveAbleVec.size();
         
         // 对该位置，根据该位置的值和能移动的方块数，计算所有可以移动哪些个数
-        getMoveNums(room,x,y,n,moveNums);
-        
+        //getMoveNums(room,x,y,n,moveNums);
+        getMoveNums_lazy(sumAtXY, room.mod,n,moveNums);
         //        if(moveNums.size() == 0)
         //            return false;
-        for(int i = 0;i < moveNums.size();++i)
+//        for(int i = 0;i < moveNums.size();++i)
+        for(int i = moveNums.size() - 1;i >= 0;--i)
         {
             int m = moveNums[i];
             // 从 vec1 的 n 个中挑 m 个出来。
@@ -379,17 +451,19 @@ bool move2(Room RRoom,vector<Block> blockList/*,deque<Task>& queue*/)
                     
                 }
                 // 得到下个位置的 坐标(x1,y1)
+                
                 int x1,y1;
-                if(x < room.m - 1)
-                {
-                    x1 = x + 1;
-                    y1 = y;
-                }
-                else
-                {
-                    x1 = 0;
-                    y1 = y + 1;
-                }
+                room.getNextPos(x, y, x1, y1);
+//                if(x < room.m - 1)
+//                {
+//                    x1 = x + 1;
+//                    y1 = y;
+//                }
+//                else
+//                {
+//                    x1 = 0;
+//                    y1 = y + 1;
+//                }
                 
                 newTask.x = x1;
                 newTask.y = y1;
@@ -818,7 +892,7 @@ void sendMail(int level,string result,long tryTimes,int second)
 int main (int argc, const char * argv[]) {
     
     const int MAX_LEVEL = 59;
-    const int BEGIN_LEVEL = 45;
+    const int BEGIN_LEVEL = 1;
     const int END_LEVEL = 59;
     for(int level_it = BEGIN_LEVEL - 1;level_it < END_LEVEL;++level_it)
     {

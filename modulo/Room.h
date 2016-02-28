@@ -152,6 +152,20 @@ struct Room
             cout << "]" <<endl;
         }
     }
+    bool getNextPos(int oldX,int oldY,int& newX,int& newY) const
+    {
+        if(oldX < this->m - 1)
+        {
+            newX = oldX + 1;
+            newY = oldY;
+        }
+        else
+        {
+            newX = 0;
+            newY = oldY + 1;
+        }
+        return newY < n;
+    }
     
     int m;
     int n;
