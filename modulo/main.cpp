@@ -168,10 +168,58 @@ void getCombis(const vector<int>& vec,int m,vector<vector<int>>& result,vector<i
         }
         result.push_back(oneComb);
     } while (next_permutation(selectors.begin(), selectors.end()));
+}
+void getCombis_lazy(const vector<int>& vec,int m,vector<vector<int>*>& result,vector<vector<int>*>& pUnusedComb,vector<int>& selectors)
+{
+    // 参考 http://mingxinglai.com/cn/2012/09/generate-permutation-use-stl/
+    // 这里用的是 next_permutaion,前面补 0
+    
+    // n 个中取 m 个组合
     
     
+    for(int i = 0;i < result.size();++i)
+    {
+        pUnusedComb.push_back(result[i]);
+    }
+    result.clear();
     
     
+    int n = vec.size();
+    
+    selectors.clear();
+    for(int i = 0;i < n - m;++i)
+    {
+        selectors.push_back(0);
+    }
+    for(int i = 0;i < m;++i)
+    {
+        selectors.push_back(1);
+    }
+    
+    do
+    {
+        vector<int>* pOneComb;
+        
+        if(pUnusedComb.size() != 0)
+        {
+            pOneComb = pUnusedComb.back();
+            pUnusedComb.pop_back();
+        }
+        else
+        {
+            pOneComb = new vector<int>;
+        }
+        
+        pOneComb->clear();
+        for (size_t i = 0; i < selectors.size(); ++i)
+        {
+            if (selectors[i])
+            {
+                pOneComb->push_back(vec[i]);
+            }
+        }
+        result.push_back(pOneComb);
+    } while (next_permutation(selectors.begin(), selectors.end()));
 }
 void getMoveNums(const Room& room,int x,int y,int n,vector<int>& result)
 {
@@ -311,6 +359,10 @@ bool isZeroFrom_lazy(const Room& room,const vector<Block>& blockList,int x,int y
 bool move2(Room room,vector<Block> blockList/*,deque<Task>& queue*/)
 {
     vector<vector<int>> combs;
+    
+    vector<vector<int>*> pCombs;
+    vector<vector<int>*> pUnusedComb;
+    
     vector<int> unlockVec;
     vector<int> valueVec;
     vector<int> moveAbleVec;
@@ -414,9 +466,12 @@ bool move2(Room room,vector<Block> blockList/*,deque<Task>& queue*/)
         {
             int m = moveNums[i];
             // 从 vec1 的 n 个中挑 m 个出来。
-            getCombis(moveAbleVec,m,combs,selectors,oneComb);
+            //getCombis(moveAbleVec,m,combs,selectors,oneComb);
+            getCombis_lazy(moveAbleVec,m,pCombs,pUnusedComb,selectors);
+            
             // 对于每种组合里面的方块，移动到下个位置。
-            for(int j = 0;j < combs.size();/*++j*/)
+//            for(int j = 0;j < combs.size();/*++j*/)
+            for(int j = 0;j < pCombs.size();)
             {
                 Task newTask = task;
                 
@@ -428,18 +483,22 @@ bool move2(Room room,vector<Block> blockList/*,deque<Task>& queue*/)
                     newTask.vecLock[index] = true;
                 }
                 // 仅解锁本次移动到下个位置部分的block
-                for(int k = 0;k < combs[j].size();++k)
+//                for(int k = 0;k < combs[j].size();++k)
+                for(int k = 0;k < pCombs[j]->size();++k)
                 {
-                    int index = combs[j][k];
+//                    int index = combs[j][k];
+                    int index = (*pCombs[j])[k];
                     // 每个block 移动到新的位置
                     //blockList[index].unLock();
                     newTask.vecLock[index] = false;
                 }
                 
                 // 方块移到下个位置
-                for(int k = 0;k < combs[j].size();++k)
+//                for(int k = 0;k < combs[j].size();++k)
+                for(int k = 0;k < pCombs[j]->size();++k)
                 {
-                    int index = combs[j][k];
+//                    int index = combs[j][k];
+                    int index = (*pCombs[j])[k];
                     Block& block = blockList[index];
                     int posX,posY;
                     if(!hasNextPos(room,block,posX,posY))
@@ -755,10 +814,6 @@ bool canZeroWithChildBlock(Room room,vector<Block> blockList,int beginIndex,pair
         else
         {
             k--;
-            if(k < 0)//debug
-            {
-                int ddd = 1;
-            }
         }
         
     }
