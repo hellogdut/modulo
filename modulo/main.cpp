@@ -43,6 +43,7 @@ std::mutex mtx;
 
 
 
+
 #ifdef _WIN32
 #include <windows.h>
 #endif
@@ -134,7 +135,7 @@ vector<int> getNonZeroBlock(vector<Block>& blockList,const vector<int>& vec,int 
     }
     return vec1;
 }
-void getCombis(vector<int> vec,int m,vector<vector<int>>& result)
+void getCombis(vector<int> vec,int m,vector<vector<int>>& result,vector<int>& selectors,vector<int>& oneComb)
 {
     // 参考 http://mingxinglai.com/cn/2012/09/generate-permutation-use-stl/
     // 这里用的是 next_permutaion,前面补 0
@@ -144,7 +145,6 @@ void getCombis(vector<int> vec,int m,vector<vector<int>>& result)
     
     int n = vec.size();
     
-    vector<int> selectors;
     selectors.clear();
     for(int i = 0;i < n - m;++i)
     {
@@ -157,7 +157,8 @@ void getCombis(vector<int> vec,int m,vector<vector<int>>& result)
     
     do
     {
-        vector<int> oneComb;
+        //vector<int> oneComb;
+        oneComb.clear();
         for (size_t i = 0; i < selectors.size(); ++i)
         {
             if (selectors[i])
@@ -240,6 +241,8 @@ bool move2(Room RRoom,vector<Block> blockList/*,deque<Task>& queue*/)
     vector<int> valueVec;
     vector<int> moveAbleVec;
     vector<int> moveNums;
+    vector<int> selectors;
+    vector<int> oneComb;
     int blockNums = blockList.size();
     deque<Task> local_queue;
     while(1)
@@ -339,8 +342,7 @@ bool move2(Room RRoom,vector<Block> blockList/*,deque<Task>& queue*/)
         {
             int m = moveNums[i];
             // 从 vec1 的 n 个中挑 m 个出来。
-            getCombis(moveAbleVec,m,combs);
-            
+            getCombis(moveAbleVec,m,combs,selectors,oneComb);
             // 对于每种组合里面的方块，移动到下个位置。
             for(int j = 0;j < combs.size();/*++j*/)
             {
@@ -816,7 +818,7 @@ void sendMail(int level,string result,long tryTimes,int second)
 int main (int argc, const char * argv[]) {
     
     const int MAX_LEVEL = 59;
-    const int BEGIN_LEVEL = 41;
+    const int BEGIN_LEVEL = 45;
     const int END_LEVEL = 59;
     for(int level_it = BEGIN_LEVEL - 1;level_it < END_LEVEL;++level_it)
     {
