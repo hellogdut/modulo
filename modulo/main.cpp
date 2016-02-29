@@ -20,7 +20,7 @@
 #include <atomic>
 #include <algorithm>
 #include <stdlib.h>
-#include <unistd.h>
+//#include <unistd.h>
 #include "Block.h"
 #include "Room.h"
 #include "Task.h"
@@ -28,7 +28,8 @@
 #define PrintProgess
 using namespace std;
 
-static std::atomic_ullong tryTimes;
+//static std::atomic_ullong tryTimes;
+static unsigned long long tryTimes; // 为了性能，不使用原子类型。容忍出错
 static long lastTime = 0;
 static unsigned long long possibility = 1;
 static long percent = 0;
@@ -57,7 +58,7 @@ void mySleep(int millSecond)
 #endif
 }
 
-bool hasNextPos(Room& room,Block& block,int& posX,int& posY)
+inline bool hasNextPos(Room& room,Block& block,int& posX,int& posY)
 {
     if(room.canRight(block))
     {
@@ -135,7 +136,7 @@ vector<int> getNonZeroBlock(vector<Block>& blockList,const vector<int>& vec,int 
     }
     return vec1;
 }
-void getCombis(const vector<int>& vec,int m,vector<vector<int>>& result,vector<int>& selectors,vector<int>& oneComb)
+inline void getCombis(const vector<int>& vec,int m,vector<vector<int>>& result,vector<int>& selectors,vector<int>& oneComb)
 {
     // 参考 http://mingxinglai.com/cn/2012/09/generate-permutation-use-stl/
     // 这里用的是 next_permutaion,前面补 0
@@ -169,7 +170,7 @@ void getCombis(const vector<int>& vec,int m,vector<vector<int>>& result,vector<i
         result.push_back(oneComb);
     } while (next_permutation(selectors.begin(), selectors.end()));
 }
-void getCombis_lazy(const vector<int>& vec,int m,vector<vector<int>*>& result,vector<vector<int>*>& pUnusedComb,vector<int>& selectors)
+inline void getCombis_lazy(const vector<int>& vec,int m,vector<vector<int>*>& result,vector<vector<int>*>& pUnusedComb,vector<int>& selectors)
 {
     // 参考 http://mingxinglai.com/cn/2012/09/generate-permutation-use-stl/
     // 这里用的是 next_permutaion,前面补 0
@@ -221,7 +222,7 @@ void getCombis_lazy(const vector<int>& vec,int m,vector<vector<int>*>& result,ve
         result.push_back(pOneComb);
     } while (next_permutation(selectors.begin(), selectors.end()));
 }
-void getMoveNums(const Room& room,int x,int y,int n,vector<int>& result)
+inline void getMoveNums(const Room& room,int x,int y,int n,vector<int>& result)
 {
     // 计算(x,y) 位置可以 移除多少个方块达到圆满。排除0（即不移除的情况)
     
@@ -252,7 +253,7 @@ void getMoveNums(const Room& room,int x,int y,int n,vector<int>& result)
     }
     
 }
-void getMoveNums_lazy(int sum,int mod,int n,vector<int>& result)
+inline void getMoveNums_lazy(int sum,int mod,int n,vector<int>& result)
 {
     // 计算(x,y) 位置可以 移除多少个方块达到圆满。排除0（即不移除的情况)
     
@@ -295,7 +296,7 @@ void getUnlockBlocks(const vector<Block>& blockList,vector<int>& result)
     }
     
 }
-void getValueBlocks(const vector<Block>& blockList,const vector<int>& vec,int x,int y,vector<int>& result)
+inline void getValueBlocks(const vector<Block>& blockList,const vector<int>& vec,int x,int y,vector<int>& result)
 {
     result.clear();
     for(int i = 0;i < vec.size();++i)
@@ -410,7 +411,7 @@ bool move2(Room room,vector<Block> blockList/*,deque<Task>& queue*/)
             }
             continue;
         }
-        //room = RRoom;
+
         
         int x = task.x;
         int y = task.y;
@@ -418,11 +419,10 @@ bool move2(Room room,vector<Block> blockList/*,deque<Task>& queue*/)
         for(int i = 0;i < blockNums;++i)
         {
             blockList[i].moveTo(task.blocksX[i], task.blocksY[i]);
-            //room.add(blockList[i]);
         }
         
         tryTimes++;
-        //if(room.isZeroAt(x,y) && room.isZero())
+
         if(isZeroAt_lazy(room, blockList, x, y,sumAtXY) && isZeroFrom_lazy(room, blockList, x, y))
         {
             resultTask = task;
@@ -434,9 +434,6 @@ bool move2(Room room,vector<Block> blockList/*,deque<Task>& queue*/)
         {
             continue;
         }
-        
-        // 找出所有没被锁的木块
-        //        vector<int> unlockVec;
         
         unlockVec.clear();
         
@@ -451,26 +448,21 @@ bool move2(Room room,vector<Block> blockList/*,deque<Task>& queue*/)
         // 在没被锁的木块里，找出能覆盖到该位置的木块(值不为0)。可以先把没被锁的木块放到左上角
         getValueBlocks(blockList,unlockVec,x,y,valueVec);
         // 在所有影响该位置的木块中，找出能移动的
-        //        moveAbleVec = getMoveAbleBlock(room,blockList,valueVec,x,y);
         getMoveAbleBlock(room,blockList,valueVec,x,y,moveAbleVec);
         
         int n = moveAbleVec.size();
         
         // 对该位置，根据该位置的值和能移动的方块数，计算所有可以移动哪些个数
-        //getMoveNums(room,x,y,n,moveNums);
+
         getMoveNums_lazy(sumAtXY, room.mod,n,moveNums);
-        //        if(moveNums.size() == 0)
-        //            return false;
-//        for(int i = 0;i < moveNums.size();++i)
+
         for(int i = moveNums.size() - 1;i >= 0;--i)
         {
             int m = moveNums[i];
             // 从 vec1 的 n 个中挑 m 个出来。
-            //getCombis(moveAbleVec,m,combs,selectors,oneComb);
             getCombis_lazy(moveAbleVec,m,pCombs,pUnusedComb,selectors);
             
             // 对于每种组合里面的方块，移动到下个位置。
-//            for(int j = 0;j < combs.size();/*++j*/)
             for(int j = 0;j < pCombs.size();)
             {
                 Task newTask = task;
@@ -479,25 +471,20 @@ bool move2(Room room,vector<Block> blockList/*,deque<Task>& queue*/)
                 for(int i = 0;i < valueVec.size();++i)
                 {
                     int index = valueVec[i];
-                    //blockList[index].lock();
                     newTask.vecLock[index] = true;
                 }
                 // 仅解锁本次移动到下个位置部分的block
-//                for(int k = 0;k < combs[j].size();++k)
                 for(int k = 0;k < pCombs[j]->size();++k)
                 {
-//                    int index = combs[j][k];
                     int index = (*pCombs[j])[k];
                     // 每个block 移动到新的位置
-                    //blockList[index].unLock();
+
                     newTask.vecLock[index] = false;
                 }
                 
                 // 方块移到下个位置
-//                for(int k = 0;k < combs[j].size();++k)
                 for(int k = 0;k < pCombs[j]->size();++k)
                 {
-//                    int index = combs[j][k];
                     int index = (*pCombs[j])[k];
                     Block& block = blockList[index];
                     int posX,posY;
@@ -513,22 +500,11 @@ bool move2(Room room,vector<Block> blockList/*,deque<Task>& queue*/)
                 
                 int x1,y1;
                 room.getNextPos(x, y, x1, y1);
-//                if(x < room.m - 1)
-//                {
-//                    x1 = x + 1;
-//                    y1 = y;
-//                }
-//                else
-//                {
-//                    x1 = 0;
-//                    y1 = y + 1;
-//                }
                 
                 newTask.x = x1;
                 newTask.y = y1;
                 newTask.number = task.number + 1;
                 local_queue.push_back(newTask);
-                //cout << local_queue.size()<<",";
                 ++j;
             }
         }
@@ -947,7 +923,7 @@ void sendMail(int level,string result,long tryTimes,int second)
 int main (int argc, const char * argv[]) {
     
     const int MAX_LEVEL = 59;
-    const int BEGIN_LEVEL = 45;
+    const int BEGIN_LEVEL = 58;
     const int END_LEVEL = 59;
     for(int level_it = BEGIN_LEVEL - 1;level_it < END_LEVEL;++level_it)
     {
@@ -997,7 +973,7 @@ int main (int argc, const char * argv[]) {
         
         //bool suss = move2(room,blockList,queue);
         
-        int thread_nums = 2;
+        int thread_nums = 1;
         vector<thread> vecThread;
         for(int i =0;i < thread_nums;++i)
         {
