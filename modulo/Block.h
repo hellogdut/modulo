@@ -60,6 +60,12 @@ struct Block
         x = _x;
         y = _y;
     }
+    bool canMoveTo(int _x,int _y,int roomW,int roomH)
+    {
+        
+        return (_x + w <= roomW && _y + h <= roomH);
+        
+    }
     void print()
     {
         cout << "block id = " << id << endl;

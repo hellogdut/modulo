@@ -28,12 +28,19 @@
 #define PrintProgess
 using namespace std;
 
+#define Map vector<vector<int>>
+#define MMap vector<vector<Map>>
+#define BlockValueList vector<MMap>
+
+#define Pos pair<int,int>
+#define PosMap vector<vector<Pos>>
+#define BlockPosList vector<PosMap>
+
 //static std::atomic_ullong tryTimes;
 static unsigned long long tryTimes; // 为了性能，不使用原子类型。容忍出错
 static long lastTime = 0;
 static unsigned long long possibility = 1;
 static long percent = 0;
-
 static Room room;
 static vector<Block> BlockList;
 
@@ -41,6 +48,8 @@ static deque<Task> queue;
 static bool foundResult = false;
 static Task resultTask;
 std::mutex mtx;
+BlockValueList blockValueList;
+BlockPosList blockPosList;
 
 
 
@@ -58,7 +67,7 @@ void mySleep(int millSecond)
 #endif
 }
 
-inline bool hasNextPos(Room& room,Block& block,int& posX,int& posY)
+bool hasNextPos(const Room& room,Block& block,int& posX,int& posY)
 {
     if(room.canRight(block))
     {
@@ -117,6 +126,24 @@ void getMoveAbleBlock(Room& room,vector<Block>& blockList,const vector<int>& vec
         Block& block = blockList[blockIndex];
         int posX,posY;
         if(hasNextPos(room, block, posX, posY))
+        {
+            result.push_back(blockIndex);
+        }
+    }
+}
+inline void getMoveAbleBlock_lazy(Room& room,vector<Block>& blockList,const BlockPosList& blockPosList,const vector<int>& vec,int x,int y,vector<int>& result)
+{
+    result.clear();
+    
+    for(int i = 0;i < vec.size();++i)
+    {
+        int blockIndex = vec[i];
+        Block& block = blockList[blockIndex];
+        int posX,posY;
+        const Pos& pos = blockPosList[blockIndex][block.y][block.x];
+        posX = pos.first;
+        posY = pos.second;
+        if(posX != -1 && posY != -1)
         {
             result.push_back(blockIndex);
         }
@@ -284,7 +311,7 @@ inline void getMoveNums_lazy(int sum,int mod,int n,vector<int>& result)
     
 }
 
-void getUnlockBlocks(const vector<Block>& blockList,vector<int>& result)
+inline void getUnlockBlocks(const vector<Block>& blockList,vector<int>& result)
 {
     result.clear();
     for(int i = 0;i < blockList.size();++i)
@@ -296,7 +323,7 @@ void getUnlockBlocks(const vector<Block>& blockList,vector<int>& result)
     }
     
 }
-inline void getValueBlocks(const vector<Block>& blockList,const vector<int>& vec,int x,int y,vector<int>& result)
+void getValueBlocks(const vector<Block>& blockList,const vector<int>& vec,int x,int y,vector<int>& result)
 {
     result.clear();
     for(int i = 0;i < vec.size();++i)
@@ -311,6 +338,69 @@ inline void getValueBlocks(const vector<Block>& blockList,const vector<int>& vec
         {
             result.push_back(index);
         }
+    }
+}
+inline void getValueBlocks_lazy(const vector<Block>& blockList,BlockValueList& blockValueList,const vector<int>& vec,int x,int y,vector<int>& result)
+{
+    result.clear();
+    for(int i = 0;i < vec.size();++i)
+    {
+        int index = vec[i];
+        const Block& block = blockList[index];
+        if(blockValueList[index][block.y][block.x][y][x] != 0)
+        {
+            result.push_back(index);
+        }
+
+    }
+}
+
+void preCalculateBlockValue(const Room& room,vector<Block> blockList,BlockValueList& blockValueList,BlockPosList& blockPosList)
+{
+    for(int i = 0;i < blockList.size();++i)
+    {
+        Block& block = blockList[i];
+        MMap mmap;
+        PosMap posMap;
+        for(int y = 0;y < room.n;++y)
+        {
+            vector<Map> vecMap;
+            vector<Pos> vecPos;
+            for(int x = 0;x < room.m;++x)
+            {
+                Map map;
+                Pos pos;
+                vector<int> row(room.m,0);
+                for(int k = 0;k < room.n;++k)
+                {
+                    map.push_back(row);
+                }
+                Room tmp;
+                tmp.init(map, 0);
+                if(block.canMoveTo(x, y, room.m,room.n))
+                {
+                    block.moveTo(x, y);
+                    tmp.add(block);
+                }
+                map = tmp.room;
+                vecMap.push_back(map);
+                
+                int posX,posY;
+                if(!hasNextPos(room,block,posX,posY))
+                {
+                    posX = posY = -1;
+                }
+                
+                pos.first = posX;
+                pos.second = posY;
+                vecPos.push_back(pos);
+            }
+            mmap.push_back(vecMap);
+            posMap.push_back(vecPos);
+        }
+        
+        blockValueList.push_back(mmap);
+        blockPosList.push_back(posMap);
     }
 }
 int getBlocksValueAt(const vector<Block>& blockList,int x,int y)
@@ -330,11 +420,33 @@ int getBlocksValueAt(const vector<Block>& blockList,int x,int y)
     }
     return result;
 }
+
+// blockList[i] 在自身坐标为(x,y) 时 在 (x,y)位置的值
+
+inline int getBlockValueAt_lazy(const vector<Block>& blockList,const BlockValueList& blockValueList,const int x,int y)
+{
+    int result = 0;
+    int n = blockList.size();
+    for(int i = 0;i < n;++i)
+    {
+        const Block& block = blockList[i];
+        result += blockValueList[i][block.y][block.x][y][x];
+    }
+    return result;
+}
+
 bool isZeroAt_lazy(const Room& room,const vector<Block>& blockList,int x,int y,int& sum)
 {
     sum = getBlocksValueAt(blockList, x, y) + room.room[y][x];
     return (sum % room.mod) == 0;
 }
+
+inline bool isZeroAt_lazy(const Room& room,const vector<Block>& blockList,const BlockValueList& blockValueList,int x,int y,int& sum)
+{
+    sum = getBlockValueAt_lazy(blockList, blockValueList, x, y) + room.room[y][x];
+    return (sum % room.mod) == 0;
+}
+
 bool isZeroFrom_lazy(const Room& room,const vector<Block>& blockList,int x,int y)
 {
     // 从 (x,y) 的下一个位置开始,到整个room结束，是否都为 0
@@ -357,8 +469,32 @@ bool isZeroFrom_lazy(const Room& room,const vector<Block>& blockList,int x,int y
         }
     }
 }
-bool move2(Room room,vector<Block> blockList/*,deque<Task>& queue*/)
+inline bool isZeroFrom_lazy(const Room& room,const vector<Block>& blockList,const BlockValueList& blockValueList,int x,int y)
 {
+    // 从 (x,y) 的下一个位置开始,到整个room结束，是否都为 0
+    while(1)
+    {
+        int nextX;
+        int nextY;
+        int sum;
+        bool ret = room.getNextPos(x,y,nextX,nextY);
+        x = nextX;
+        y = nextY;
+        if(!ret)
+        {
+            // 到结尾了，前面都为0
+            return true;
+        }
+        if(!isZeroAt_lazy(room, blockList,blockValueList, nextX, nextY,sum))
+        {
+            return false;
+        }
+    }
+}
+
+bool move2(Room room,vector<Block> blockList,BlockValueList blockValueList,BlockPosList& blockPosList)
+{
+
     vector<vector<int>> combs;
     
     vector<vector<int>*> pCombs;
@@ -423,7 +559,8 @@ bool move2(Room room,vector<Block> blockList/*,deque<Task>& queue*/)
         
         tryTimes++;
 
-        if(isZeroAt_lazy(room, blockList, x, y,sumAtXY) && isZeroFrom_lazy(room, blockList, x, y))
+//        if(isZeroAt_lazy(room, blockList, x, y,sumAtXY) && isZeroFrom_lazy(room, blockList, x, y))
+        if(isZeroAt_lazy(room, blockList,blockValueList, x, y,sumAtXY) && isZeroFrom_lazy(room, blockList,blockValueList, x, y))
         {
             resultTask = task;
             foundResult = true;
@@ -446,14 +583,13 @@ bool move2(Room room,vector<Block> blockList/*,deque<Task>& queue*/)
         }
         
         // 在没被锁的木块里，找出能覆盖到该位置的木块(值不为0)。可以先把没被锁的木块放到左上角
-        getValueBlocks(blockList,unlockVec,x,y,valueVec);
+        //getValueBlocks(blockList,unlockVec,x,y,valueVec);
+        getValueBlocks_lazy(blockList,blockValueList,unlockVec,x,y,valueVec);
         // 在所有影响该位置的木块中，找出能移动的
-        getMoveAbleBlock(room,blockList,valueVec,x,y,moveAbleVec);
-        
+        //getMoveAbleBlock(room,blockList,valueVec,x,y,moveAbleVec);
+        getMoveAbleBlock_lazy(room,blockList,blockPosList,valueVec,x,y,moveAbleVec);
         int n = moveAbleVec.size();
-        
         // 对该位置，根据该位置的值和能移动的方块数，计算所有可以移动哪些个数
-
         getMoveNums_lazy(sumAtXY, room.mod,n,moveNums);
 
         for(int i = moveNums.size() - 1;i >= 0;--i)
@@ -488,10 +624,16 @@ bool move2(Room room,vector<Block> blockList/*,deque<Task>& queue*/)
                     int index = (*pCombs[j])[k];
                     Block& block = blockList[index];
                     int posX,posY;
-                    if(!hasNextPos(room,block,posX,posY))
-                    {
-                        cout << "+++++ error +++++" << endl;
-                    }
+                    
+                    /******* lazy **************/
+                    const Pos& pos = blockPosList[index][block.y][block.x];
+                    posX = pos.first;
+                    posY = pos.second;
+                    
+//                    if(!hasNextPos(room,block,posX,posY))
+//                    {
+//                        cout << "+++++ error +++++" << endl;
+//                    }
                     newTask.blocksX[index] = posX;
                     newTask.blocksY[index] = posY;
                     
@@ -913,7 +1055,7 @@ void calPossibility(Room& room,vector<Block>& blockList,unsigned long long& poss
 //}
 void threadHelper()
 {
-    move2(room,BlockList);
+    move2(room,BlockList,blockValueList,blockPosList);
     
 }
 void sendMail(int level,string result,long tryTimes,int second)
@@ -923,8 +1065,8 @@ void sendMail(int level,string result,long tryTimes,int second)
 int main (int argc, const char * argv[]) {
     
     const int MAX_LEVEL = 59;
-    const int BEGIN_LEVEL = 58;
-    const int END_LEVEL = 59;
+    const int BEGIN_LEVEL = 35;
+    const int END_LEVEL = 58;
     for(int level_it = BEGIN_LEVEL - 1;level_it < END_LEVEL;++level_it)
     {
         lastTime = clock();
@@ -946,9 +1088,17 @@ int main (int argc, const char * argv[]) {
         queue.clear();
         BlockList.clear();
         
+        
+        
         processInput(str,level,modu,room,BlockList);
         
         calPossibility(room,BlockList,possibility);
+        
+        // 预先计算Block在每个位置的覆盖范围以及下一个位置的值
+        blockValueList.clear();
+        blockPosList.clear();
+        
+        preCalculateBlockValue(room, BlockList, blockValueList,blockPosList);
         
         time_t beginTime;
         time(&beginTime);

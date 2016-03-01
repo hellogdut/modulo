@@ -18,7 +18,7 @@ struct Room
         n = room.size();
         mod = modu;
     }
-    bool isFit(const Block& block)
+    bool isFit(const Block& block) const
     {
         if(m >= block.w && n >= block.h)
         {
@@ -29,26 +29,26 @@ struct Room
             return false;
         }
     }
-    bool isZeroAt(int x,int y)
+    bool isZeroAt(int x,int y) const
     {
         //tryTimes++;
         return (room[y][x] % mod) == 0;
     }
-    bool canRight(const Block& block)
+    bool canRight(const Block& block) const
     {
         return block.x + block.w + 1 <= m;
     }
-    bool canDown(const Block& block)
+    bool canDown(const Block& block) const
     {
         return block.y + block.h + 1 <= n;
     }
-    bool canRightWithLimitArea(const Block& block,pair<int,int> area)
+    bool canRightWithLimitArea(const Block& block,pair<int,int> area) const
     {
         bool ret = block.x + block.w + 1 <= m;
         ret &= (block.y < area.second ? block.x <= m : block.x <= area.first);
         return ret;
     }
-    bool canDownWithLimitArea(const Block& block,pair<int,int> area)
+    bool canDownWithLimitArea(const Block& block,pair<int,int> area) const
     {
         bool ret = block.y + block.h + 1 <= n;
         ret &= (block.y < area.second ? block.x <= m : block.x <= area.first);
@@ -76,7 +76,7 @@ struct Room
         }
     }
     
-    bool isZero()
+    bool isZero() const
     {
         bool ret = true;
         for(int j = 0;j < n;++j)
