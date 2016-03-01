@@ -44,7 +44,8 @@ static long percent = 0;
 static Room room;
 static vector<Block> BlockList;
 
-static deque<Task> queue;
+static vector<Task> queue;
+
 static bool foundResult = false;
 static Task resultTask;
 std::mutex mtx;
@@ -508,7 +509,7 @@ bool move2(Room room,vector<Block> blockList,BlockValueList blockValueList,Block
     vector<int> oneComb;
     int sumAtXY = 0;
     int blockNums = blockList.size();
-    deque<Task> local_queue;
+    vector<Task> local_queue;
     while(1)
     {
         Task task;
