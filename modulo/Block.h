@@ -10,7 +10,7 @@
 #define Block_h
 #include <iostream>
 using namespace std;;
-#define BLOCK_SIZE 40
+#define MAX_BLOCK_NUMS 40
 struct Block
 {
     int w;
@@ -21,7 +21,7 @@ struct Block
     bool _lock;
     Block():x(0),y(0),_lock(false){};
     //vector<vector<int>> block;
-    int block[BLOCK_SIZE][BLOCK_SIZE];
+    int block[MAX_BLOCK_NUMS][MAX_BLOCK_NUMS];
     void init(vector<vector<int>> data,int _id)
     {
         //block = data;

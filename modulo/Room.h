@@ -14,13 +14,13 @@ struct Room
     void init(vector<vector<int>> data,int modu)
     {
         room = data;
-        m = room[0].size();
-        n = room.size();
+        w = room[0].size();
+        h = room.size();
         mod = modu;
     }
     bool isFit(const Block& block) const
     {
-        if(m >= block.w && n >= block.h)
+        if(w >= block.w && h >= block.h)
         {
             return true;
         }
@@ -31,27 +31,26 @@ struct Room
     }
     bool isZeroAt(int x,int y) const
     {
-        //tryTimes++;
         return (room[y][x] % mod) == 0;
     }
     bool canRight(const Block& block) const
     {
-        return block.x + block.w + 1 <= m;
+        return block.x + block.w + 1 <= w;
     }
     bool canDown(const Block& block) const
     {
-        return block.y + block.h + 1 <= n;
+        return block.y + block.h + 1 <= h;
     }
     bool canRightWithLimitArea(const Block& block,pair<int,int> area) const
     {
-        bool ret = block.x + block.w + 1 <= m;
-        ret &= (block.y < area.second ? block.x <= m : block.x <= area.first);
+        bool ret = block.x + block.w + 1 <= w;
+        ret &= (block.y < area.second ? block.x <= w : block.x <= area.first);
         return ret;
     }
     bool canDownWithLimitArea(const Block& block,pair<int,int> area) const
     {
-        bool ret = block.y + block.h + 1 <= n;
-        ret &= (block.y < area.second ? block.x <= m : block.x <= area.first);
+        bool ret = block.y + block.h + 1 <= h;
+        ret &= (block.y < area.second ? block.x <= w : block.x <= area.first);
         
         return ret;
     }
@@ -79,11 +78,11 @@ struct Room
     bool isZero() const
     {
         bool ret = true;
-        for(int j = 0;j < n;++j)
+        for(int j = 0;j < h;++j)
         {
             if(ret == false)
                 break;
-            for(int i = 0;i < m;++i)
+            for(int i = 0;i < w;++i)
             {
                 if((room[j][i] % mod) != 0)
                 {
@@ -92,15 +91,6 @@ struct Room
                 }
             }
         }
-        //tryTimes++;
-#ifdef PrintProgess
-        //        double currPercent = (double)tryTimes * 100 / possibility;
-        //        if(currPercent >= percent +  1.0)
-        //        {
-        //            cout << (int)currPercent << "%," << tryTimes << " / " << possibility << endl;
-        //            percent = currPercent;
-        //        }
-#endif
         return ret;
     };
     bool isZeroWithLimitArea(pair<int,int> area)
@@ -121,7 +111,7 @@ struct Room
         {
             for(int i = 0;i <= area.second && ret;++i)
             {
-                int len = (i == area.second ? area.first : m);
+                int len = (i == area.second ? area.first : w);
                 for(int j = 0;j < len;++j)
                 {
                     if((room[i][j] % mod) != 0)
@@ -132,7 +122,6 @@ struct Room
                 }
             }
         }
-        //tryTimes++;
         return ret;
     }
     void print()
@@ -154,7 +143,7 @@ struct Room
     }
     bool getNextPos(int oldX,int oldY,int& newX,int& newY) const
     {
-        if(oldX < this->m - 1)
+        if(oldX < this->w - 1)
         {
             newX = oldX + 1;
             newY = oldY;
@@ -164,11 +153,11 @@ struct Room
             newX = 0;
             newY = oldY + 1;
         }
-        return newY < n;
+        return newY < h;
     }
     
-    int m;
-    int n;
+    int w;
+    int h;
     int mod;
     vector<vector<int>> room;
 };

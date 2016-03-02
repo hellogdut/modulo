@@ -31,6 +31,10 @@
 		AC5B0AD41C7DF4D6007D371E /* Block.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Block.h; sourceTree = "<group>"; };
 		AC5B0AD51C7DF4EE007D371E /* Room.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Room.h; sourceTree = "<group>"; };
 		AC5B0AD61C7E0AF7007D371E /* Task.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Task.h; sourceTree = "<group>"; };
+		ACA9BDC01C87152D002688F9 /* Data.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Data.h; sourceTree = "<group>"; };
+		ACA9BDC11C871D2C002688F9 /* baseMethod.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = baseMethod.h; sourceTree = "<group>"; };
+		ACA9BDC21C871DDB002688F9 /* Strategy.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Strategy.h; sourceTree = "<group>"; };
+		ACA9BDC31C871E51002688F9 /* Utility.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Utility.h; sourceTree = "<group>"; };
 		ACB586F31C7A07EE0045005B /* strings.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = strings.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -66,11 +70,15 @@
 			children = (
 				AC21640E1C777E3800F5F042 /* cJSON.c */,
 				AC21640F1C777E3800F5F042 /* cJSON.h */,
+				ACA9BDC01C87152D002688F9 /* Data.h */,
 				AC2164071C777E2800F5F042 /* main.cpp */,
 				ACB586F31C7A07EE0045005B /* strings.h */,
 				AC5B0AD41C7DF4D6007D371E /* Block.h */,
 				AC5B0AD51C7DF4EE007D371E /* Room.h */,
 				AC5B0AD61C7E0AF7007D371E /* Task.h */,
+				ACA9BDC11C871D2C002688F9 /* baseMethod.h */,
+				ACA9BDC21C871DDB002688F9 /* Strategy.h */,
+				ACA9BDC31C871E51002688F9 /* Utility.h */,
 			);
 			path = modulo;
 			sourceTree = "<group>";
