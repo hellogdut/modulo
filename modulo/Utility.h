@@ -17,6 +17,7 @@
 #include "baseMethod.h"
 #include "Strategy.h"
 #include "Utility.h"
+#include <stdlib.h>
 using namespace Data;
 
 void mySleep(int millSecond)
@@ -332,12 +333,15 @@ void readFromDisk(string filePath)
     
     Data::curr_level = cJSON_GetObjectItem(root,"level")->valueint;
     Data::threadNum = cJSON_GetObjectItem(root,"threadNum")->valueint;
+#ifdef WIN32
 	Data::tryTimes = _atoi64(cJSON_GetObjectItem(root, "tryTimes")->valuestring);
+#else
+    Data::tryTimes = std::atoll(cJSON_GetObjectItem(root, "tryTimes")->valuestring);
+#endif
     int blockNums = cJSON_GetObjectItem(root,"blockNums")->valueint;
    
     vector<Task> vecTask;
-    
-    
+
     
     cJSON * taskList = cJSON_GetObjectItem(root,"Tasks");
     int size = cJSON_GetArraySize(taskList);
@@ -374,7 +378,7 @@ string getSavePath()
 #ifdef _WIN32
 	_getcwd(buffer, 256);
 #else
-	_getcwd(buffer, 256);
+	getcwd(buffer, 256);
 #endif
     string path = buffer;
     if(path.back() != '/')
