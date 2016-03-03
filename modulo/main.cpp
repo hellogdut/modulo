@@ -59,8 +59,8 @@ int main (int argc, const char * argv[])
 
     Data::saveNums = 5;			// 保存最近5个备份
     Data::curr_level = 45;      // 从第x题开始
-    Data::saveInterval = 20;   // 300秒保存一次
-	Data::threadNum = 6;		// 开6个线程
+    Data::saveInterval = 300;   // 300秒保存一次
+	Data::threadNum = 7;		// 开6个线程
 
     /******* 先判断是否重回 ************/
     string path = getSavePath();

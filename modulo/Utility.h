@@ -249,7 +249,7 @@ void saveTaskToDisk(string filePath)
     cJSON_AddItemToObject(root, "time",cJSON_CreateString(time));
     cJSON_AddItemToObject(root, "level",cJSON_CreateNumber(Data::curr_level));
     cJSON_AddItemToObject(root, "threadNum",cJSON_CreateNumber(Data::threadNum));
-    cJSON_AddItemToObject(root, "tryTimes",cJSON_CreateNumber(Data::tryTimes));
+	cJSON_AddItemToObject(root, "tryTimes", cJSON_CreateString(to_string(Data::tryTimes).c_str()));
     cJSON_AddItemToObject(root, "blockNums",cJSON_CreateNumber(Data::BlockList.size()));
     cJSON_AddItemToObject(root, "taskNums",cJSON_CreateNumber(Data::queue.size()));
     cJSON *taskList = cJSON_CreateArray();
@@ -332,9 +332,9 @@ void readFromDisk(string filePath)
     
     Data::curr_level = cJSON_GetObjectItem(root,"level")->valueint;
     Data::threadNum = cJSON_GetObjectItem(root,"threadNum")->valueint;
-    Data::tryTimes = cJSON_GetObjectItem(root,"tryTimes")->valueint;
+	Data::tryTimes = _atoi64(cJSON_GetObjectItem(root, "tryTimes")->valuestring);
     int blockNums = cJSON_GetObjectItem(root,"blockNums")->valueint;
-    
+   
     vector<Task> vecTask;
     
     
