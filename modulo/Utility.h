@@ -105,6 +105,10 @@ void processInput(string str,int& level,int& modu,Room& room,vector<Block>& bloc
         block.init(data,i);
         blockList.push_back(block);
     }
+    if(root)
+    {
+        cJSON_Delete(root);
+    }
 }
 void reportTaskBegin()
 {
@@ -290,8 +294,16 @@ void saveTaskToDisk(string filePath)
         cJSON_AddItemToArray(taskList,jsonTask);
     }
     Data::mtx.unlock();
-    string str = cJSON_Print(root);
-    
+    char* strJson = cJSON_Print(root);
+    string str(strJson);
+    if(strJson)
+    {
+        free(strJson);
+    }
+    if(root)
+    {
+        cJSON_Delete(root);
+    }
     static long sufix = 1;
     string tmp = filePath + "_" + to_string(sufix);
     ofstream out(tmp,std::ofstream::out);
@@ -369,6 +381,10 @@ void readFromDisk(string filePath)
     // 阶数小的排在前面
     std::sort(vecTask.begin(),vecTask.end(),[](const Task& a,const Task& b){return a.number < b.number;});
     Data::queue.swap(vecTask);
+    if(root)
+    {
+        cJSON_Delete(root);
+    }
     
 }
 
