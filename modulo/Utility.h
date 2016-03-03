@@ -1,4 +1,4 @@
-//
+﻿//
 //  Utility.h
 //  modulo
 //
@@ -11,8 +11,8 @@
 
 #ifdef _WIN32
 #include <windows.h>
+#include <direct.h>
 #endif
-
 #include "Data.h"
 #include "baseMethod.h"
 #include "Strategy.h"
@@ -371,7 +371,11 @@ void readFromDisk(string filePath)
 string getSavePath()
 {
     char buffer[256];
-    getcwd(buffer, 256);
+#ifdef _WIN32
+	_getcwd(buffer, 256);
+#else
+	_getcwd(buffer, 256);
+#endif
     string path = buffer;
     if(path.back() != '/')
     {

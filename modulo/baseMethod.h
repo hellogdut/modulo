@@ -1,4 +1,4 @@
-//
+﻿//
 //  baseMethod.h
 //  modulo
 //

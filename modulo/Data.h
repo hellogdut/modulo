@@ -1,4 +1,4 @@
-//
+﻿//
 //  Data.h
 //  modulo
 //
@@ -34,6 +34,7 @@ namespace Data
     static int mod;
     static int threadNum;       // 当前正在跑的线程数
     static vector<thread*> vecThread;
+	static atomic<int> cpuMask;		// 绑定线程到指定CPU
     static bool saving;         // 是否保存进度
     static long saveInterval;   // 两次保存的时间间隔 second
     static long saveNums;       // 备份数
@@ -62,13 +63,13 @@ namespace Data
     void reset()
     {
 //        saveInterval = 300;
-        threadStopCnt = 0;
+        //threadStopCnt = 0;
         isContinued = false;
         saving = false;
-        curr_level = 1;
+        //curr_level = 1;
         end_level = 59;
+		cpuMask = 1;
         mod = 0;
-        threadNum = 1;
         vecThread.clear();
         possibility = 1;
         tryTimes = 0;

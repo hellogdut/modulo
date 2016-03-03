@@ -1,4 +1,4 @@
-//
+﻿//
 //  main.cpp
 //  Modulo
 //
@@ -32,6 +32,11 @@ using namespace std;
 
 void threadHelper()
 {
+#ifdef _WIN32
+	// 绑定线程到指定CPU，跳过CPU 0
+	Data::cpuMask = Data::cpuMask * 2;
+	SetThreadAffinityMask(GetCurrentThread(), Data::cpuMask);
+#endif
     move2(Data::room, Data::BlockList, Data::blockValueList, Data::blockPosList);
 }
 
@@ -51,10 +56,12 @@ int main (int argc, const char * argv[])
 {
     
     Data::reset();
-    Data::saveNums = 5;
-    Data::curr_level = 30;      // 从第29题开始
-    Data::saveInterval = 300;   // 5 分钟保存一次
-    
+
+    Data::saveNums = 5;			// 保存最近5个备份
+    Data::curr_level = 45;      // 从第x题开始
+    Data::saveInterval = 20;   // 300秒保存一次
+	Data::threadNum = 6;		// 开6个线程
+
     /******* 先判断是否重回 ************/
     string path = getSavePath();
     
@@ -70,9 +77,7 @@ int main (int argc, const char * argv[])
             break;
         }
     }
-    
-    
-    
+
     if(Data::isContinued)
     {
         readFromDisk(path);
@@ -81,10 +86,6 @@ int main (int argc, const char * argv[])
         cout << "thread : " << Data::threadNum << endl;
         cout << "===================" << endl;
         
-    }
-    else
-    {
-        Data::threadNum = 2;
     }
     /*********************************/
 
