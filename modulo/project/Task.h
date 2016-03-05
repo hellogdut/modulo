@@ -19,7 +19,7 @@ struct Task
     
     char blocksX[MAX_BLOCK_NUMS];
     char blocksY[MAX_BLOCK_NUMS];
-    bool vecLock[MAX_BLOCK_NUMS];
+    char vecLock[MAX_BLOCK_NUMS];
 };
 
 

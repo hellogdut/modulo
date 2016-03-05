@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		AC2164081C777E2800F5F042 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AC2164071C777E2800F5F042 /* main.cpp */; };
-		AC2164101C777E3800F5F042 /* cJSON.c in Sources */ = {isa = PBXBuildFile; fileRef = AC21640E1C777E3800F5F042 /* cJSON.c */; };
+		AC2CE6AF1C89E54800975616 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AC2CE6A91C89E54800975616 /* main.cpp */; };
+		AC2CE6B01C89E54800975616 /* cJSON.c in Sources */ = {isa = PBXBuildFile; fileRef = AC2CE6AC1C89E54800975616 /* cJSON.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,17 +25,39 @@
 
 /* Begin PBXFileReference section */
 		AC2164041C777E2800F5F042 /* modulo */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = modulo; sourceTree = BUILT_PRODUCTS_DIR; };
-		AC2164071C777E2800F5F042 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
-		AC21640E1C777E3800F5F042 /* cJSON.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cJSON.c; sourceTree = "<group>"; };
-		AC21640F1C777E3800F5F042 /* cJSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cJSON.h; sourceTree = "<group>"; };
-		AC5B0AD41C7DF4D6007D371E /* Block.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Block.h; sourceTree = "<group>"; };
-		AC5B0AD51C7DF4EE007D371E /* Room.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Room.h; sourceTree = "<group>"; };
-		AC5B0AD61C7E0AF7007D371E /* Task.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Task.h; sourceTree = "<group>"; };
-		ACA9BDC01C87152D002688F9 /* Data.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Data.h; sourceTree = "<group>"; };
-		ACA9BDC11C871D2C002688F9 /* baseMethod.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = baseMethod.h; sourceTree = "<group>"; };
-		ACA9BDC21C871DDB002688F9 /* Strategy.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Strategy.h; sourceTree = "<group>"; };
-		ACA9BDC31C871E51002688F9 /* Utility.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Utility.h; sourceTree = "<group>"; };
-		ACB586F31C7A07EE0045005B /* strings.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = strings.h; sourceTree = "<group>"; };
+		AC2CE68D1C89E51900975616 /* writer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = writer.h; path = modulo/rapidjson/writer.h; sourceTree = "<group>"; };
+		AC2CE68E1C89E51900975616 /* stringbuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = stringbuffer.h; path = modulo/rapidjson/stringbuffer.h; sourceTree = "<group>"; };
+		AC2CE68F1C89E51900975616 /* stream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = stream.h; path = modulo/rapidjson/stream.h; sourceTree = "<group>"; };
+		AC2CE6901C89E51900975616 /* schema.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = schema.h; path = modulo/rapidjson/schema.h; sourceTree = "<group>"; };
+		AC2CE6911C89E51900975616 /* reader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = reader.h; path = modulo/rapidjson/reader.h; sourceTree = "<group>"; };
+		AC2CE6921C89E51900975616 /* rapidjson.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = rapidjson.h; path = modulo/rapidjson/rapidjson.h; sourceTree = "<group>"; };
+		AC2CE6931C89E51900975616 /* prettywriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = prettywriter.h; path = modulo/rapidjson/prettywriter.h; sourceTree = "<group>"; };
+		AC2CE6941C89E51900975616 /* pointer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pointer.h; path = modulo/rapidjson/pointer.h; sourceTree = "<group>"; };
+		AC2CE6951C89E51900975616 /* ostreamwrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ostreamwrapper.h; path = modulo/rapidjson/ostreamwrapper.h; sourceTree = "<group>"; };
+		AC2CE6961C89E51900975616 /* msinttypes */ = {isa = PBXFileReference; lastKnownFileType = folder; name = msinttypes; path = modulo/rapidjson/msinttypes; sourceTree = "<group>"; };
+		AC2CE6971C89E51900975616 /* memorystream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = memorystream.h; path = modulo/rapidjson/memorystream.h; sourceTree = "<group>"; };
+		AC2CE6981C89E51900975616 /* memorybuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = memorybuffer.h; path = modulo/rapidjson/memorybuffer.h; sourceTree = "<group>"; };
+		AC2CE6991C89E51900975616 /* istreamwrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = istreamwrapper.h; path = modulo/rapidjson/istreamwrapper.h; sourceTree = "<group>"; };
+		AC2CE69A1C89E51900975616 /* internal */ = {isa = PBXFileReference; lastKnownFileType = folder; name = internal; path = modulo/rapidjson/internal; sourceTree = "<group>"; };
+		AC2CE69B1C89E51900975616 /* fwd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fwd.h; path = modulo/rapidjson/fwd.h; sourceTree = "<group>"; };
+		AC2CE69C1C89E51900975616 /* filewritestream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = filewritestream.h; path = modulo/rapidjson/filewritestream.h; sourceTree = "<group>"; };
+		AC2CE69D1C89E51900975616 /* filereadstream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = filereadstream.h; path = modulo/rapidjson/filereadstream.h; sourceTree = "<group>"; };
+		AC2CE69E1C89E51900975616 /* error */ = {isa = PBXFileReference; lastKnownFileType = folder; name = error; path = modulo/rapidjson/error; sourceTree = "<group>"; };
+		AC2CE69F1C89E51900975616 /* encodings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = encodings.h; path = modulo/rapidjson/encodings.h; sourceTree = "<group>"; };
+		AC2CE6A01C89E51900975616 /* encodedstream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = encodedstream.h; path = modulo/rapidjson/encodedstream.h; sourceTree = "<group>"; };
+		AC2CE6A11C89E51900975616 /* document.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = document.h; path = modulo/rapidjson/document.h; sourceTree = "<group>"; };
+		AC2CE6A21C89E51900975616 /* allocators.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = allocators.h; path = modulo/rapidjson/allocators.h; sourceTree = "<group>"; };
+		AC2CE6A41C89E54800975616 /* Utility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Utility.h; path = modulo/project/Utility.h; sourceTree = "<group>"; };
+		AC2CE6A51C89E54800975616 /* Task.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Task.h; path = modulo/project/Task.h; sourceTree = "<group>"; };
+		AC2CE6A61C89E54800975616 /* strings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = strings.h; path = modulo/project/strings.h; sourceTree = "<group>"; };
+		AC2CE6A71C89E54800975616 /* Strategy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Strategy.h; path = modulo/project/Strategy.h; sourceTree = "<group>"; };
+		AC2CE6A81C89E54800975616 /* Room.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Room.h; path = modulo/project/Room.h; sourceTree = "<group>"; };
+		AC2CE6A91C89E54800975616 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = modulo/project/main.cpp; sourceTree = "<group>"; };
+		AC2CE6AA1C89E54800975616 /* Data.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Data.h; path = modulo/project/Data.h; sourceTree = "<group>"; };
+		AC2CE6AB1C89E54800975616 /* cJSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cJSON.h; path = modulo/project/cJSON.h; sourceTree = "<group>"; };
+		AC2CE6AC1C89E54800975616 /* cJSON.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = cJSON.c; path = modulo/project/cJSON.c; sourceTree = "<group>"; };
+		AC2CE6AD1C89E54800975616 /* Block.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Block.h; path = modulo/project/Block.h; sourceTree = "<group>"; };
+		AC2CE6AE1C89E54800975616 /* baseMethod.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = baseMethod.h; path = modulo/project/baseMethod.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -52,7 +74,7 @@
 		AC2163FB1C777E2700F5F042 = {
 			isa = PBXGroup;
 			children = (
-				AC2164061C777E2800F5F042 /* modulo */,
+				AC2CE68B1C89E4E400975616 /* modulo */,
 				AC2164051C777E2800F5F042 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -65,22 +87,60 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		AC2164061C777E2800F5F042 /* modulo */ = {
+		AC2CE68B1C89E4E400975616 /* modulo */ = {
 			isa = PBXGroup;
 			children = (
-				AC21640E1C777E3800F5F042 /* cJSON.c */,
-				AC21640F1C777E3800F5F042 /* cJSON.h */,
-				ACA9BDC01C87152D002688F9 /* Data.h */,
-				AC2164071C777E2800F5F042 /* main.cpp */,
-				ACB586F31C7A07EE0045005B /* strings.h */,
-				AC5B0AD41C7DF4D6007D371E /* Block.h */,
-				AC5B0AD51C7DF4EE007D371E /* Room.h */,
-				AC5B0AD61C7E0AF7007D371E /* Task.h */,
-				ACA9BDC11C871D2C002688F9 /* baseMethod.h */,
-				ACA9BDC21C871DDB002688F9 /* Strategy.h */,
-				ACA9BDC31C871E51002688F9 /* Utility.h */,
+				AC2CE68C1C89E4ED00975616 /* rapidjson */,
+				AC2CE6A31C89E52200975616 /* project */,
 			);
-			path = modulo;
+			name = modulo;
+			sourceTree = "<group>";
+		};
+		AC2CE68C1C89E4ED00975616 /* rapidjson */ = {
+			isa = PBXGroup;
+			children = (
+				AC2CE68D1C89E51900975616 /* writer.h */,
+				AC2CE68E1C89E51900975616 /* stringbuffer.h */,
+				AC2CE68F1C89E51900975616 /* stream.h */,
+				AC2CE6901C89E51900975616 /* schema.h */,
+				AC2CE6911C89E51900975616 /* reader.h */,
+				AC2CE6921C89E51900975616 /* rapidjson.h */,
+				AC2CE6931C89E51900975616 /* prettywriter.h */,
+				AC2CE6941C89E51900975616 /* pointer.h */,
+				AC2CE6951C89E51900975616 /* ostreamwrapper.h */,
+				AC2CE6961C89E51900975616 /* msinttypes */,
+				AC2CE6971C89E51900975616 /* memorystream.h */,
+				AC2CE6981C89E51900975616 /* memorybuffer.h */,
+				AC2CE6991C89E51900975616 /* istreamwrapper.h */,
+				AC2CE69A1C89E51900975616 /* internal */,
+				AC2CE69B1C89E51900975616 /* fwd.h */,
+				AC2CE69C1C89E51900975616 /* filewritestream.h */,
+				AC2CE69D1C89E51900975616 /* filereadstream.h */,
+				AC2CE69E1C89E51900975616 /* error */,
+				AC2CE69F1C89E51900975616 /* encodings.h */,
+				AC2CE6A01C89E51900975616 /* encodedstream.h */,
+				AC2CE6A11C89E51900975616 /* document.h */,
+				AC2CE6A21C89E51900975616 /* allocators.h */,
+			);
+			name = rapidjson;
+			sourceTree = "<group>";
+		};
+		AC2CE6A31C89E52200975616 /* project */ = {
+			isa = PBXGroup;
+			children = (
+				AC2CE6A41C89E54800975616 /* Utility.h */,
+				AC2CE6A51C89E54800975616 /* Task.h */,
+				AC2CE6A61C89E54800975616 /* strings.h */,
+				AC2CE6A71C89E54800975616 /* Strategy.h */,
+				AC2CE6A81C89E54800975616 /* Room.h */,
+				AC2CE6A91C89E54800975616 /* main.cpp */,
+				AC2CE6AA1C89E54800975616 /* Data.h */,
+				AC2CE6AB1C89E54800975616 /* cJSON.h */,
+				AC2CE6AC1C89E54800975616 /* cJSON.c */,
+				AC2CE6AD1C89E54800975616 /* Block.h */,
+				AC2CE6AE1C89E54800975616 /* baseMethod.h */,
+			);
+			name = project;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -139,8 +199,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AC2164081C777E2800F5F042 /* main.cpp in Sources */,
-				AC2164101C777E3800F5F042 /* cJSON.c in Sources */,
+				AC2CE6AF1C89E54800975616 /* main.cpp in Sources */,
+				AC2CE6B01C89E54800975616 /* cJSON.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -58,8 +58,8 @@ int main (int argc, const char * argv[])
     Data::reset();
 
     Data::saveNums = 5;			// 保存最近5个备份
-    Data::curr_level = 45;      // 从第x题开始
-    Data::saveInterval = 300;   // 300秒保存一次
+    Data::curr_level = 30;      // 从第x题开始
+    Data::saveInterval = 1800;   // 300秒保存一次
 	Data::threadNum = 2;		// 开6个线程
 
     /******* 先判断是否重回 ************/
@@ -80,7 +80,8 @@ int main (int argc, const char * argv[])
 
     if(Data::isContinued)
     {
-        readFromDisk(path);
+        //readFromDisk(path);
+        readFromDisk_rapid(path);
         cout << "===== Continue ====" << endl;
         cout << "tryTime : " << Data::tryTimes << endl;
         cout << "thread : " << Data::threadNum << endl;

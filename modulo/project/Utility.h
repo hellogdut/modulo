@@ -18,7 +18,12 @@
 #include "Strategy.h"
 #include "Utility.h"
 #include <stdlib.h>
+#include "../rapidjson/document.h"
+#include "../rapidjson/stringbuffer.h"
+#include "../rapidjson/writer.h"
+
 using namespace Data;
+using namespace rapidjson;
 
 void mySleep(int millSecond)
 {
@@ -151,7 +156,7 @@ void saveResult()
 {
     // 写入文件
     ofstream outdata;
-    string fileName = std::to_string(Data::curr_level + 1) + ".txt";
+    string fileName = std::to_string(Data::curr_level) + ".txt";
     outdata.open(fileName,ios::app);//ios::app是尾部追加的意思
     
     time_t endTime;
@@ -328,6 +333,104 @@ void saveTaskToDisk(string filePath)
     
     calTaskDetail();
 }
+
+void saveTaskToDisk_rapid(string filePath)
+{
+    Data::mtx.lock();
+    time_t currTime;
+    time(&currTime);
+    char* cStrTime = ctime(&currTime);
+    cout << "=======Begin Save===== " << cStrTime << endl;
+    
+    rapidjson::Document document;
+    Document::AllocatorType& allocator = document.GetAllocator();
+    std::string str = "{}"; // 这个是必须的，且不能为 ""，否则 Parse 出错
+    document.Parse(str.c_str());
+    
+    Value jsonTime;
+    jsonTime.SetString(cStrTime,strlen(cStrTime),document.GetAllocator());
+    document.AddMember("time", jsonTime, document.GetAllocator());
+    document.AddMember("level", Data::curr_level, document.GetAllocator());
+    document.AddMember("threadNum", Data::threadNum, document.GetAllocator());
+    
+    Value jsonTryTime;
+    string strTryTime = to_string(Data::tryTimes);
+    jsonTryTime.SetString(strTryTime.c_str(),strTryTime.size(),document.GetAllocator());
+    
+    int blockNums = Data::BlockList.size();
+    int taskNums = Data::queue.size();
+    document.AddMember("tryTimes", jsonTryTime, document.GetAllocator());
+    document.AddMember("blockNums", blockNums, document.GetAllocator());
+    document.AddMember("taskNums", taskNums, document.GetAllocator());
+    
+    Value taskList(kArrayType);
+    for(int i = 0;i < Data::queue.size();++i)
+    {
+        Task& task = Data::queue[i];
+        Value jsonTask(kObjectType);
+        
+        jsonTask.AddMember("x",task.x,document.GetAllocator());
+        jsonTask.AddMember("y",task.y,document.GetAllocator());
+        jsonTask.AddMember("number",task.number,document.GetAllocator());
+        
+        Value blocksX(kArrayType);
+        Value blocksY(kArrayType);
+        Value vecLock(kArrayType);
+        for(int j = 0;j < Data::BlockList.size();++j)
+        {
+            blocksX.PushBack(task.blocksX[j], allocator);
+            blocksY.PushBack(task.blocksY[j], allocator);
+            vecLock.PushBack(task.vecLock[j], allocator);
+        }
+        jsonTask.AddMember("blocksX",blocksX,allocator);
+        jsonTask.AddMember("blocksY",blocksY,allocator);
+        jsonTask.AddMember("vecLock",vecLock,allocator);
+        taskList.PushBack(jsonTask,allocator);
+    }
+    
+    
+    document.AddMember("Tasks", taskList, document.GetAllocator());
+    
+    rapidjson::StringBuffer buffer;
+    rapidjson::Writer<StringBuffer> writer(buffer);
+    document.Accept(writer);
+    
+    const char* output = buffer.GetString();
+    string strOut(output);
+    
+    static long sufix = 1;
+    string tmp = filePath + "_" + to_string(sufix);
+    ofstream out(tmp,std::ofstream::out);
+    
+    if(!out.is_open())
+    {
+        cout << "saveTaskToDisk write error!" << endl;
+        return;
+    }
+    else
+    {
+        out << strOut;
+    }
+    if(sufix < Data::saveNums)
+    {
+        sufix++;
+    }
+    else
+    {
+        sufix = 1;
+    }
+    
+    time_t currTime2;
+    time(&currTime2);
+    char* cStrTime2 = ctime(&currTime2);
+    cout << "=======End Save===== " << cStrTime2 << endl;
+
+    
+    calTaskDetail();
+    Data::mtx.unlock();
+}
+
+
 void readFromDisk(string filePath)
 {
     ifstream in(filePath, ios::in);
@@ -387,6 +490,61 @@ void readFromDisk(string filePath)
     }
     
 }
+void readFromDisk_rapid(string filePath)
+{
+    ifstream in(filePath, ios::in);
+    if(!in.is_open())
+    {
+        cout << "readFromDisk fail" << endl;
+        return;
+    }
+    istreambuf_iterator<char> beg(in), end;
+    string strContent(beg, end);
+    in.close();
+    
+    Document document;
+    document.Parse(strContent.c_str());
+    Data::curr_level = document["level"].GetInt();
+    Data::threadNum = document["threadNum"].GetInt();
+#ifdef WIN32
+    Data::tryTimes = _atoi64(document["tryTimes"].GetString());
+#else
+    Data::tryTimes = std::atoll(document["tryTimes"].GetString());
+#endif
+    
+    int blockNums = document["blockNums"].GetInt();
+    int taskNums = document["taskNums"].GetInt();
+    
+    vector<Task> vecTask;
+    
+    const Value& taskList = document["Tasks"];
+    for (SizeType i = 0; i < taskList.Size(); i++) // 使用 SizeType 而不是 size_t
+    {
+        Task task;
+        
+        const Value& dictTask = taskList[i];
+        task.x = dictTask["x"].GetInt();
+        task.y = dictTask["y"].GetInt();;
+        task.number = dictTask["number"].GetInt();
+        
+        const Value& vecBlockX = dictTask["blocksX"];
+        const Value& vecBlockY = dictTask["blocksY"];
+        const Value& vecLock = dictTask["vecLock"];
+        
+        for(int j = 0;j < blockNums;++j)
+        {
+            task.blocksX[j] = vecBlockX[j].GetInt();
+            task.blocksY[j] = vecBlockY[j].GetInt();
+            task.vecLock[j] = vecLock[j].GetInt();
+        }
+        vecTask.push_back(task);
+    }
+    
+    // 阶数小的排在前面
+    std::sort(vecTask.begin(),vecTask.end(),[](const Task& a,const Task& b){return a.number < b.number;});
+    Data::queue.swap(vecTask);
+ }
+
 
 string getSavePath()
 {
@@ -423,7 +581,8 @@ void checkSaveProgress()
             // 等待线程暂停
             mySleep(1);
         }
-        saveTaskToDisk(getSavePath());
+        //saveTaskToDisk(getSavePath());
+        saveTaskToDisk_rapid(getSavePath());
         Data::saving = false;
         
     }
