@@ -566,7 +566,6 @@ string getSavePath()
 void checkSaveProgress()
 {
     static clock_t lastSaveTime = clock();
-    mySleep(1);
     long currReportTime = clock();
     long interval = (currReportTime - lastSaveTime)/CLOCKS_PER_SEC;
     

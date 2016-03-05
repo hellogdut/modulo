@@ -125,6 +125,7 @@ int main (int argc, const char * argv[])
         {
             reportProgress();
             checkSaveProgress();
+            sleep(1);
             
         }
         
