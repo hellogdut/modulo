@@ -218,6 +218,16 @@ void initTask()
     }
     Data::queue.push_back(task);
 }
+int getUnlockBlockCnt(const Task& a)
+{
+    int cnt = 0;
+    for(int i = 0; i < Data::BlockList.size();i++)
+    {
+        if(!a.vecLock[i])
+            cnt++;
+    }
+    return cnt;
+}
 void calTaskDetail()
 {
     // 计算当前任务的阶数情况
@@ -257,6 +267,12 @@ void calTaskDetail()
         }
         cout << endl;
     }
+    
+    // 尝试优化思路：放开更多的block流入到下一级
+    std::sort(Data::queue.begin(),Data::queue.end(),[](const Task& a,const Task& b){
+        return a.number < b.number || (a.number == b.number && getUnlockBlockCnt(a) < getUnlockBlockCnt(b));
+    });
+    
     
 }
 

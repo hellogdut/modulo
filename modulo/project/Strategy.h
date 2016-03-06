@@ -63,9 +63,13 @@ bool move2(Room room,vector<Block> blockList,BlockValueList blockValueList,Block
             Data::mtx.lock();
             if(!Data::queue.empty())
             {
-                // 拿一半，最少一个
+                // 拿一半，最少一个,最多100个
                 int halfSize = max(int(1),int(Data::queue.size() / 2));
                 
+                if(halfSize > 100)
+                {
+                    halfSize = 100;
+                }
                 while(halfSize--)
                 {
                     local_queue.push_back(Data::queue.back());
