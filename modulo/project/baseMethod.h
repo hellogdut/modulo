@@ -79,7 +79,7 @@ void getMoveAbleBlock(Room& room,vector<Block>& blockList,const vector<int>& vec
         }
     }
 }
-inline void getMoveAbleBlock_lazy(Room& room,vector<Block>& blockList,const BlockPosList& blockPosList,const vector<int>& vec,int x,int y,vector<int>& result)
+void getMoveAbleBlock_lazy(Room& room,vector<Block>& blockList,const BlockPosList& blockPosList,const vector<int>& vec,int x,int y,vector<int>& result)
 {
     result.clear();
     
@@ -145,7 +145,7 @@ inline void getCombis(const vector<int>& vec,int m,vector<vector<int>>& result,v
         result.push_back(oneComb);
     } while (next_permutation(selectors.begin(), selectors.end()));
 }
-inline void getCombis_lazy(const vector<int>& vec,int m,vector<vector<int>*>& result,vector<vector<int>*>& pUnusedComb,vector<int>& selectors)
+void getCombis_lazy(const vector<int>& vec,int m,vector<vector<int>*>& result,vector<vector<int>*>& pUnusedComb,vector<int>& selectors)
 {
     // 参考 http://mingxinglai.com/cn/2012/09/generate-permutation-use-stl/
     // 这里用的是 next_permutaion,前面补 0
@@ -228,7 +228,7 @@ inline void getMoveNums(const Room& room,int x,int y,int n,vector<int>& result)
     }
     
 }
-inline void getMoveNums_lazy(int sum,int mod,int n,vector<int>& result)
+void getMoveNums_lazy(int sum,int mod,int n,vector<int>& result)
 {
     // 计算(x,y) 位置可以 移除多少个方块达到圆满。排除0（即不移除的情况)
     
@@ -288,7 +288,7 @@ void getValueBlocks(const vector<Block>& blockList,const vector<int>& vec,int x,
         }
     }
 }
-inline void getValueBlocks_lazy(const vector<Block>& blockList,BlockValueList& blockValueList,const vector<int>& vec,int x,int y,vector<int>& result)
+void getValueBlocks_lazy(const vector<Block>& blockList,BlockValueList& blockValueList,const vector<int>& vec,int x,int y,vector<int>& result)
 {
     result.clear();
     for(int i = 0;i < vec.size();++i)
@@ -350,6 +350,7 @@ void preCalculateBlockValue(const Room& room,vector<Block> blockList,BlockValueL
         blockValueList.push_back(mmap);
         blockPosList.push_back(posMap);
     }
+
 }
 int getBlocksValueAt(const vector<Block>& blockList,int x,int y)
 {
@@ -386,12 +387,14 @@ inline int getBlockValueAt_lazy(const vector<Block>& blockList,const BlockValueL
 bool isZeroAt_lazy(const Room& room,const vector<Block>& blockList,int x,int y,int& sum)
 {
     sum = getBlocksValueAt(blockList, x, y) + room.room[y][x];
+    //sum = getBlocksValueAt(blockList, x, y);    // room 已经合到 block[0]中了
     return (sum % room.mod) == 0;
 }
 
-inline bool isZeroAt_lazy(const Room& room,const vector<Block>& blockList,const BlockValueList& blockValueList,int x,int y,int& sum)
+bool isZeroAt_lazy(const Room& room,const vector<Block>& blockList,const BlockValueList& blockValueList,int x,int y,int& sum)
 {
     sum = getBlockValueAt_lazy(blockList, blockValueList, x, y) + room.room[y][x];
+    //sum = getBlockValueAt_lazy(blockList, blockValueList, x, y);
     return (sum % room.mod) == 0;
 }
 
@@ -400,6 +403,7 @@ bool isZeroFrom_lazy(const Room& room,const vector<Block>& blockList,int x,int y
     // 从 (x,y) 的下一个位置开始,到整个room结束，是否都为 0
     while(1)
     {
+        
         int nextX;
         int nextY;
         int sum;
@@ -415,9 +419,12 @@ bool isZeroFrom_lazy(const Room& room,const vector<Block>& blockList,int x,int y
         {
             return false;
         }
+        
+
+
     }
 }
-inline bool isZeroFrom_lazy(const Room& room,const vector<Block>& blockList,const BlockValueList& blockValueList,int x,int y)
+bool isZeroFrom_lazy(const Room& room,const vector<Block>& blockList,const BlockValueList& blockValueList,int x,int y)
 {
     // 从 (x,y) 的下一个位置开始,到整个room结束，是否都为 0
     while(1)
@@ -425,6 +432,25 @@ inline bool isZeroFrom_lazy(const Room& room,const vector<Block>& blockList,cons
         int nextX;
         int nextY;
         int sum;
+        //优化，先算后面那些非0的位置。
+        for(int i = 0;i < Data::noneZeroPosOfRoom.size();++i)
+        {
+            const Pos& pt = Data::noneZeroPosOfRoom[i];
+            int y1 = pt.second;
+            int x1 = pt.first;
+            // 前面那些位置就不用算了
+            if(y1 <= y && x1 <= x)
+                break;
+            
+            if(!isZeroAt_lazy(room, blockList,blockValueList, x1, y1,sum))
+            {
+                return false;
+            }
+        }
+        
+                             
+           // 如果那些非0的位置都OK，那就按原来的方式算整个矩阵是否OK
+
         bool ret = room.getNextPos(x,y,nextX,nextY);
         x = nextX;
         y = nextY;
@@ -436,6 +462,16 @@ inline bool isZeroFrom_lazy(const Room& room,const vector<Block>& blockList,cons
         if(!isZeroAt_lazy(room, blockList,blockValueList, nextX, nextY,sum))
         {
             return false;
+//
+//        int result = 0;
+//        int n = blockList.size();
+//        for(int i = 0;i < n;++i)
+//        {
+//            const Block& block = blockList[i];
+//            result += blockValueList[i][block.y][block.x][y][x];
+//        }
+//        if((result % room.mod) != 0)
+//            return false;
         }
     }
 }

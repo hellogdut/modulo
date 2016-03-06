@@ -26,6 +26,18 @@ typedef vector<vector<Pos>>PosMap;
 typedef vector<PosMap> BlockPosList ;
 
 
+Map operator +(const Map& a,const Map& b)
+{
+    Map c = a;
+    for(int y = 0;y < b.size();++y)
+    {
+        for(int x = 0;x < b[0].size();++x)
+        {
+            c[y][x] += b[y][x];
+        }
+    }
+    return c;
+}
 namespace Data
 {
     static bool isContinued;    // 是否断线重回
@@ -52,6 +64,7 @@ namespace Data
     static vector<Task> queue;          // 全局任务队列
     static vector<vector<int>> taskDetail;  // 任务阶数详情
     static std::mutex mtx;
+    static vector<Pos> noneZeroPosOfRoom;    // room 一开始不为0的位置，从后往前
     
     
     
@@ -59,6 +72,9 @@ namespace Data
     static BlockValueList blockValueList;
     // blockList[i][y][x]，blockList[i] 在 (x,y) 初时的下一个位置，不存在时为(-1,-1)
     static BlockPosList blockPosList;
+    
+    // 所有block的所有可能
+    static MMap blockMaps;
     
     void reset()
     {

@@ -51,6 +51,20 @@ void calPossibility(Room& room,vector<Block>& blockList,unsigned long long& poss
         possibility *= rightStep * downStep;
     }
 }
+void calNoneZeroPos(Room& room)
+{
+    Data::noneZeroPosOfRoom.clear();
+    for(int y = room.h - 1;y >= 0;--y)
+    {
+        for(int x = room.w - 1;x >= 0;--x)
+        {
+            if((room.room[y][x] % room.mod) != 0)
+            {
+                Data::noneZeroPosOfRoom.push_back(make_pair(x,y));
+            }
+        }
+    }
+}
 void processInput(string str,int& level,int& modu,Room& room,vector<Block>& blockList)
 {
     

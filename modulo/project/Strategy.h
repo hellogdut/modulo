@@ -125,7 +125,7 @@ bool move2(Room room,vector<Block> blockList,BlockValueList blockValueList,Block
         // 对该位置，根据该位置的值和能移动的方块数，计算所有可以移动哪些个数
         getMoveNums_lazy(sumAtXY, room.mod,n,moveNums);
         
-        for(int i = moveNums.size() - 1;i >= 0;--i)
+        for(int i = 0;i < moveNums.size();i++)
         {
             int m = moveNums[i];
             // 从 vec1 的 n 个中挑 m 个出来。
@@ -437,7 +437,5 @@ bool move2(Room room,vector<Block> blockList,BlockValueList blockValueList,Block
 //    }
 //    return false;
 //}
-
-
 
 #endif /* Strategy_h */
