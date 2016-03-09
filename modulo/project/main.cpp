@@ -58,10 +58,9 @@ int main (int argc, const char * argv[])
     Data::reset();
 
     Data::saveNums = 5;			// 保存最近5个备份
-    Data::curr_level = 45;      // 从第x题开始
-    Data::saveInterval = 60;   // 300秒保存一次
-	Data::threadNum = 2;		// 开6个线程
-
+    Data::curr_level = 30;      // 从第x题开始
+    Data::saveInterval = 120;   // 300秒保存一次
+	Data::threadNum = 6;		// 开6个线程
     /******* 先判断是否重回 ************/
     string path = getSavePath();
     
@@ -90,6 +89,19 @@ int main (int argc, const char * argv[])
     }
     /*********************************/
 
+//    string str;
+//    str = strings[44];
+//    
+//    processInput(str,Data::curr_level,Data::mod,Data::room,Data::BlockList);
+//    
+//    cout << "room" << endl;
+//    room.print();
+//
+//    for(int i = 0;i < Data::BlockList.size();++i)
+//    {
+//        cout << "block " << i << endl;
+//        BlockList[i].print();
+//    }
     
     for(int level_it = Data::curr_level - 1;level_it < Data::end_level;++level_it)
     {
@@ -102,6 +114,8 @@ int main (int argc, const char * argv[])
         str = strings[level_it];
         
         processInput(str,Data::curr_level,Data::mod,Data::room,Data::BlockList);
+        assert(room.w <= MAX_ROOM_WIDTH && room.h <= MAX_ROOM_HEIGHT);
+        
         calPossibility(Data::room,Data::BlockList,Data::possibility);
         calNoneZeroPos(room);
         // 预先计算Block在每个位置的覆盖范围以及下一个位置的值

@@ -216,6 +216,10 @@ void initTask()
         task.blocksY[i] = 0;
         task.vecLock[i] = false;
     }
+    for(int i = 0;i < Data::room.h * Data::room.w;++i)
+    {
+        task.level[i] = 0;
+    }
     Data::queue.push_back(task);
 }
 int getUnlockBlockCnt(const Task& a)
@@ -236,7 +240,18 @@ void calTaskDetail()
     vector<vector<int>> detail(room.h,row);
     detail.swap(Data::taskDetail);
     
-    std::sort(Data::queue.begin(),Data::queue.end(),[](const Task& a,const Task& b){return a.number < b.number;});
+    std::sort(Data::queue.begin(),Data::queue.end(),[](const Task& a,const Task& b){
+//        return a.number < b.number;
+        // 从优先级低到高排序,如 0,6,2 < 0,6,1
+        int minNum = min(a.number,b.number);
+        for(int i = 0;i <= minNum;++i)
+        {
+            if(a.level[i] > b.level[i])
+                return true;
+        }
+        
+        return a.number < b.number;
+    });
     
     std::map<int,int> mapCnt;
     cout << "==========================" << endl;
@@ -406,15 +421,22 @@ void saveTaskToDisk_rapid(string filePath)
         Value blocksX(kArrayType);
         Value blocksY(kArrayType);
         Value vecLock(kArrayType);
+        Value vecLevel(kArrayType);
+        
         for(int j = 0;j < Data::BlockList.size();++j)
         {
             blocksX.PushBack(task.blocksX[j], allocator);
             blocksY.PushBack(task.blocksY[j], allocator);
             vecLock.PushBack(task.vecLock[j], allocator);
         }
+        for(int j = 0;j < MAX_ROOM_HEIGHT * MAX_ROOM_WIDTH;++j)
+        {
+            vecLevel.PushBack(task.level[j], allocator);
+        }
         jsonTask.AddMember("blocksX",blocksX,allocator);
         jsonTask.AddMember("blocksY",blocksY,allocator);
         jsonTask.AddMember("vecLock",vecLock,allocator);
+         jsonTask.AddMember("vecLevel",vecLevel,allocator);
         taskList.PushBack(jsonTask,allocator);
     }
     
@@ -560,12 +582,17 @@ void readFromDisk_rapid(string filePath)
         const Value& vecBlockX = dictTask["blocksX"];
         const Value& vecBlockY = dictTask["blocksY"];
         const Value& vecLock = dictTask["vecLock"];
+        const Value& vecLevel = dictTask["vecLevel"];
         
         for(int j = 0;j < blockNums;++j)
         {
             task.blocksX[j] = vecBlockX[j].GetInt();
             task.blocksY[j] = vecBlockY[j].GetInt();
             task.vecLock[j] = vecLock[j].GetInt();
+        }
+        for(int j = 0;j < MAX_ROOM_WIDTH * MAX_ROOM_HEIGHT;++j)
+        {
+            task.level[j] = vecLevel[j].GetInt();
         }
         vecTask.push_back(task);
     }

@@ -11,7 +11,7 @@
 #include "Data.h"
 #include "baseMethod.h"
 #include "Utility.h"
-
+#include <Queue>
 
 bool move2(Room room,vector<Block> blockList,BlockValueList blockValueList,BlockPosList blockPosList)
 {
@@ -40,7 +40,7 @@ bool move2(Room room,vector<Block> blockList,BlockValueList blockValueList,Block
             Data::mtx.lock();
             while(!local_queue.empty())
             {
-                queue.push_back(local_queue.back());
+                Data::queue.push_back(local_queue.back());
                 local_queue.pop_back();
             }
             Data::mtx.unlock();
@@ -54,7 +54,10 @@ bool move2(Room room,vector<Block> blockList,BlockValueList blockValueList,Block
         /// 先从本线程的队列里面拿
         if(!local_queue.empty())
         {
+            //task = local_queue.back();
+            //local_queue.pop_back();
             task = local_queue.back();
+//            local_queue.pop_front();
             local_queue.pop_back();
         }
         else
@@ -63,18 +66,20 @@ bool move2(Room room,vector<Block> blockList,BlockValueList blockValueList,Block
             Data::mtx.lock();
             if(!Data::queue.empty())
             {
+                local_queue.push_back(Data::queue.back());
+                Data::queue.pop_back();
                 // 拿一半，最少一个,最多100个
-                int halfSize = max(int(1),int(Data::queue.size() / 2));
-                
-                if(halfSize > 100)
-                {
-                    halfSize = 100;
-                }
-                while(halfSize--)
-                {
-                    local_queue.push_back(Data::queue.back());
-                    Data::queue.pop_back();
-                }
+//                int halfSize = max(int(1),int(Data::queue.size() / 2));
+//                
+//                if(halfSize > 100)
+//                {
+//                    halfSize = 100;
+//                }
+//                while(halfSize--)
+//                {
+//                    local_queue.push_back(Data::queue.back());
+//                    Data::queue.pop_back();
+//                }
             }
             Data::mtx.unlock();
             // 如果没取到，过一会再尝试
@@ -129,7 +134,10 @@ bool move2(Room room,vector<Block> blockList,BlockValueList blockValueList,Block
         // 对该位置，根据该位置的值和能移动的方块数，计算所有可以移动哪些个数
         getMoveNums_lazy(sumAtXY, room.mod,n,moveNums);
         
-        for(int i = 0;i < moveNums.size();i++)
+        int cnt = 0;
+        int beforeSize = local_queue.size();
+        
+        for(int i = moveNums.size()-1;i >= 0;--i)
         {
             int m = moveNums[i];
             // 从 vec1 的 n 个中挑 m 个出来。
@@ -183,30 +191,31 @@ bool move2(Room room,vector<Block> blockList,BlockValueList blockValueList,Block
                 newTask.x = x1;
                 newTask.y = y1;
                 newTask.number = task.number + 1;
+                newTask.level[newTask.number] = cnt;
                 local_queue.push_back(newTask);
                 ++j;
+                cnt++;
             }
         }
-        
-        
-        // 丢一半给主队列，避免其他队列没事干
-        if(Data::queue.empty())
-        {
-            // 拿出一半
-            int halfSize = local_queue.size() / 2;
-            vector<Task> vecTmp;
-            while(halfSize--)
-            {
-                vecTmp.push_back(local_queue.back());
-                local_queue.pop_back();
-            }
-            Data::mtx.lock();
-            for(int i = 0;i < vecTmp.size();++i)
-            {
-                Data::queue.push_back(vecTmp[i]);
-            }
-            Data::mtx.unlock();
-        }
+        reverse(local_queue.begin() + beforeSize + 1,local_queue.end());
+//        // 丢一半给主队列，避免其他队列没事干
+//        if(Data::queue.empty())
+//        {
+//            // 拿出一半
+//            int halfSize = local_queue.size() / 2;
+//            vector<Task> vecTmp;
+//            while(halfSize--)
+//            {
+//                vecTmp.push_back(local_queue.back());
+//                local_queue.pop_back();
+//            }
+//            Data::mtx.lock();
+//            for(int i = 0;i < vecTmp.size();++i)
+//            {
+//                Data::queue.push_back(vecTmp[i]);
+//            }
+//            Data::mtx.unlock();
+//        }
         
     }
     
