@@ -197,7 +197,11 @@ bool move2(Room room,vector<Block> blockList,BlockValueList blockValueList,Block
                 cnt++;
             }
         }
-        reverse(local_queue.begin() + beforeSize + 1,local_queue.end());
+        if(beforeSize < local_queue.size())
+        {
+            reverse(local_queue.begin() + beforeSize + 1,local_queue.end());
+        }
+        
 //        // 丢一半给主队列，避免其他队列没事干
 //        if(Data::queue.empty())
 //        {
