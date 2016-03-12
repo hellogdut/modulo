@@ -123,7 +123,33 @@ bool move2(Room room,vector<Block> blockList,BlockValueList blockValueList,Block
                 unlockVec.push_back(i);
             }
         }
-        
+
+// 跳过，不开启
+//        if(unlockVec.size() >= 6)
+//        {
+//            Room room2 = room;
+//            int minVal = 0;
+//            int currVal = 0;
+//            for(int i = 0;i < blockNums;++i)
+//            {
+//                if(!task.vecLock[i])
+//                {
+//                    currVal += Data::BlockList[i].val;
+//                }
+//                else
+//                {
+//                    room2.add(Data::BlockList[i],task.blocksX[i],task.blocksY[i]);
+//                }
+//            }
+//            minVal = room2.getMinValFromPos(x,y);
+//            if(minVal > currVal)
+//            {
+//                Data::skipCnt++;
+//                continue;
+//            }
+//
+//        }
+//        
         // 在没被锁的木块里，找出能覆盖到该位置的木块(值不为0)。可以先把没被锁的木块放到左上角
         //getValueBlocks(blockList,unlockVec,x,y,valueVec);
         getValueBlocks_lazy(blockList,blockValueList,unlockVec,x,y,valueVec);

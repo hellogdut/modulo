@@ -64,6 +64,17 @@ struct Room
             }
         }
     }
+    void add(const Block& block,int x,int y)
+    {
+        for(int i = 0; i < block.w; ++i)
+        {
+            for(int j = 0; j < block.h;++j)
+            {
+                room[j + y][i + x] += block.block[j][i];
+            }
+        }
+    }
+    
     void remove(const Block& block)
     {
         for(int i = 0; i < block.w; ++i)
@@ -155,7 +166,23 @@ struct Room
         }
         return newY < h;
     }
-    
+    int getMinValFromPos(int x,int y)
+    {
+        int val = 0;
+        int x1 = x;
+        int y1 = y;
+        do {
+            x = x1;
+            y = y1;
+           if(room[y1][x1] % mod)
+           {
+               int times = room[y1][x1] / mod;
+               val += (times + 1) * mod - room[y1][x1];
+           }
+            
+        }while(getNextPos(x, y, x1, y1));
+        return val;
+    }
     int w;
     int h;
     int mod;

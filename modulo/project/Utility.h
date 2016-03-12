@@ -51,6 +51,40 @@ void calPossibility(Room& room,vector<Block>& blockList,unsigned long long& poss
         possibility *= rightStep * downStep;
     }
 }
+void calMinValue(Room& room)
+{
+    int mod = room.mod;
+    
+    Data::minValueFromPos.clear();
+    for(int y = 0;y < room.h;y++)
+    {
+        vector<int> row(room.w,0);
+        Data::minValueFromPos.push_back(row);
+    }
+    
+    // 迭代计算
+    for(int y = room.h - 1;y >= 0;--y)
+    {
+        for(int x = room.w - 1;x >= 0;--x)
+        {
+            // 到最近 mod 值的最小增量
+            int val = 0;
+            if(room.room[y][x] % mod)
+            {
+                int time = room.room[y][x] / mod;
+                val = (time + 1) * mod - room.room[y][x];
+            }
+            // 加上下一个位置的增量
+            int x1,y1;
+            bool hasNextPos = room.getNextPos(x,y,x1,y1);
+            if(hasNextPos)
+            {
+                val += Data::minValueFromPos[y1][x1];
+            }
+            Data::minValueFromPos[y][x] = val;
+        }
+    }
+}
 void calNoneZeroPos(Room& room)
 {
     Data::noneZeroPosOfRoom.clear();
@@ -159,6 +193,7 @@ void reportTaskFinish()
     
     cout << "Result:    " << Data::strResult << endl;
     cout << "tryTimes:  " << Data::tryTimes << endl;
+    cout << "skipCnt : " << Data::skipCnt << endl;
     cout << "Time(s):   " << second << endl;
     cout << "Speed:     " << Data::tryTimes / max((long)1,second) << endl;
     cout << "Begin Date :" << ctime(&Data::task_beginDate);
@@ -181,6 +216,7 @@ void saveResult()
     outdata << "Total: " << Data::possibility << endl;
     outdata << "Result:    " << Data::strResult << endl;
     outdata << "tryTimes:  " << Data::tryTimes << endl;
+    cout << "skipCnt : " << Data::skipCnt << endl;
     outdata << "Time(s):   " << (clock() - Data::task_beginTime)/CLOCKS_PER_SEC << endl;
     outdata << "Speed:     " << Data::tryTimes / max((long)1,second) << endl;
     outdata << "Begin Date :" << ctime(&Data::task_beginDate);
@@ -201,7 +237,7 @@ void reportProgress()
     {
         lastReportTime = currReportTime;
         long speedTime = (clock() - Data::task_beginTime)/CLOCKS_PER_SEC;
-        cout << "tryTimes:" << Data::tryTimes << " ,speed: " << Data::tryTimes/speedTime << " ,time: " << speedTime << endl;
+        cout << "tryTimes:" << Data::tryTimes << " ,TrySpeed: " << Data::tryTimes/speedTime << "skipCnt :" << Data::skipCnt << " ,SkipSpeed: " << Data::skipCnt/speedTime << " ,time: " << speedTime << endl;
     }
 }
 void initTask()
