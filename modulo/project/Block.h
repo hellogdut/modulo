@@ -19,8 +19,8 @@ struct Block
     int y;
     int id;
     bool _lock;
-    int val;    // 1的个数
-    Block():x(0),y(0),_lock(false){};
+    int value;
+    Block():x(0),y(0),_lock(false),value(0){};
     //vector<vector<int>> block;
     int block[MAX_BLOCK_NUMS][MAX_BLOCK_NUMS];
     void init(vector<vector<int>> data,int _id)
@@ -28,16 +28,12 @@ struct Block
         //block = data;
         w = data[0].size();
         h = data.size();
-        val = 0;
         for(int i = 0;i < data.size();++i)
         {
             for(int j = 0;j <data[0].size();++j)
             {
                 block[i][j] = data[i][j];
-                if(block[i][j])
-                {
-                    val++;
-                }
+                value += block[i][j];
             }
         }
 //        w = block[0].size();
@@ -88,6 +84,20 @@ struct Block
             }
             cout << "]" <<endl;
         }
+    }
+    vector<vector<int>> getVector()
+    {
+        vector<vector<int>> result;
+        for(int j = 0;j < h;++j)
+        {
+            vector<int> vec;
+            for(int i = 0;i < w;++i)
+            {
+                vec.push_back(block[j][i]);
+            }
+            result.push_back(vec);
+        }
+        return result;
     }
 };
 

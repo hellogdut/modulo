@@ -11,7 +11,7 @@
 #include "Data.h"
 #include "baseMethod.h"
 #include "Utility.h"
-#include <Queue>
+
 
 bool move2(Room room,vector<Block> blockList,BlockValueList blockValueList,BlockPosList blockPosList)
 {
@@ -40,7 +40,7 @@ bool move2(Room room,vector<Block> blockList,BlockValueList blockValueList,Block
             Data::mtx.lock();
             while(!local_queue.empty())
             {
-                Data::queue.push_back(local_queue.back());
+                queue.push_back(local_queue.back());
                 local_queue.pop_back();
             }
             Data::mtx.unlock();
@@ -54,10 +54,7 @@ bool move2(Room room,vector<Block> blockList,BlockValueList blockValueList,Block
         /// 先从本线程的队列里面拿
         if(!local_queue.empty())
         {
-            //task = local_queue.back();
-            //local_queue.pop_back();
             task = local_queue.back();
-//            local_queue.pop_front();
             local_queue.pop_back();
         }
         else
@@ -66,20 +63,14 @@ bool move2(Room room,vector<Block> blockList,BlockValueList blockValueList,Block
             Data::mtx.lock();
             if(!Data::queue.empty())
             {
-                local_queue.push_back(Data::queue.back());
-                Data::queue.pop_back();
-                // 拿一半，最少一个,最多100个
-//                int halfSize = max(int(1),int(Data::queue.size() / 2));
-//                
-//                if(halfSize > 100)
-//                {
-//                    halfSize = 100;
-//                }
-//                while(halfSize--)
-//                {
-//                    local_queue.push_back(Data::queue.back());
-//                    Data::queue.pop_back();
-//                }
+                // 拿一半，最少一个
+                int halfSize = max(int(1),int(Data::queue.size() / 2));
+                
+                while(halfSize--)
+                {
+                    local_queue.push_back(Data::queue.back());
+                    Data::queue.pop_back();
+                }
             }
             Data::mtx.unlock();
             // 如果没取到，过一会再尝试
@@ -123,33 +114,7 @@ bool move2(Room room,vector<Block> blockList,BlockValueList blockValueList,Block
                 unlockVec.push_back(i);
             }
         }
-
-// 跳过，不开启
-//        if(unlockVec.size() >= 6)
-//        {
-//            Room room2 = room;
-//            int minVal = 0;
-//            int currVal = 0;
-//            for(int i = 0;i < blockNums;++i)
-//            {
-//                if(!task.vecLock[i])
-//                {
-//                    currVal += Data::BlockList[i].val;
-//                }
-//                else
-//                {
-//                    room2.add(Data::BlockList[i],task.blocksX[i],task.blocksY[i]);
-//                }
-//            }
-//            minVal = room2.getMinValFromPos(x,y);
-//            if(minVal > currVal)
-//            {
-//                Data::skipCnt++;
-//                continue;
-//            }
-//
-//        }
-//        
+        
         // 在没被锁的木块里，找出能覆盖到该位置的木块(值不为0)。可以先把没被锁的木块放到左上角
         //getValueBlocks(blockList,unlockVec,x,y,valueVec);
         getValueBlocks_lazy(blockList,blockValueList,unlockVec,x,y,valueVec);
@@ -160,10 +125,7 @@ bool move2(Room room,vector<Block> blockList,BlockValueList blockValueList,Block
         // 对该位置，根据该位置的值和能移动的方块数，计算所有可以移动哪些个数
         getMoveNums_lazy(sumAtXY, room.mod,n,moveNums);
         
-        int cnt = 0;
-        int beforeSize = local_queue.size();
-        
-        for(int i = moveNums.size()-1;i >= 0;--i)
+        for(int i = 0;i < moveNums.size();i++)
         {
             int m = moveNums[i];
             // 从 vec1 的 n 个中挑 m 个出来。
@@ -217,35 +179,30 @@ bool move2(Room room,vector<Block> blockList,BlockValueList blockValueList,Block
                 newTask.x = x1;
                 newTask.y = y1;
                 newTask.number = task.number + 1;
-                newTask.level[newTask.number] = cnt;
                 local_queue.push_back(newTask);
                 ++j;
-                cnt++;
             }
         }
-        if(beforeSize < local_queue.size())
-        {
-            reverse(local_queue.begin() + beforeSize + 1,local_queue.end());
-        }
         
-//        // 丢一半给主队列，避免其他队列没事干
-//        if(Data::queue.empty())
-//        {
-//            // 拿出一半
-//            int halfSize = local_queue.size() / 2;
-//            vector<Task> vecTmp;
-//            while(halfSize--)
-//            {
-//                vecTmp.push_back(local_queue.back());
-//                local_queue.pop_back();
-//            }
-//            Data::mtx.lock();
-//            for(int i = 0;i < vecTmp.size();++i)
-//            {
-//                Data::queue.push_back(vecTmp[i]);
-//            }
-//            Data::mtx.unlock();
-//        }
+        
+        // 丢一半给主队列，避免其他队列没事干
+        if(Data::queue.empty())
+        {
+            // 拿出一半
+            int halfSize = local_queue.size() / 2;
+            vector<Task> vecTmp;
+            while(halfSize--)
+            {
+                vecTmp.push_back(local_queue.back());
+                local_queue.pop_back();
+            }
+            Data::mtx.lock();
+            for(int i = 0;i < vecTmp.size();++i)
+            {
+                Data::queue.push_back(vecTmp[i]);
+            }
+            Data::mtx.unlock();
+        }
         
     }
     

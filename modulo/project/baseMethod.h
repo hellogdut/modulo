@@ -432,21 +432,21 @@ bool isZeroFrom_lazy(const Room& room,const vector<Block>& blockList,const Block
         int nextX;
         int nextY;
         int sum;
-        //优化，先算后面那些非0的位置。
-        for(int i = 0;i < Data::noneZeroPosOfRoom.size();++i)
-        {
-            const Pos& pt = Data::noneZeroPosOfRoom[i];
-            int y1 = pt.second;
-            int x1 = pt.first;
-            // 前面那些位置就不用算了
-            if(y1 <= y && x1 <= x)
-                break;
-            
-            if(!isZeroAt_lazy(room, blockList,blockValueList, x1, y1,sum))
-            {
-                return false;
-            }
-        }
+        // 优化，先算后面那些非0的位置。
+//        for(int i = 0;i < Data::noneZeroPosOfRoom.size();++i)
+//        {
+//            const Pos& pt = Data::noneZeroPosOfRoom[i];
+//            int y1 = pt.second;
+//            int x1 = pt.first;
+//            // 前面那些位置就不用算了
+//            if(y1 <= y && x1 <= x)
+//                break;
+//            
+//            if(!isZeroAt_lazy(room, blockList,blockValueList, x1, y1,sum))
+//            {
+//                return false;
+//            }
+//        }
         
                              
            // 如果那些非0的位置都OK，那就按原来的方式算整个矩阵是否OK

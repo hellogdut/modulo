@@ -10,7 +10,23 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "project/Strategy.h"
-            timestampString = "479229822.055488"
+            timestampString = "478890044.800234"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "130"
+            endingLineNumber = "130"
+            landmarkName = "move2(Room room,vector&lt;Block&gt; blockList,BlockValueList blockValueList,BlockPosList blockPosList)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "project/Strategy.h"
+            timestampString = "478891064.659444"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "38"
@@ -25,12 +41,14 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "project/Room.h"
-            timestampString = "479377026.199215"
+            filePath = "project/baseMethod.h"
+            timestampString = "478972127.698686"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "172"
-            endingLineNumber = "172">
+            startingLineNumber = "435"
+            endingLineNumber = "435"
+            landmarkName = "isZeroFrom_lazy(const Room&amp; room,const vector&lt;Block&gt;&amp; blockList,const BlockValueList&amp; blockValueList,int x,int y)"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

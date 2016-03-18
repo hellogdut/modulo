@@ -54,13 +54,14 @@ void createThreads()
 
 int main (int argc, const char * argv[])
 {
-
+    
     Data::reset();
 
     Data::saveNums = 5;			// 保存最近5个备份
     Data::curr_level = 45;      // 从第x题开始
-    Data::saveInterval = 120;   // 300秒保存一次
+    Data::saveInterval = 60;   // 300秒保存一次
 	Data::threadNum = 1;		// 开6个线程
+
     /******* 先判断是否重回 ************/
     string path = getSavePath();
     
@@ -83,26 +84,12 @@ int main (int argc, const char * argv[])
         readFromDisk_rapid(path);
         cout << "===== Continue ====" << endl;
         cout << "tryTime : " << Data::tryTimes << endl;
-        cout << "skipCnt : " << Data::skipCnt << endl;
         cout << "thread : " << Data::threadNum << endl;
         cout << "===================" << endl;
         
     }
     /*********************************/
 
-//    string str;
-//    str = strings[44];
-//    
-//    processInput(str,Data::curr_level,Data::mod,Data::room,Data::BlockList);
-//    
-//    cout << "room" << endl;
-//    room.print();
-//
-//    for(int i = 0;i < Data::BlockList.size();++i)
-//    {
-//        cout << "block " << i << endl;
-//        BlockList[i].print();
-//    }
     
     for(int level_it = Data::curr_level - 1;level_it < Data::end_level;++level_it)
     {
@@ -115,11 +102,8 @@ int main (int argc, const char * argv[])
         str = strings[level_it];
         
         processInput(str,Data::curr_level,Data::mod,Data::room,Data::BlockList);
-        assert(room.w <= MAX_ROOM_WIDTH && room.h <= MAX_ROOM_HEIGHT);
-        
         calPossibility(Data::room,Data::BlockList,Data::possibility);
         calNoneZeroPos(room);
-        calMinValue(room);
         // 预先计算Block在每个位置的覆盖范围以及下一个位置的值
         preCalculateBlockValue(Data::room, Data::BlockList, Data::blockValueList,Data::blockPosList);
         
@@ -131,6 +115,20 @@ int main (int argc, const char * argv[])
         else
         {
             calTaskDetail();
+        }
+        
+//        room.print();
+//        int value = 0;
+//        for(int i = 0;i < Data::BlockList.size();++i)
+//        {
+//            value += Data::BlockList[i].value;
+//        }
+//        cout << "value :" << value;
+        
+        rotateRoom(room);
+        for(int i = 0;i < Data::BlockList.size();++i)
+        {
+            rotateBlock(Data::BlockList[i]);
         }
         
         createThreads();

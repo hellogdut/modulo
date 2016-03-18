@@ -51,40 +51,6 @@ void calPossibility(Room& room,vector<Block>& blockList,unsigned long long& poss
         possibility *= rightStep * downStep;
     }
 }
-void calMinValue(Room& room)
-{
-    int mod = room.mod;
-    
-    Data::minValueFromPos.clear();
-    for(int y = 0;y < room.h;y++)
-    {
-        vector<int> row(room.w,0);
-        Data::minValueFromPos.push_back(row);
-    }
-    
-    // 迭代计算
-    for(int y = room.h - 1;y >= 0;--y)
-    {
-        for(int x = room.w - 1;x >= 0;--x)
-        {
-            // 到最近 mod 值的最小增量
-            int val = 0;
-            if(room.room[y][x] % mod)
-            {
-                int time = room.room[y][x] / mod;
-                val = (time + 1) * mod - room.room[y][x];
-            }
-            // 加上下一个位置的增量
-            int x1,y1;
-            bool hasNextPos = room.getNextPos(x,y,x1,y1);
-            if(hasNextPos)
-            {
-                val += Data::minValueFromPos[y1][x1];
-            }
-            Data::minValueFromPos[y][x] = val;
-        }
-    }
-}
 void calNoneZeroPos(Room& room)
 {
     Data::noneZeroPosOfRoom.clear();
@@ -193,7 +159,6 @@ void reportTaskFinish()
     
     cout << "Result:    " << Data::strResult << endl;
     cout << "tryTimes:  " << Data::tryTimes << endl;
-    cout << "skipCnt : " << Data::skipCnt << endl;
     cout << "Time(s):   " << second << endl;
     cout << "Speed:     " << Data::tryTimes / max((long)1,second) << endl;
     cout << "Begin Date :" << ctime(&Data::task_beginDate);
@@ -216,7 +181,6 @@ void saveResult()
     outdata << "Total: " << Data::possibility << endl;
     outdata << "Result:    " << Data::strResult << endl;
     outdata << "tryTimes:  " << Data::tryTimes << endl;
-    cout << "skipCnt : " << Data::skipCnt << endl;
     outdata << "Time(s):   " << (clock() - Data::task_beginTime)/CLOCKS_PER_SEC << endl;
     outdata << "Speed:     " << Data::tryTimes / max((long)1,second) << endl;
     outdata << "Begin Date :" << ctime(&Data::task_beginDate);
@@ -237,7 +201,7 @@ void reportProgress()
     {
         lastReportTime = currReportTime;
         long speedTime = (clock() - Data::task_beginTime)/CLOCKS_PER_SEC;
-        cout << "tryTimes:" << Data::tryTimes << " ,TrySpeed: " << Data::tryTimes/speedTime << "skipCnt :" << Data::skipCnt << " ,SkipSpeed: " << Data::skipCnt/speedTime << " ,time: " << speedTime << endl;
+        cout << "tryTimes:" << Data::tryTimes << " ,speed: " << Data::tryTimes/speedTime << " ,time: " << speedTime << endl;
     }
 }
 void initTask()
@@ -252,21 +216,7 @@ void initTask()
         task.blocksY[i] = 0;
         task.vecLock[i] = false;
     }
-    for(int i = 0;i < Data::room.h * Data::room.w;++i)
-    {
-        task.level[i] = 0;
-    }
     Data::queue.push_back(task);
-}
-int getUnlockBlockCnt(const Task& a)
-{
-    int cnt = 0;
-    for(int i = 0; i < Data::BlockList.size();i++)
-    {
-        if(!a.vecLock[i])
-            cnt++;
-    }
-    return cnt;
 }
 void calTaskDetail()
 {
@@ -276,18 +226,7 @@ void calTaskDetail()
     vector<vector<int>> detail(room.h,row);
     detail.swap(Data::taskDetail);
     
-    std::sort(Data::queue.begin(),Data::queue.end(),[](const Task& a,const Task& b){
-//        return a.number < b.number;
-        // 从优先级低到高排序,如 0,6,2 < 0,6,1
-        int minNum = min(a.number,b.number);
-        for(int i = 0;i <= minNum;++i)
-        {
-            if(a.level[i] > b.level[i])
-                return true;
-        }
-        
-        return a.number < b.number;
-    });
+    std::sort(Data::queue.begin(),Data::queue.end(),[](const Task& a,const Task& b){return a.number < b.number;});
     
     std::map<int,int> mapCnt;
     cout << "==========================" << endl;
@@ -318,12 +257,6 @@ void calTaskDetail()
         }
         cout << endl;
     }
-    
-    // 尝试优化思路：放开更多的block流入到下一级
-    std::sort(Data::queue.begin(),Data::queue.end(),[](const Task& a,const Task& b){
-        return a.number < b.number || (a.number == b.number && getUnlockBlockCnt(a) < getUnlockBlockCnt(b));
-    });
-    
     
 }
 
@@ -457,22 +390,15 @@ void saveTaskToDisk_rapid(string filePath)
         Value blocksX(kArrayType);
         Value blocksY(kArrayType);
         Value vecLock(kArrayType);
-        Value vecLevel(kArrayType);
-        
         for(int j = 0;j < Data::BlockList.size();++j)
         {
             blocksX.PushBack(task.blocksX[j], allocator);
             blocksY.PushBack(task.blocksY[j], allocator);
             vecLock.PushBack(task.vecLock[j], allocator);
         }
-        for(int j = 0;j < MAX_ROOM_HEIGHT * MAX_ROOM_WIDTH;++j)
-        {
-            vecLevel.PushBack(task.level[j], allocator);
-        }
         jsonTask.AddMember("blocksX",blocksX,allocator);
         jsonTask.AddMember("blocksY",blocksY,allocator);
         jsonTask.AddMember("vecLock",vecLock,allocator);
-         jsonTask.AddMember("vecLevel",vecLevel,allocator);
         taskList.PushBack(jsonTask,allocator);
     }
     
@@ -618,17 +544,12 @@ void readFromDisk_rapid(string filePath)
         const Value& vecBlockX = dictTask["blocksX"];
         const Value& vecBlockY = dictTask["blocksY"];
         const Value& vecLock = dictTask["vecLock"];
-        const Value& vecLevel = dictTask["vecLevel"];
         
         for(int j = 0;j < blockNums;++j)
         {
             task.blocksX[j] = vecBlockX[j].GetInt();
             task.blocksY[j] = vecBlockY[j].GetInt();
             task.vecLock[j] = vecLock[j].GetInt();
-        }
-        for(int j = 0;j < MAX_ROOM_WIDTH * MAX_ROOM_HEIGHT;++j)
-        {
-            task.level[j] = vecLevel[j].GetInt();
         }
         vecTask.push_back(task);
     }
@@ -678,6 +599,55 @@ void checkSaveProgress()
         Data::saving = false;
         
     }
+}
+vector<vector<int>> rotate(vector<vector<int>> mat,int degree)
+{
+    // 顺时针旋转
+    // degree  角度
+    // 1       90
+    // 2       180
+    // 3       270
+    // 4       360
+    assert(degree >= 0);
+    vector<vector<int>> result;
+    if(degree == 0)
+    {
+        return mat;
+    }
+    // 90 度等于做转置
+    int y = mat.size();
+    int x = mat[0].size();
+    
+    for(int i = 0;i < x;++i)
+    {
+        vector<int> row;
+        for(int j = 0;j < y;++j)
+        {
+            row.push_back(mat[j][i]);
+        }
+        result.push_back(row);
+    }
+    
+    degree--;
+    if(degree > 0)
+    {
+        result = rotate(result,degree);
+    }
+    return result;
+    
+}
+
+void rotateRoom(Room& room)
+{
+    auto vec = rotate(room.room,2);
+    
+    room.init(vec,room.mod);
+}
+void rotateBlock(Block& block)
+{
+    auto vec = block.getVector();
+    vec = rotate(vec,2);
+    block.init(vec,block.id);
 }
 
 #endif /* Utility_h */

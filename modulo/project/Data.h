@@ -66,13 +66,13 @@ namespace Data
     static std::mutex mtx;
     static vector<Pos> noneZeroPosOfRoom;    // room 一开始不为0的位置，从后往前
     
-    static unsigned long long skipCnt;
+    
     
     // blockList[i][y][x][y1][x1]，blockList[i]在 (x,y)处时在(x1,y1)位置的值(0 or 1)
     static BlockValueList blockValueList;
     // blockList[i][y][x]，blockList[i] 在 (x,y) 初时的下一个位置，不存在时为(-1,-1)
     static BlockPosList blockPosList;
-    static Map minValueFromPos; // 从 [x,y] 位置开始至少需要的val，根据nonLock block 来算
+    
     // 所有block的所有可能
     static MMap blockMaps;
     
@@ -101,8 +101,7 @@ namespace Data
         queue.clear();
         blockValueList.clear();
         blockPosList.clear();
-        minValueFromPos.clear();
-        skipCnt = 0;
+        
         
     }
     
